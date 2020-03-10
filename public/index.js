@@ -105,11 +105,10 @@ $(() => {
       .post(`/upload`, data)
       .then(res => {
         window.parent.postMessage('yay', 'https://propel-cloud-doc-management.herokuapp.com')
-        window.parent.postMessage('yay0', 'https://propel-cloud-doc-management.herokuapp.com:5000/')
-        window.parent.postMessage('yay1', 'https://propel-cloud-doc-management.herokuapp.com/upload')
+        window.parent.postMessage('yay1', 'https://propel-cloud-doc-management.herokuapp.com/upload/')
         window.parent.postMessage('yay2', 'https://propel-cloud-doc-management.herokuapp.com:5000')
         window.parent.postMessage('yay3', 'http://propel-cloud-doc-management.herokuapp.com:5000/')
-        window.parent.postMessage(JSON.parse(JSON.stringify(res)), 'https://propel-cloud-doc-management.herokuapp.com/*')
+        window.parent.postMessage('yay4', 'https://propel-cloud-doc-management.herokuapp.com/upload')
         window.parent.postMessage(JSON.parse(JSON.stringify(res)), '*')
       })
       .catch(err => {
@@ -118,7 +117,6 @@ $(() => {
         window.parent.postMessage('nay1', 'https://propel-cloud-doc-management.herokuapp.com/upload')
         window.parent.postMessage('nay2', 'https://propel-cloud-doc-management.herokuapp.com:5000')
         window.parent.postMessage('nay3', 'http://propel-cloud-doc-management.herokuapp.com:5000/')
-        window.parent.postMessage(JSON.parse(JSON.stringify(err)), 'https://propel-cloud-doc-management.herokuapp.com/*')
         window.parent.postMessage(JSON.parse(JSON.stringify(err)), '*')
       });
   };
