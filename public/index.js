@@ -111,6 +111,7 @@ $(() => {
         window.parent.postMessage('yay3', 'http://propel-cloud-doc-management.herokuapp.com/')
         window.parent.postMessage('yay4', window.parent.location)
         window.parent.postMessage('yay5', window.parent.location.origin)
+        window.parent.postMessage('yay6', window.location.href)
       })
       .catch(err => {
         window.parent.postMessage(JSON.parse(JSON.stringify(err)), '*')
@@ -120,6 +121,7 @@ $(() => {
         window.parent.postMessage('nay3', 'http://propel-cloud-doc-management.herokuapp.com/')
         window.parent.postMessage('nay4', window.parent.location)
         window.parent.postMessage('nay5', window.parent.location.origin)
+        window.parent.postMessage('nay6', window.location.href)
       });
   };
 });
