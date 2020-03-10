@@ -104,6 +104,7 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
+        console.log('heroku', res)
         window.parent.postMessage(JSON.parse(JSON.stringify(res)), '*')
       })
   };

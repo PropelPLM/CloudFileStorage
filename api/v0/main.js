@@ -96,6 +96,7 @@ app.post("/upload", async (req, res) => {
       GoogleDrive.uploadFile
     );
     res.status(response.status).send(response.data);
+    console.log(response)
     return response;
   } catch (err) {
     res.status(503).send(`Drive upload failed: ${err}`);
