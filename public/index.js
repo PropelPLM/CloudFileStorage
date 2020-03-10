@@ -105,12 +105,12 @@ $(() => {
       .post(`/upload`, data)
       .then(res => {
         window.parent.postMessage('yay', 'https://clin-dev-ed.lightning.force.com/')
-        window.parent.postMessage('res', '*')
+        window.parent.postMessage(res, '*')
         window.parent.postMessage(res, 'https://clin-dev-ed.lightning.force.com/*')
       })
       .catch(err => {
         window.parent.postMessage('nay', 'https://clin-dev-ed.lightning.force.com/')
-        window.parent.postMessage('err', '*')
+        window.parent.postMessage(err, '*')
         window.parent.postMessage(err, 'https://clin-dev-ed.lightning.force.com/*')
       });
   };
