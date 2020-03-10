@@ -104,24 +104,10 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        window.parent.postMessage(JSON.parse(JSON.stringify(res)), '*')
-        window.parent.postMessage('yay', 'https://clin-dev-ed.lightning.force.com')
-        window.parent.postMessage(JSON.parse(JSON.stringify(res)), 'https://propel-cloud-doc-management.herokuapp.com')
-        window.parent.postMessage('yay1', 'http://propel-cloud-doc-management.herokuapp.com')
-        window.parent.postMessage('yay2', 'https://propel-cloud-doc-management.herokuapp.com/')
-        window.parent.postMessage('yay3', 'http://propel-cloud-doc-management.herokuapp.com/')
-        window.parent.postMessage('yay5', window.parent.location.origin)
-        window.parent.postMessage('yay6', window.location.href)
+        window.parent.postMessage(JSON.parse(JSON.stringify(res)), window.parent.location.origin)
       })
       .catch(err => {
-        window.parent.postMessage(JSON.parse(JSON.stringify(err)), '*')
-        window.parent.postMessage('nay', 'https://propel-cloud-doc-management.herokuapp.com')
-        window.parent.postMessage('nay1', 'http://propel-cloud-doc-management.herokuapp.com')
-        window.parent.postMessage('nay2', 'https://propel-cloud-doc-management.herokuapp.com/')
-        window.parent.postMessage('nay3', 'http://propel-cloud-doc-management.herokuapp.com/')
-        window.parent.postMessage('nay4', window.parent.location)
-        window.parent.postMessage('nay5', window.parent.location.origin)
-        window.parent.postMessage('nay6', window.location.href)
+        window.parent.postMessage(JSON.parse(JSON.stringify(err)), window.parent.location.origin)
       });
   };
 });
