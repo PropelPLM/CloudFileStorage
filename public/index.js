@@ -104,7 +104,7 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        window.parent.postMessage(JSON.parse(JSON.stringify(res)), '*')
+        window.parent.postMessage('success', '*')
       })
   };
 });
