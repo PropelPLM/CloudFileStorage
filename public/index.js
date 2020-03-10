@@ -104,7 +104,7 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        window.parent.postMessage(JSON.parse(JSON.stringify(res)), '*')
+        // window.parent.postMessage(JSON.parse(JSON.stringify(res)), '*')
         window.parent.postMessage('yay', 'https://propel-cloud-doc-management.herokuapp.com')
         window.parent.postMessage('yay1', 'http://propel-cloud-doc-management.herokuapp.com')
         window.parent.postMessage('yay2', 'https://propel-cloud-doc-management.herokuapp.com/')
