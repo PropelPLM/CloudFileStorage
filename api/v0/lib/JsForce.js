@@ -56,7 +56,8 @@ function create(file) {
       ...newAttachment
     })
     .then(res => {
-      window.parent.document.dispatchEvent(new CustomEvent('done insert into sf', { detail: res }))
+      console.log(window)
+      window.parent.dispatchEvent(new CustomEvent('done insert into sf', { detail: res }))
     })
 }
 
