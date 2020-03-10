@@ -104,8 +104,12 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        window.parent.dispatchEvent(new CustomEvent('sfinsert', { detail: res }))
+        window.parent.postMessage('yay', 'https://clin-dev-ed.lightning.force.com/')
+        window.parent.postMessage(res, 'https://clin-dev-ed.lightning.force.com/lightning/r/PLMLAW__Item__c/a0X6g000000Jl2ZEAS/view')
       })
-      .catch(() => window.parent.dispatchEvent(new CustomEvent('sfinsert', { detail: 'fail' })));
+      .catch(err => {
+        window.parent.postMessage('nay', 'https://clin-dev-ed.lightning.force.com/')
+        window.parent.postMessage(err, 'https://clin-dev-ed.lightning.force.com/lightning/r/PLMLAW__Item__c/a0X6g000000Jl2ZEAS/view')
+      });
   };
 });
