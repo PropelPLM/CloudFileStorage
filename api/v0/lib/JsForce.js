@@ -49,7 +49,7 @@ function create(file) {
     delete newAttachment[key]
   };
 
-  connection
+  return connection
     .sobject(`${nameSpace}__Document__c`)
     .create({
       Name: name,

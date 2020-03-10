@@ -71,7 +71,8 @@ async function uploadFile(auth, options) {
       status: parseInt(file.status),
       data: file.data
     };
-    await create(file.data);
+    const sfObject = await create(file.data);
+    console.log(sfObject)
     return sendSuccessResponse(response, "uploadFile");
   } catch (err) {
     return sendErrorResponse(err, "uploadFile");
