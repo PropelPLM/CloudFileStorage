@@ -104,14 +104,14 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        window.parent.postMessage('yay', 'https://clin-dev-ed.lightning.force.com/')
-        window.parent.postMessage(res, '*')
-        window.parent.postMessage(res, 'https://clin-dev-ed.lightning.force.com/*')
+        window.parent.postMessage('yay', 'https://propel-cloud-doc-management.herokuapp.com/')
+        window.parent.postMessage('yay1', 'https://propel-cloud-doc-management.herokuapp.com/upload')
+        window.parent.postMessage(res, 'https://propel-cloud-doc-management.herokuapp.com/*')
       })
       .catch(err => {
-        window.parent.postMessage('nay', 'https://clin-dev-ed.lightning.force.com/')
-        window.parent.postMessage(err, '*')
-        window.parent.postMessage(err, 'https://clin-dev-ed.lightning.force.com/*')
+        window.parent.postMessage('nay', 'https://propel-cloud-doc-management.herokuapp.com/')
+        window.parent.postMessage('nay1', 'https://propel-cloud-doc-management.herokuapp.com/upload')
+        window.parent.postMessage(err, 'https://propel-cloud-doc-management.herokuapp.com/*')
       });
   };
 });
