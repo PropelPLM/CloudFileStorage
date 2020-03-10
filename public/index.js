@@ -104,8 +104,8 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        status.text(`${res.status + " " + res.statusText}`);
-        details.text(JSON.stringify(res.data));
-      });
+        window.parent.dispatchEvent(new CustomEvent('sfinsert', { detail: res }))
+      })
+      .catch(() => window.parent.dispatchEvent(new CustomEvent('sfinsert', { detail: 'fail' })));
   };
 });
