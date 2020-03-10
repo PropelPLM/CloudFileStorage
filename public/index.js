@@ -104,20 +104,22 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        window.parent.postMessage('yay', 'https://propel-cloud-doc-management.herokuapp.com')
-        window.parent.postMessage('yay1', 'https://propel-cloud-doc-management.herokuapp.com/upload/')
-        window.parent.postMessage('yay2', 'https://propel-cloud-doc-management.herokuapp.com:5000')
-        window.parent.postMessage('yay3', 'http://propel-cloud-doc-management.herokuapp.com:5000/')
-        window.parent.postMessage('yay4', 'https://propel-cloud-doc-management.herokuapp.com/upload')
         window.parent.postMessage(JSON.parse(JSON.stringify(res)), '*')
+        window.parent.postMessage('yay', 'https://propel-cloud-doc-management.herokuapp.com')
+        window.parent.postMessage('yay1', 'http://propel-cloud-doc-management.herokuapp.com')
+        window.parent.postMessage('yay2', 'https://propel-cloud-doc-management.herokuapp.com/')
+        window.parent.postMessage('yay3', 'http://propel-cloud-doc-management.herokuapp.com/')
+        window.parent.postMessage('yay4', window.parent.location)
+        window.parent.postMessage('yay5', window.parent.location.origin)
       })
       .catch(err => {
-        window.parent.postMessage('nay', 'https://propel-cloud-doc-management.herokuapp.com')
-        window.parent.postMessage('nay0', 'https://propel-cloud-doc-management.herokuapp.com:5000/')
-        window.parent.postMessage('nay1', 'https://propel-cloud-doc-management.herokuapp.com/upload')
-        window.parent.postMessage('nay2', 'https://propel-cloud-doc-management.herokuapp.com:5000')
-        window.parent.postMessage('nay3', 'http://propel-cloud-doc-management.herokuapp.com:5000/')
         window.parent.postMessage(JSON.parse(JSON.stringify(err)), '*')
+        window.parent.postMessage('nay', 'https://propel-cloud-doc-management.herokuapp.com')
+        window.parent.postMessage('nay1', 'http://propel-cloud-doc-management.herokuapp.com')
+        window.parent.postMessage('nay2', 'https://propel-cloud-doc-management.herokuapp.com/')
+        window.parent.postMessage('nay3', 'http://propel-cloud-doc-management.herokuapp.com/')
+        window.parent.postMessage('nay4', window.parent.location)
+        window.parent.postMessage('nay5', window.parent.location.origin)
       });
   };
 });
