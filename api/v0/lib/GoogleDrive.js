@@ -70,8 +70,10 @@ async function uploadFile(auth, options) {
     const sfObject = await create(file.data);
     const response = {
       status: parseInt(file.status),
-      sfId: sfObject.id,
-      data: file.data
+      data: {
+        ...file.data,
+        sfId: sfObject.id,
+      }
     };
     return sendSuccessResponse(response, "uploadFile");
   } catch (err) {
