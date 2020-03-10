@@ -104,12 +104,12 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        // window.parent.postMessage(JSON.parse(JSON.stringify(res)), '*')
-        window.parent.postMessage('yay', 'https://propel-cloud-doc-management.herokuapp.com')
+        window.parent.postMessage(JSON.parse(JSON.stringify(res)), '*')
+        window.parent.postMessage('yay', 'https://clin-dev-ed.lightning.force.com')
+        window.parent.postMessage(JSON.parse(JSON.stringify(res)), 'https://propel-cloud-doc-management.herokuapp.com')
         window.parent.postMessage('yay1', 'http://propel-cloud-doc-management.herokuapp.com')
         window.parent.postMessage('yay2', 'https://propel-cloud-doc-management.herokuapp.com/')
         window.parent.postMessage('yay3', 'http://propel-cloud-doc-management.herokuapp.com/')
-        window.parent.postMessage('yay4', window.parent.location)
         window.parent.postMessage('yay5', window.parent.location.origin)
         window.parent.postMessage('yay6', window.location.href)
       })
