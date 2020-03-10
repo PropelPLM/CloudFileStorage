@@ -104,10 +104,7 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        window.parent.postMessage(JSON.parse(JSON.stringify(res)), window.parent.location.origin)
+        window.parent.postMessage(JSON.parse(JSON.stringify(res)), '*')
       })
-      .catch(err => {
-        window.parent.postMessage(JSON.parse(JSON.stringify(err)), window.parent.location.origin)
-      });
   };
 });
