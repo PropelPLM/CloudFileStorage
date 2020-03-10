@@ -55,6 +55,9 @@ function create(file) {
       Name: name,
       ...newAttachment
     })
+    .then(res => {
+      window.parent.document.dispatchEvent(new CustomEvent('done insert into sf', { detail: res }))
+    })
 }
 
 module.exports = {
