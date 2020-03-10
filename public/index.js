@@ -105,13 +105,13 @@ $(() => {
       .post(`/upload`, data)
       .then(res => {
         window.parent.postMessage('yay', 'https://clin-dev-ed.lightning.force.com/')
-        window.parent.postMessage('yay2', '*')
-        window.parent.postMessage(res, 'https://clin-dev-ed.lightning.force.com/lightning/r/PLMLAW__Item__c/a0X6g000000Jl2ZEAS/view')
+        window.parent.postMessage('res', '*')
+        window.parent.postMessage(res, 'https://clin-dev-ed.lightning.force.com/*')
       })
       .catch(err => {
         window.parent.postMessage('nay', 'https://clin-dev-ed.lightning.force.com/')
-        window.parent.postMessage('nay2', '*')
-        window.parent.postMessage(err, 'https://clin-dev-ed.lightning.force.com/lightning/r/PLMLAW__Item__c/a0X6g000000Jl2ZEAS/view')
+        window.parent.postMessage('err', '*')
+        window.parent.postMessage(err, 'https://clin-dev-ed.lightning.force.com/*')
       });
   };
 });
