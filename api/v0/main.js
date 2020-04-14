@@ -20,6 +20,19 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "../../public/index.html");
 });
 
+app.get("/auth", (req, res) => {
+  const credentials = {...req.body, redirect_uri: `${req.hostname}/auth/callback/google`}; //google can be swapped out
+  console.log(credentials);
+  const authUrl = GoogleDrive.createAuthUrl(credentials);
+  res.redirect(authUrl);
+});
+
+app.get("/auth/callback/google", (req, res) => {
+  const code = req.query.code;
+  const tokens = GoogleDrive.getTokens(code);
+  console.log(tokens);
+});
+
 var client_id;
 var client_secret;
 var tokensFromCredentials;
@@ -51,7 +64,7 @@ app.post("/token", (req, res) => {
     tokensFromCredentials = {
       access_token,
       refresh_token,
-      scope: "https://www.googleapis.com/auth/drive.file",
+      scope: GoogleDrive.actions.driveFiles,
       token_type: "Bearer",
       expiry_date
     };

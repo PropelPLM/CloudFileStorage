@@ -5,8 +5,27 @@ const { Transform } = require("stream");
 const { create } = require("./JsForce.js");
 const server = require("../main.js");
 const io = require('socket.io')(server);
+const util = require("util");
 
 const redirect_uris = ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"];
+const actions = {
+  driveFiles: "https://www.googleapis.com/auth/drive.file"
+}
+
+var oAuth2Client;
+
+function authorize(credentials) {
+  oAuth2Client = new google.auth.OAuth2(credentials.clientId, credentials.clientSecret, credentials.redirect_uri)
+  return oAuth2Client.generateAuthUrl({
+    access_type: "offline",
+    scope: actions.driveFiles
+  })
+}
+
+function getTokens(code) {
+  const getToken = util.promisify(oAuth2Client.getToken)
+  return await getToken(code);
+}
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -96,6 +115,8 @@ function sendErrorResponse(error, functionName) {
 }
 
 module.exports = {
+  actions,
   authorize,
+  getTokens,
   uploadFile
 };
