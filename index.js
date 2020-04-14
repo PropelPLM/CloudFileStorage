@@ -5,10 +5,11 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.listen(3000, () => console.log("done"));
+app.listen(PORT, () => console.log("done"));
 
 app.get("/", async (req, res) => {
     const credentials = fs.readFileSync("credentials.json");
