@@ -104,8 +104,8 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        status.text(`${res.status + " " + res.statusText}`);
-        details.text(JSON.stringify(res.data));
-      });
+        console.log('heroku', res)
+        window.parent.postMessage(JSON.parse(JSON.stringify(res)), '*')
+      })
   };
 });

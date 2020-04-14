@@ -67,11 +67,14 @@ async function uploadFile(auth, options) {
       supportsAllDrives: true,
       fields: "id, name, webViewLink, mimeType, fileExtension, webContentLink"
     });
+    const sfObject = await create(file.data);
     const response = {
       status: parseInt(file.status),
-      data: file.data
+      data: {
+        ...file.data,
+        sfId: sfObject.id,
+      }
     };
-    await create(file.data);
     return sendSuccessResponse(response, "uploadFile");
   } catch (err) {
     return sendErrorResponse(err, "uploadFile");
