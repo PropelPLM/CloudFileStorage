@@ -38,9 +38,12 @@ app.get("/", async (req, res) => {
 
 app.get("/auth/callback", async (req, res) => {
     const code = req.query.code;
+    var tokens;
     oAuth2Client.getToken(code, (err, token) => {
         console.log(token);
+        tokens = token;
     });
+    res.send(`weldone lol ${tokens}`);
 });
 
 // If modifying these scopes, delete token.json.
