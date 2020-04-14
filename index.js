@@ -36,7 +36,7 @@ app.get("/", async (req, res) => {
     res.redirect(authUrl);
 });
 
-app.get("auth/callback", async (req, res) => {
+app.get("/auth/callback", async (req, res) => {
     const code = req.query.code;
     oAuth2Client.getToken(code, (err, token) => {
         console.log(token);
