@@ -22,7 +22,7 @@ function authorize(credentials) {
   })
 }
 
-function getTokens(code) {
+async function getTokens(code) {
   const getToken = util.promisify(oAuth2Client.getToken)
   return await getToken(code);
 }

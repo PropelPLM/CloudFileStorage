@@ -27,9 +27,9 @@ app.get("/auth", (req, res) => {
   res.redirect(authUrl);
 });
 
-app.get("/auth/callback/google", (req, res) => {
+app.get("/auth/callback/google", async (req, res) => {
   const code = req.query.code;
-  const tokens = GoogleDrive.getTokens(code);
+  const tokens = await GoogleDrive.getTokens(code);
   console.log(tokens);
 });
 
