@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
 
 app.post("/auth", (req, res) => {
   const credentials = {...req.body, redirect_uri: `${req.hostname}/auth/callback/google`}; //google can be swapped out
-  return GoogleDrive.createAuthUrl(credentials);
+  res.send(GoogleDrive.createAuthUrl(credentials));
 });
 
 app.get("/auth/callback/google", async (req, res) => {
