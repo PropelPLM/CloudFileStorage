@@ -12,8 +12,20 @@ app.use(express.json());
 app.listen(PORT, () => console.log("done"));
 
 app.get("/", async (req, res) => {
-    const credentials = fs.readFileSync("credentials.json");
-    const oAuth2Client = await authorize(JSON.parse(credentials));
+    const credentials = {
+        installed: {
+            client_id:
+                "825658380789-phjeef4mt9r6q4udai91bppmsbised3h.apps.googleusercontent.com",
+            project_id: "quickstart-1586505421981",
+            auth_uri: "https://accounts.google.com/o/oauth2/auth",
+            token_uri: "https://oauth2.googleapis.com/token",
+            auth_provider_x509_cert_url:
+                "https://www.googleapis.com/oauth2/v1/certs",
+            client_secret: "vhofPYueHwN09r7IuX2PRZKB",
+            redirect_uris: ["https://google.com", "http://localhost"],
+        },
+    };
+    const oAuth2Client = await authorize(credentials);
     const authUrl = oAuth2Client.generateAuthUrl({
         access_type: "offline",
         scope: SCOPES,
