@@ -11,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 app.listen(PORT, () => console.log("done"));
 
+var oAuth2Client;
 app.get("/", async (req, res) => {
     const credentials = {
         installed: {
@@ -22,15 +23,24 @@ app.get("/", async (req, res) => {
             auth_provider_x509_cert_url:
                 "https://www.googleapis.com/oauth2/v1/certs",
             client_secret: "vhofPYueHwN09r7IuX2PRZKB",
-            redirect_uris: ["https://google.com", "http://localhost"],
+            redirect_uris: [
+                "https://lit-brook-82435.herokuapp.com/auth/callback",
+            ],
         },
     };
-    const oAuth2Client = await authorize(credentials);
+    oAuth2Client = await authorize(credentials);
     const authUrl = oAuth2Client.generateAuthUrl({
         access_type: "offline",
         scope: SCOPES,
     });
     res.redirect(authUrl);
+});
+
+app.get("auth/callback", async (req, res) => {
+    const code = req.query.code;
+    oAuth2Client.getToken(code, (err, token) => {
+        console.log(token);
+    });
 });
 
 // If modifying these scopes, delete token.json.
