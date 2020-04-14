@@ -14,7 +14,7 @@ const actions = {
 
 var oAuth2Client;
 
-function authorize(credentials) {
+function createAuthUrl(credentials) {
   oAuth2Client = new google.auth.OAuth2(credentials.clientId, credentials.clientSecret, credentials.redirect_uri)
   return oAuth2Client.generateAuthUrl({
     access_type: "offline",
@@ -117,6 +117,7 @@ function sendErrorResponse(error, functionName) {
 module.exports = {
   actions,
   authorize,
+  createAuthUrl,
   getTokens,
   uploadFile
 };
