@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "../../public/index.html");
 });
 
-app.post("/auth", (req, res) => {
+app.post("/auth", async (req, res) => {
   ({ sessionId, salesforceUrl } = req.body);
   await connect(sessionId, salesforceUrl);
   delete req.body.sessionId;
