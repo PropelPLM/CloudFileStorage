@@ -21,6 +21,7 @@ async function updateRevId(revId) {
 
 async function sendTokens(tokens) {
   const newSetting = {
+    "Platform__c": "GoogleDrive",
     "Access_Token__c": tokens.access_token,
     "Refresh_Token__c": tokens.refresh_token,
     "Expiry_Date__c": tokens.expiry_date,
@@ -28,7 +29,6 @@ async function sendTokens(tokens) {
   return connection
     .sobject(`${namespace}__Doc_Management__c`)
     .create({
-      "Platform__c": "GoogleDrive",
       ...addNamespace(newSetting)
     })
 }
