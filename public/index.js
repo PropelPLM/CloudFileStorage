@@ -15,6 +15,12 @@ $(() => {
   const dropFilesDefaultText = "Or drop files here!";
   const socket = io();
 
+  socket.on('authComplete', ()=> {
+    window.parent.postMessage({
+      "type": "authComplete",
+    }, '*')
+  })
+
   socket.on('progress', progress => {
     const percentageCompletion = parseInt(progress.percentage);
     progressBar.css('width', `${parseInt(percentageCompletion)}%`);
@@ -105,7 +111,13 @@ $(() => {
       .post(`/upload`, data)
       .then(res => {
         console.log('heroku', res)
-        window.parent.postMessage(JSON.parse(JSON.stringify(res)), '*')
+        window.parent.postMessage({
+          "type": "upload",
+          "data": {
+            "status": res.status,
+            "sfId": res.data.sfId
+          }
+        }, '*')
       })
   };
 });

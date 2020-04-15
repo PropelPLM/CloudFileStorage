@@ -11,6 +11,7 @@ const app = express();
 module.exports = server = require('http').createServer(app);
 const port = process.env.PORT || 5000;
 const GoogleDrive = require("./lib/GoogleDrive.js");
+const io = require('socket.io')(server);
 
 app.use(express.json());
 app.use(cors());
@@ -36,6 +37,7 @@ app.get("/auth/callback/google", (req, res) => {
   const code = req.query.code;
   GoogleDrive.getTokens(code);
   res.send("<script>window.close()</script>");
+  io.emit('authComplete', {});
 });
 
 var client_id;
