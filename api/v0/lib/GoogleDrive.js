@@ -23,8 +23,9 @@ function createAuthUrl(credentials) {
 }
 
 async function getTokens(code) {
-  const getToken = util.promisify(oAuth2Client.getToken)
-  return await getToken(code);
+  return oAuth2Client.getToken(code, (err, token) => {
+    return token;
+  })
 }
 
 /**
