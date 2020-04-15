@@ -39,13 +39,10 @@ app.get("/", async (req, res) => {
 app.get("/auth/callback", async (req, res) => {
     const code = req.query.code;
     var tokens;
-    oAuth2Client
-        .getToken(code, (err, token) => {
-            console.log(token);
-            tokens = token;
-        })
-        .then((a) => console.log(a))
-        .then((a) => res.send(a));
+    oAuth2Client.getToken(code, (err, token) => {
+        console.log(token);
+        tokens = token;
+    });
 });
 // Ln2K9hWbS1
 
