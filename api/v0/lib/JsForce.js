@@ -30,7 +30,7 @@ async function sendTokens(tokens) {
     .sobject(`${namespace}__Doc_Management__c`)
     .upsert({
       ...addNamespace(newSetting)
-    }, "Platform__c")
+    }, `${namespace}__Platform__c`)
 }
 
 async function setup() {
