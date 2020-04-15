@@ -43,8 +43,8 @@ app.get("/auth/callback", async (req, res) => {
         console.log(token);
         tokens = token;
     });
-    res.send(`weldone lol ${tokens}`);
 });
+// Ln2K9hWbS1
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
