@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/auth", (req, res) => {
-  const credentials = {...req.body, redirect_uri: `${req.hostname}/auth/callback/google`}; //google can be swapped out
+  const credentials = {...req.body, redirect_uri: `https://${req.hostname}/auth/callback/google`}; //google can be swapped out
   res.status(200).send(
     {
       "url": GoogleDrive.createAuthUrl(credentials)
