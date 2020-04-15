@@ -2,7 +2,7 @@ const { google } = require("googleapis");
 const fs = require("fs");
 const progress = require("progress-stream");
 const { Transform } = require("stream");
-const { create } = require("./JsForce.js");
+const { create, sendTokens } = require("./JsForce.js");
 const server = require("../main.js");
 const io = require('socket.io')(server);
 const util = require("util");
@@ -18,13 +18,14 @@ function createAuthUrl(credentials) {
   oAuth2Client = new google.auth.OAuth2(credentials.clientId, credentials.clientSecret, credentials.redirect_uri)
   return oAuth2Client.generateAuthUrl({
     access_type: "offline",
+    prompt: "consent",
     scope: actions.driveFiles
   })
 }
 
 async function getTokens(code) {
-  return await oAuth2Client.getToken(code, (err, token) => {
-    return token;
+  oAuth2Client.getToken(code, (err, token) => {
+    sendTokens(token);
   })
 }
 

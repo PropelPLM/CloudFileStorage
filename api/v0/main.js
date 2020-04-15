@@ -21,6 +21,10 @@ app.get("/", (req, res) => {
 });
 
 app.post("/auth", (req, res) => {
+  ({ sessionId, salesforceUrl } = req.body);
+  await connect(sessionId, salesforceUrl);
+  delete req.body.sessionId;
+  delete req.body.salesforceUrl;
   const credentials = {...req.body, redirect_uri: `https://${req.hostname}/auth/callback/google`}; //google can be swapped out
   res.status(200).send(
     {
@@ -28,10 +32,10 @@ app.post("/auth", (req, res) => {
     });
 });
 
-app.get("/auth/callback/google", async (req, res) => {
+app.get("/auth/callback/google", (req, res) => {
   const code = req.query.code;
-  const tokens = await GoogleDrive.getTokens(code);
-  console.log(tokens);
+  GoogleDrive.getTokens(code);
+  res.send('lol')
 });
 
 var client_id;
