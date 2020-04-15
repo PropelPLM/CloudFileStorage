@@ -31,6 +31,7 @@ app.get("/", async (req, res) => {
     oAuth2Client = await authorize(credentials);
     const authUrl = oAuth2Client.generateAuthUrl({
         access_type: "offline",
+        prompt: "consent",
         scope: SCOPES,
     });
     res.redirect(authUrl);
