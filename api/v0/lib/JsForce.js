@@ -33,7 +33,6 @@ async function sendTokens(tokens) {
 }
 
 async function setup() {
-  credentialsCheck();
   connection.query(
     "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'CloudStorageService' LIMIT 1"
   ).then(res => {
