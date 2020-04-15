@@ -27,7 +27,7 @@ async function sendTokens(tokens) {
     "Expiry_Date__c": tokens.expiry_date,
   }
   return connection
-    .sobject(`${namespace}__Doc_Management__c`)
+    .sobject(`${namespace}__Cloud_Storage__c`)
     .upsert({
       ...addNamespace(newSetting)
     }, `${namespace}__Platform__c`)
