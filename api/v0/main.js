@@ -8,10 +8,10 @@ const path = require("path");
 const { connect, updateRevId } = require("./lib/JsForce.js");
 
 const app = express();
-module.exports = server = require('http').createServer(app);
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 const port = process.env.PORT || 5000;
 const GoogleDrive = require("./lib/GoogleDrive.js");
-const io = require('socket.io')(server);
 
 app.use(express.json());
 app.use(cors());
@@ -37,7 +37,7 @@ app.get("/auth/callback/google", (req, res) => {
   const code = req.query.code;
   GoogleDrive.getTokens(code);
   res.send("<script>window.close()</script>");
-  io.emit('authComplete', {});
+  ioEmit('authComplete', {});
 });
 
 var client_id;
@@ -123,6 +123,10 @@ app.post("/upload", async (req, res) => {
   }
 });
 
+function ioEmit(type, payload) {
+  io.emit(type, payload);
+}
+
 server.listen(port, () => {
   console.log("Endpoints ready.");
 });
@@ -139,4 +143,8 @@ function sendSuccessResponse(response, functionName) {
 function sendErrorResponse(error, functionName) {
   console.log(`${functionName} has failed due to error: ${error}.`);
   return error;
+}
+
+module.exports = {
+  ioEmit
 }

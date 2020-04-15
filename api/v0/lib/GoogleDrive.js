@@ -3,9 +3,7 @@ const fs = require("fs");
 const progress = require("progress-stream");
 const { Transform } = require("stream");
 const { create, sendTokens } = require("./JsForce.js");
-const server = require("../main.js");
-const io = require('socket.io')(server);
-const util = require("util");
+const { ioEmit } = require("../main.js");
 
 const redirect_uris = ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"];
 const actions = {
@@ -67,7 +65,7 @@ async function uploadFile(auth, options) {
     var str = progress({ length: stat.size, time: 20 });
     str.on("progress", p => {
       console.log(`[UPLOAD-PROGRESS] percentage completion: ${p.percentage}`);
-      io.emit('progress', p);
+      ioEmit('progress', p);
     });
     let fileStream = new Transform({
       transform(chunk, encoding, callback) {
