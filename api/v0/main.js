@@ -35,7 +35,7 @@ app.post("/auth", async (req, res) => {
 app.get("/auth/callback/google", (req, res) => {
   const code = req.query.code;
   GoogleDrive.getTokens(code);
-  res.send('lol')
+  res.send(<script>window.close()</script>)
 });
 
 var client_id;
