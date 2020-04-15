@@ -27,7 +27,7 @@ async function sendTokens(tokens) {
   }
   return connection
     .sobject(`${namespace}__Doc_Management__c`)
-    .upsert({
+    .create({
       Name: "GoogleDrive",
       ...addNamespace(newSetting)
     })
