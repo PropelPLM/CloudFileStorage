@@ -23,7 +23,7 @@ function createAuthUrl(credentials) {
 }
 
 async function getTokens(code) {
-  return oAuth2Client.getToken(code, (err, token) => {
+  return await oAuth2Client.getToken(code, (err, token) => {
     return token;
   })
 }
