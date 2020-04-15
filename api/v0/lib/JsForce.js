@@ -23,11 +23,12 @@ async function sendTokens(tokens) {
   const newSetting = {
     "Access_Token__c": tokens.access_token,
     "Refresh_Token__c": tokens.refresh_token,
-    "Expiry_Date__c": tokens_expiry_date,
+    "Expiry_Date__c": tokens.expiry_date,
   }
   return connection
     .sobject(`${namespace}__Doc_Management__c`)
-    .create({    
+    .create({
+      Name: "GoogleDrive",
       ...addNamespace(newSetting)
     })
 }
