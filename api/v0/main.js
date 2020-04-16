@@ -23,13 +23,16 @@ app.get("/", (req, res) => {
 app.post("/auth", async (req, res) => {
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
   await connect(sessionId, salesforceUrl);
+  console.log(clientId, clientSecret)
   if (clientId && clientSecret) {
+    console.log(1)
     const credentials = {clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google`}; //google can be swapped out
     res.status(200).send(
       {
         "url": GoogleDrive.createAuthUrl(credentials)
       });
   } else {
+    console.log(2)
     res.status(400).send({"error": "Authorization failed, please ensure client credentials are populated."})
   }
 });
