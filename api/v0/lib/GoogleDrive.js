@@ -14,6 +14,7 @@ const actions = {
 var oAuth2Client;
 var clientId;
 var clientSecret;
+var destinationFolderId;
 
 function createAuthUrl(credentials) {
   ({clientId, clientSecret, redirect_uri} = credentials)
@@ -52,6 +53,10 @@ async function authorize(clientId, clientSecret, tokens, options, callback) {
   return await callback(oAuth2Client, options);
 }
 
+async function updateDestinationFolderId(folderId) {
+  destinationFolderId = folderId;
+}
+
 /**
  * Uploads file with an OAuth2 client and then execute communicate the metadata of
  * the record in the external file storage back to salesforce APEX.
@@ -61,8 +66,8 @@ async function authorize(clientId, clientSecret, tokens, options, callback) {
 async function uploadFile(auth, options) {
   var fileMetadata = {
     name: options.fileName,
-    driveId: "0AKvbKuqsABhAUk9PVA", //hard coded drive
-    parents: ["0AKvbKuqsABhAUk9PVA"] // and folder for demo
+    driveId: destinationFolderId, //hard coded drive
+    parents: [destinationFolderId] // and folder for demo
   };
   try {
     const drive = google.drive({ version: "v3", auth });
@@ -124,5 +129,6 @@ module.exports = {
   authorize,
   createAuthUrl,
   getTokens,
+  updateDestinationFolderId,
   uploadFile
 };
