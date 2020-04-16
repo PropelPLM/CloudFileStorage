@@ -21,15 +21,17 @@ app.get("/", (req, res) => {
 });
 
 app.post("/auth", async (req, res) => {
-  ({ sessionId, salesforceUrl } = req.body);
+  ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
   await connect(sessionId, salesforceUrl);
-  delete req.body.sessionId;
-  delete req.body.salesforceUrl;
-  const credentials = {...req.body, redirect_uri: `https://${req.hostname}/auth/callback/google`}; //google can be swapped out
-  res.status(200).send(
-    {
-      "url": GoogleDrive.createAuthUrl(credentials)
-    });
+  if (clientId && clientSecret) {
+    const credentials = {clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google`}; //google can be swapped out
+    res.status(200).send(
+      {
+        "url": GoogleDrive.createAuthUrl(credentials)
+      });
+  } else {
+    res.status(400).send({"error": "Authorization failed, please ensure client credentials are populated."})
+  }
 });
 
 app.get("/auth/callback/google", (req, res) => {
