@@ -30,7 +30,7 @@ app.post("/auth", async (req, res) => {
         "url": GoogleDrive.createAuthUrl(credentials)
       });
   } else {
-    res.status(400).send({"Authorization failed, please ensure client credentials are populated."})
+    res.status(400).send("Authorization failed, please ensure client credentials are populated.")
   }
 });
 
