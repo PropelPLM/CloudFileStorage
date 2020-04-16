@@ -52,7 +52,7 @@ app.post("/uploadDetails", async (req, res) => {
   res.status(200).send({ revId })
 });
 
-app.post("/token", (req, res) => {
+app.post("/token", async (req, res) => {
   try {
     ({
       client_secret,

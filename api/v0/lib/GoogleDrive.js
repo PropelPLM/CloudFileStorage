@@ -53,7 +53,7 @@ async function authorize(clientId, clientSecret, tokens, options, callback) {
   return await callback(oAuth2Client, options);
 }
 
-async function updateDestinationFolderId(folderId) {
+function updateDestinationFolderId(folderId) {
   destinationFolderId = folderId;
 }
 

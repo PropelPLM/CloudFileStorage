@@ -15,7 +15,7 @@ async function connect(sessionId, salesforceUrl) {
   }
 }
 
-async function updateRevId(revId) {
+function updateRevId(revId) {
   revisionId = revId;
 }
 
