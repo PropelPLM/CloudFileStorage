@@ -25,6 +25,8 @@ async function sendTokens(tokens) {
     "Access_Token__c": tokens.access_token,
     "Refresh_Token__c": tokens.refresh_token,
     "Expiry_Date__c": tokens.expiry_date,
+    "Client_Id__c": tokens.clientId,
+    "Client_Secret__c": tokens.clientSecret,
   }
   return connection
     .sobject(`${namespace}__Cloud_Storage__c`)

@@ -12,9 +12,12 @@ const actions = {
 }
 
 var oAuth2Client;
+var clientId;
+var clientSecret;
 
 function createAuthUrl(credentials) {
-  oAuth2Client = new google.auth.OAuth2(credentials.clientId, credentials.clientSecret, credentials.redirect_uri)
+  ({clientId, clientSecret, redirect_uri} = credentials)
+  oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri)
   return oAuth2Client.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
@@ -24,7 +27,7 @@ function createAuthUrl(credentials) {
 
 async function getTokens(code) {
   oAuth2Client.getToken(code, (err, token) => {
-    sendTokens(token);
+    sendTokens({...token, clientId, clientSecret});
   })
   io.emit('authComplete', {});
 }
