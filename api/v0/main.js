@@ -20,41 +20,59 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "../../public/index.html");
 });
 
+app.post("/auth", async (req, res) => {
+  ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
+  await connect(sessionId, salesforceUrl);
+  if (clientId && clientSecret) {
+    const credentials = {clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google`}; //google can be swapped out
+    res.status(200).send(
+      {
+        "url": GoogleDrive.createAuthUrl(credentials)
+      });
+  } else {
+    res.status(400).send("Authorization failed, please ensure client credentials are populated.")
+  }
+});
+
+app.get("/auth/callback/google", (req, res) => {
+  const code = req.query.code;
+  GoogleDrive.getTokens(code);
+  res.send("<script>window.close()</script>");
+});
+
 var client_id;
 var client_secret;
 var tokensFromCredentials;
 
-app.post("/revId", async (req, res) => {
-  ({ revId } = req.body);
+app.post("/uploadDetails", async (req, res) => {
+  ({ revId, destinationFolderId } = req.body);
   updateRevId(revId);
-  sendSuccessResponse({ revId }, '/revId endpoint')
+  GoogleDrive.updateDestinationFolderId(destinationFolderId);
+  sendSuccessResponse({ revId }, '/uploadDetails endpoint')
   res.status(200).send({ revId })
 });
 
-app.post("/jsforceInfo", async (req, res) => {
-  ({ sessionId, salesforceUrl } = req.body);
-  await connect(sessionId, salesforceUrl);
-  sendSuccessResponse({}, "/jsforceInfo endpoint");
-  res.status(200).send({ sessionId, salesforceUrl });
-})
-
-app.post("/token", (req, res) => {
+app.post("/token", async (req, res) => {
   try {
     ({
       client_secret,
       client_id,
       access_token,
       refresh_token,
-      expiry_date
+      expiry_date,
+      sessionId,
+      salesforceUrl
     } = req.body);
 
     tokensFromCredentials = {
       access_token,
       refresh_token,
-      scope: "https://www.googleapis.com/auth/drive.file",
+      scope: GoogleDrive.actions.driveFiles,
       token_type: "Bearer",
       expiry_date
     };
+
+    await connect(sessionId, salesforceUrl);
     sendSuccessResponse(tokensFromCredentials, "/tokens endpoint");
     res.status(200).send(tokensFromCredentials);
   } catch (err) {
@@ -96,7 +114,6 @@ app.post("/upload", async (req, res) => {
       GoogleDrive.uploadFile
     );
     res.status(response.status).send(response.data);
-    console.log(response)
     return response;
   } catch (err) {
     res.status(503).send(`Drive upload failed: ${err}`);

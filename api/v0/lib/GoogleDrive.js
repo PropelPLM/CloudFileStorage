@@ -2,11 +2,36 @@ const { google } = require("googleapis");
 const fs = require("fs");
 const progress = require("progress-stream");
 const { Transform } = require("stream");
-const { create } = require("./JsForce.js");
+const { create, sendTokens } = require("./JsForce.js");
 const server = require("../main.js");
 const io = require('socket.io')(server);
 
 const redirect_uris = ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"];
+const actions = {
+  driveFiles: "https://www.googleapis.com/auth/drive.file"
+}
+
+var oAuth2Client;
+var clientId;
+var clientSecret;
+var destinationFolderId;
+
+function createAuthUrl(credentials) {
+  ({clientId, clientSecret, redirect_uri} = credentials)
+  oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri)
+  return oAuth2Client.generateAuthUrl({
+    access_type: "offline",
+    prompt: "consent",
+    scope: actions.driveFiles
+  })
+}
+
+async function getTokens(code) {
+  oAuth2Client.getToken(code, (err, token) => {
+    sendTokens({...token, clientId, clientSecret});
+  })
+  io.emit('authComplete', {});
+}
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -28,6 +53,10 @@ async function authorize(clientId, clientSecret, tokens, options, callback) {
   return await callback(oAuth2Client, options);
 }
 
+function updateDestinationFolderId(folderId) {
+  destinationFolderId = folderId;
+}
+
 /**
  * Uploads file with an OAuth2 client and then execute communicate the metadata of
  * the record in the external file storage back to salesforce APEX.
@@ -37,8 +66,8 @@ async function authorize(clientId, clientSecret, tokens, options, callback) {
 async function uploadFile(auth, options) {
   var fileMetadata = {
     name: options.fileName,
-    driveId: "0AKvbKuqsABhAUk9PVA", //hard coded drive
-    parents: ["0AKvbKuqsABhAUk9PVA"] // and folder for demo
+    driveId: destinationFolderId, //hard coded drive
+    parents: [destinationFolderId] // and folder for demo
   };
   try {
     const drive = google.drive({ version: "v3", auth });
@@ -96,6 +125,10 @@ function sendErrorResponse(error, functionName) {
 }
 
 module.exports = {
+  actions,
   authorize,
+  createAuthUrl,
+  getTokens,
+  updateDestinationFolderId,
   uploadFile
 };

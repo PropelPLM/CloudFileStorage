@@ -1,6 +1,6 @@
 const jsConnect = require("jsforce");
 var connection;
-var nameSpace;
+var namespace;
 var revisionId;
 
 async function connect(sessionId, salesforceUrl) {
@@ -15,18 +15,31 @@ async function connect(sessionId, salesforceUrl) {
   }
 }
 
-async function updateRevId(revId) {
+function updateRevId(revId) {
   revisionId = revId;
 }
 
-async function credentialsCheck() { }
+async function sendTokens(tokens) {
+  const newSetting = {
+    "Platform__c": "GoogleDrive",
+    "Access_Token__c": tokens.access_token,
+    "Refresh_Token__c": tokens.refresh_token,
+    "Expiry_Date__c": tokens.expiry_date,
+    "Client_Id__c": tokens.clientId,
+    "Client_Secret__c": tokens.clientSecret,
+  }
+  return connection
+    .sobject(`${namespace}__Cloud_Storage__c`)
+    .upsert({
+      ...addNamespace(newSetting)
+    }, `${namespace}__Platform__c`)
+}
 
 async function setup() {
-  credentialsCheck();
   connection.query(
     "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'CloudStorageService' LIMIT 1"
   ).then(res => {
-    nameSpace = res.records[0].NamespacePrefix
+    namespace = res.records[0].NamespacePrefix
   }).catch(err => {
     console.log(`error setting up: ${err}`);
   })
@@ -43,22 +56,29 @@ function create(file) {
     "Content_Location__c": 'E'
   };
 
-  for (key in newAttachment) {
-    Object.defineProperty(newAttachment, `${nameSpace}__${key}`,
-      Object.getOwnPropertyDescriptor(newAttachment, key));
-    delete newAttachment[key]
-  };
-
   return connection
-    .sobject(`${nameSpace}__Document__c`)
+    .sobject(`${namespace}__Document__c`)
     .create({
       Name: name,
-      ...newAttachment
+      ...addNamespace(newAttachment)
     })
+}
+
+function addNamespace(customObject) {
+  for (key in customObject) {
+    Object.defineProperty(
+      customObject,
+      `${namespace}__${key}`,
+      Object.getOwnPropertyDescriptor(customObject, key)
+    );
+    delete customObject[key]
+  }
+  return customObject;
 }
 
 module.exports = {
   connect,
   create,
-  updateRevId
+  updateRevId,
+  sendTokens
 };
