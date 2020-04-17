@@ -110,7 +110,6 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        console.log('heroku', res)
         window.parent.postMessage({
           "type": "upload",
           "data": {
