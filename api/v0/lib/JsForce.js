@@ -21,7 +21,6 @@ function updateRevId(revId) {
 
 async function sendTokens(tokens) {
   const newSetting = {
-    "Name": "GoogleDrive",
     "Access_Token__c": tokens.access_token,
     "Refresh_Token__c": tokens.refresh_token,
     "Expiry_Date__c": tokens.expiry_date,
