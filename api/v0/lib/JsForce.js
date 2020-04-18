@@ -21,7 +21,7 @@ function updateRevId(revId) {
 
 async function sendTokens(tokens) {
   const newSetting = {
-    "Platform__c": "GoogleDrive",
+    "Name": "GoogleDrive",
     "Access_Token__c": tokens.access_token,
     "Refresh_Token__c": tokens.refresh_token,
     "Expiry_Date__c": tokens.expiry_date,
@@ -32,7 +32,7 @@ async function sendTokens(tokens) {
     .sobject(`${namespace}__Cloud_Storage__c`)
     .upsert({
       ...addNamespace(newSetting)
-    }, `${namespace}__Platform__c`)
+    }, "Name")
 }
 
 async function setup() {
