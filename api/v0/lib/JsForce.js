@@ -32,7 +32,7 @@ async function sendTokens(tokens) {
     .sobject(`${namespace}__Cloud_Storage__c`)
     .upsert({
       ...addNamespace(newSetting)
-    }, "Name")
+    }, `${namespace}__Client_Id__c`)
 }
 
 async function setup() {
