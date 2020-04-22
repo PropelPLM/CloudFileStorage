@@ -32,7 +32,7 @@ $(() => {
     progressBar.css('width', `${parseInt(p)}%`);
     progressBarText.text(`${p}%`);
     if (parseInt(p) === 100) {
-      spinner.toggle()
+      spinner.css("display", "block")
     }
   });
 
@@ -74,9 +74,8 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        console.log(res)
-        check.toggle()
-        console.log(1)
+        spinner.css("display", "none")
+        check.toggle("display", block)
         window.parent.postMessage({
           "type": "upload",
           "data": {
