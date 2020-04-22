@@ -16,7 +16,7 @@ html {
 #form {
   display: inline-flex;
   width: 100%;
-  margin: 1rem
+  padding: 1rem;
 }
 
 #completion-text{
@@ -51,6 +51,7 @@ input[type="file"] {
 .custom-file-upload {
   display: block;
   background-color: #0070d2;
+  padding: 8px;
 }
 
 .custom-file-upload:focus {
