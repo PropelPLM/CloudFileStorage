@@ -75,7 +75,7 @@ $(() => {
       .post(`/upload`, data)
       .then(res => {
         spinner.css("display", "none")
-        check.toggle("display", block)
+        check.toggle("display", "block")
         window.parent.postMessage({
           "type": "upload",
           "data": {
