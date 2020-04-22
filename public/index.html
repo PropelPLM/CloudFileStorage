@@ -21,7 +21,6 @@
       <div class="slds-form-element">
         <div class="slds-form-element__control">
           <div class="slds-file-selector">
-            <div class="slds-file-selector__dropzone" id="dropzone">
               <input
                 type="file"
                 class="slds-file-selector__input slds-assistive-text"
@@ -29,49 +28,49 @@
                 aria-describedby="file-upload-drag-and-drop"
                 aria-labelledby="file-selector-primary-label file-selector-secondary-label"
               />
-              <label for="file-select" class="custom-file-upload buttons"
-                ><svg
+              <label for="file-select" class="custom-file-upload buttons">
+                <svg
                   class="slds-button__icon slds-button__icon_left"
-                  aria-hidden="true"
+                  aria-hidden="true">
+                  <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#upload"></use>
+                </svg>Choose a file...
+              </label>
+              <div id="progress-container" class="slds-p-left_small slds-p-top_x-small">
+                <div style="display: flex;">
+                  <div id="file-name">Or drop files here!</div><div id="completion-text">&nbsp;upload completion: </div>
+                  <span id="progress-bar-text">0%</span>
+                </div>
+                <div
+                  class="slds-progress-bar slds-progress-bar_circular slds-progress-bar_small"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  role="progressbar"
                 >
-                  <use
-                    xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#upload"
-                  ></use></svg
-                >Choose a file...</label
-              >
-              <div class="break"></div>
-              <span style="display: inline-flex;">
-                <span id="tooltip-wrapper"
-                  ><span id="tooltip">Or drop files here!</span></span
-                >
-                <span id="file-name">Or drop files here!</span>
-              </span>
+                  <span
+                    class="slds-progress-bar__value"
+                    id="progress-bar"
+                    style="width: 0%"
+                  />
+                </div>
+              </div>
+              <div id="js-status" style="position: relative">
+                <div id="spinner" class="slds-spinner_container">
+                  <div role="status" class="slds-spinner slds-spinner_x-small slds-spinner_brand">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                  </div>
+                </div>
+                <span id="check" class="slds-icon_container slds-icon_container_circle slds-icon-action-description">
+                  <svg class="slds-icon slds-icon_xx-small" aria-hidden="true">
+                  <use xlink:href="/assets/icons/action-sprite/svg/symbols.svg#approval"></use>
+                  </svg>
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <button id="upload-confirm" class="buttons isDisabled" disabled="">
-        Upload
-      </button>
     </form>
-    <div id="progress-container">
-      <div class="slds-grid slds-grid_align-spread slds-p-top_x-small">
-        <span>Upload completion: </span>
-        <strong id="progress-bar-text">0%</strong>
-      </div>
-      <div
-        class="slds-progress-bar slds-progress-bar_circular slds-progress-bar_small"
-        aria-valuemin="0"
-        aria-valuemax="100"
-        role="progressbar"
-      >
-        <span
-          class="slds-progress-bar__value"
-          id="progress-bar"
-          style="width: 0%"
-        >
-        </span>
-      </div>
-    </div>
   </body>
 </html>

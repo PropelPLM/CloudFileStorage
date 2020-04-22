@@ -2,73 +2,33 @@ html {
   font-family: Arial, sans-serif;
   font-size: 1rem;
   line-height: 1.25;
-  transform: translate(-50%, -50%);
   position: absolute;
   top: 50%;
-  left: 50%;
   overflow: hidden;
   width: 100%;
 }
 
 .slds-form-element,
-.slds-file-selector,
-#dropzone {
+.slds-file-selector {
   width: -webkit-fill-available;
-}
-
-#dropzone {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.break {
-  flex-basis: 100%;
-  height: 0;
 }
 
 #form {
   display: inline-flex;
   width: 100%;
-  justify-content: center;
+}
+
+#completion-text{
+  min-inline-size: fit-content;
+  margin-right: 5px
 }
 
 #file-name {
-  display: block;
-  width: 100%;
+  display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
   z-index: 2;
-}
-
-#tooltip-wrapper {
-  position: absolute;
-  visibility: hidden;
-  opacity: 0.7;
-}
-
-#tooltip {
-  display: block;
-  position: relative;
-  width: 8rem;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  z-index: 1;
-  transform: translateY(-105%);
-  overflow-wrap: break-word;
-}
-
-#tooltip::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 25%;
-  border-width: 5px;
-  border-style: solid;
-  border-color: black transparent transparent transparent;
+  font-weight: bold;
 }
 
 .buttons {
@@ -101,23 +61,16 @@ input[type="file"] {
   background-color: #205fb2;
 }
 
-#upload-confirm {
-  background-color: #4bca81;
-  color: black;
-}
-
-#upload-confirm:hover {
-  box-shadow: 0px 0px 0.2rem 0.2rem rgba(55, 132, 75, 0.5);
-  background-color: #37844b;
-  color: white;
-}
-
-#upload-confirm:focus {
-  background-color: #37844b;
-}
-
 #progress-container {
-  margin: 0 20% 0 20%;
+  margin: 0 0 0 0;
+  transform: translateY(-15%);
+  width: 60%;
+  visibility: hidden
+}
+
+#progress-bar-text {
+  margin-left: auto;
+  font-weight: bold;
 }
 
 .isDisabled {
