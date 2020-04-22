@@ -31,7 +31,7 @@ $(() => {
   socket.on('test', p => {
     progressBar.css('width', `${parseInt(p)}%`);
     progressBarText.text(`${p}%`);
-    if (p === 100) {
+    if (parseInt(p) === 100) {
       spinner.toggle()
     }
   });
@@ -74,6 +74,7 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
+        check.toggle()
         window.parent.postMessage({
           "type": "upload",
           "data": {
@@ -81,7 +82,6 @@ $(() => {
             "sfId": res.data.sfId
           }
         }, '*')
-        check.toggle()
       })
   };
 });
