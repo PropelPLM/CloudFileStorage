@@ -74,7 +74,9 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
+        console.log(res)
         check.toggle()
+        console.log(1)
         window.parent.postMessage({
           "type": "upload",
           "data": {
