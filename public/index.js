@@ -69,11 +69,8 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        console.log(1)
         spinner.css("display", "none")
-        console.log(2)
-        check.toggle("display", "block")
-        console.log(3)
+        check.css("display", "block")
         window.parent.postMessage({
           "type": "upload",
           "data": {
