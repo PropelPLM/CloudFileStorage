@@ -26,12 +26,7 @@ $(() => {
     const percentageCompletion = parseInt(progress.percentage);
     progressBar.css('width', `${parseInt(percentageCompletion)}%`);
     progressBarText.text(`${percentageCompletion}%`);
-  });
-
-  socket.on('test', p => {
-    progressBar.css('width', `${parseInt(p)}%`);
-    progressBarText.text(`${p}%`);
-    if (parseInt(p) === 100) {
+    if (percentageCompletion === 100) {
       spinner.css("display", "block")
     }
   });
