@@ -3,7 +3,6 @@ html {
   font-size: 1rem;
   line-height: 1.25;
   position: absolute;
-  top: 50%;
   overflow: hidden;
   width: 100%;
 }
