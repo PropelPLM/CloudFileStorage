@@ -27,6 +27,7 @@ $(() => {
     progressBar.css('width', `${parseInt(percentageCompletion)}%`);
     progressBarText.text(`${percentageCompletion}%`);
     if (percentageCompletion === 100) {
+      progressContainer.css("visibility", "hidden")
       spinner.css("display", "block")
     }
   });
@@ -68,6 +69,7 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
+        progressContainer.css("visibility", "visible")
         spinner.css("display", "none")
         check.css("display", "block")
         window.parent.postMessage({
