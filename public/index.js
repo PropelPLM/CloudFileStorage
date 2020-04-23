@@ -9,7 +9,6 @@ $(() => {
   const progressBarText = $("#progress-bar-text");
   const spinner =  $("#spinner")
   const check =  $("#check")
-  const jsStatus =  $("#js-status")
   const resetIcons = () => {
     check.css("visibility", "hidden")
     spinner.css("visibility", "hidden")
@@ -23,15 +22,16 @@ $(() => {
     }, '*')
   })
 
-  socket.on('progress', progress => {
-    const percentageCompletion = parseInt(progress.percentage);
-    progressBar.css('width', `${parseInt(percentageCompletion)}%`);
-    progressBarText.text(`${percentageCompletion}%`);
-    if (percentageCompletion === 100) {
-      jsStatus.css("display", "none")
-      spinner.css("visibility", "block")
-    }
-  });
+  const trackProgress = async () => {
+    await socket.on('progress', progress => {
+      const percentageCompletion = parseInt(progress.percentage);
+      progressBar.css('width', `${parseInt(percentageCompletion)}%`);
+      progressBarText.text(`${percentageCompletion}%`);
+      if (percentageCompletion === 100) {
+        spinner.css("visibility", "block")
+      }
+    });
+  }
 
   [
     "drag",
@@ -64,13 +64,14 @@ $(() => {
     }
   });
 
-  const uploadFile = fileData => {
+  const uploadFile = async fileData => {
     var data = new FormData();
     data.append("file", fileData);
+    await trackProgress();
     axios
       .post(`/upload`, data)
       .then(res => {
-        jsStatus.css("display", "block")
+        socket.off("progress")
         spinner.css("visibility", "hidden")
         check.css("visibility", "block")
         window.parent.postMessage({
