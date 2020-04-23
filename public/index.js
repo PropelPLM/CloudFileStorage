@@ -47,7 +47,6 @@ $(() => {
   });
 
   fileSelect.on("change", function (e) {
-    check.hide()
     e.preventDefault();
     resetJsStatus();
     const file = fileSelect.prop("files")[0];
@@ -59,8 +58,8 @@ $(() => {
       uploadFile(file);
     } else {
       fileName.text("");
+      progressContainer.css("visibility", "hidden")
     }
-    progressContainer.css("visibility", "hidden")
   });
 
   const uploadFile = fileData => {
