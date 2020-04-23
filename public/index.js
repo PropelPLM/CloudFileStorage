@@ -11,8 +11,8 @@ $(() => {
   const check =  $("#check")
   const jsStatus =  $("#js-status")
   const resetIcons = () => {
-    check.css("display", "none")
-    spinner.css("display", "none")
+    check.css("visibility", "hidden")
+    spinner.css("visibility", "hidden")
   }
   resetIcons();
 
@@ -29,7 +29,7 @@ $(() => {
     progressBarText.text(`${percentageCompletion}%`);
     if (percentageCompletion === 100) {
       jsStatus.css("visibility", "hidden")
-      spinner.css("display", "block")
+      spinner.css("visibility", "visible")
     }
   });
 
@@ -71,8 +71,8 @@ $(() => {
       .post(`/upload`, data)
       .then(res => {
         jsStatus.css("visibility", "visible")
-        spinner.css("display", "none")
-        check.css("display", "block")
+        spinner.css("visibility", "hidden")
+        check.css("visibility", "visible")
         window.parent.postMessage({
           "type": "upload",
           "data": {
