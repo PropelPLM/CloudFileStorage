@@ -23,32 +23,6 @@ $(() => {
     }, '*')
   })
 
-  const trackProgress = async () => {
-    await socket.on('progress', progress => {
-      const percentageCompletion = parseInt(progress.percentage);
-      progressBar.css('width', `${parseInt(percentageCompletion)}%`);
-      progressBarText.text(`${percentageCompletion}%`);
-      if (percentageCompletion === 100) {
-        spinner.css("visibility", "visible")
-      }
-    });
-  }
-
-  [
-    "drag",
-    "dragstart",
-    "dragend",
-    "dragover",
-    "dragenter",
-    "dragleave",
-    "drop"
-  ].forEach(function (event) {
-    dropzone.on(event, function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    });
-  });
-
   fileSelect.on("change", function (e) {
     e.preventDefault();
     resetIcons();
@@ -64,6 +38,17 @@ $(() => {
       progressContainer.css("visibility", "hidden")
     }
   });
+
+  const trackProgress = async () => {
+    await socket.on('progress', progress => {
+      const percentageCompletion = parseInt(progress.percentage);
+      progressBar.css('width', `${parseInt(percentageCompletion)}%`);
+      progressBarText.text(`${percentageCompletion}%`);
+      if (percentageCompletion === 100) {
+        spinner.css("visibility", "visible")
+      }
+    });
+  }
 
   const uploadFile = async fileData => {
     var data = new FormData();
