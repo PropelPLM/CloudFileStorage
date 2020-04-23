@@ -60,7 +60,7 @@ $(() => {
     } else {
       fileName.text("");
     }
-    progressContiner.css("visibility", "hidden")
+    progressContainer.css("visibility", "hidden")
   });
 
   const uploadFile = fileData => {
