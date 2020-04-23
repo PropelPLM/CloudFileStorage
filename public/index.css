@@ -73,10 +73,3 @@ input[type="file"] {
   margin-left: auto;
   font-weight: bold;
 }
-
-.isDisabled {
-  color: currentColor;
-  cursor: not-allowed;
-  opacity: 0.5;
-  text-decoration: none;
-}
