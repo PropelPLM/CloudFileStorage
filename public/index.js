@@ -9,11 +9,12 @@ $(() => {
   const progressBarText = $("#progress-bar-text");
   const spinner =  $("#spinner")
   const check =  $("#check")
-  const resetJsStatus = () => {
+  const jsStatus =  $("#js-status")
+  const resetIcons = () => {
     check.css("display", "none")
     spinner.css("display", "none")
   }
-  resetJsStatus();
+  resetIcons();
 
   const socket = io();
   socket.on('authComplete', ()=> {
@@ -27,7 +28,7 @@ $(() => {
     progressBar.css('width', `${parseInt(percentageCompletion)}%`);
     progressBarText.text(`${percentageCompletion}%`);
     if (percentageCompletion === 100) {
-      progressContainer.css("visibility", "hidden")
+      jsStatus.css("visibility", "hidden")
       spinner.css("display", "block")
     }
   });
@@ -49,7 +50,7 @@ $(() => {
 
   fileSelect.on("change", function (e) {
     e.preventDefault();
-    resetJsStatus();
+    resetIcons();
     const file = fileSelect.prop("files")[0];
     if (file) {
       progressBar.css('width', `0%`);
@@ -69,7 +70,7 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        progressContainer.css("visibility", "visible")
+        jsStatus.css("visibility", "visible")
         spinner.css("display", "none")
         check.css("display", "block")
         window.parent.postMessage({
