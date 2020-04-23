@@ -28,7 +28,7 @@ $(() => {
       progressBar.css('width', `${parseInt(percentageCompletion)}%`);
       progressBarText.text(`${percentageCompletion}%`);
       if (percentageCompletion === 100) {
-        spinner.css("visibility", "block")
+        spinner.css("visibility", "visible")
       }
     });
   }
@@ -73,7 +73,7 @@ $(() => {
       .then(res => {
         socket.off("progress")
         spinner.css("visibility", "hidden")
-        check.css("visibility", "block")
+        check.css("visibility", "visible")
         window.parent.postMessage({
           "type": "upload",
           "data": {
