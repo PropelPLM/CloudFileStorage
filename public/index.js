@@ -57,11 +57,10 @@ $(() => {
       fileName.text(file.name);
       progressContainer.css("visibility", "visible")
       uploadFile(file);
-      resetJsStatus();
     } else {
-      progressContainer.css("visibility", "hidden")
       fileName.text("");
     }
+    progressContiner.css("visibility", "hidden")
   });
 
   const uploadFile = fileData => {
