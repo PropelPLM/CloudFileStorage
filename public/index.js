@@ -12,6 +12,7 @@ $(() => {
   const resetIcons = () => {
     check.css("visibility", "hidden")
     spinner.css("visibility", "hidden")
+    $("#js-status").css("display", "block")
   }
   resetIcons();
 
