@@ -22,13 +22,6 @@ $(() => {
       "status": "LIGHTNING",
       }
     }, "https://clin-dev-ed.lightning.force.com");
-  
-    const test2 = () => window.parent.postMessage({
-      "type": "upload",
-      "data": {
-        "status": "regexVISUAL",
-        }
-      }, /https:.*\.visualforce\.com/);
 
       const test3 = () => window.parent.postMessage({
         "type": "upload",
@@ -42,13 +35,11 @@ $(() => {
           "data": {
             "status": ".?regexVISUAL",
             }
-          }, /https:.?*\.visualforce\.com/);
+          }, /https?:(.?)*\.visualforce\.com/);
   test();
-  test2();
   test3();
   test4()
   test();
-  test2();
   test3()
   test4()
 
