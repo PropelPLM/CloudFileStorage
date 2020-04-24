@@ -97,17 +97,28 @@ async function uploadFile(auth, options) {
       fields: "id, name, webViewLink, mimeType, fileExtension, webContentLink"
     });
     const sfObject = await create(file.data);
-    const response = {
-      status: parseInt(file.status),
-      data: {
-        ...file.data,
-        sfId: sfObject.id,
-      }
-    };
-    return sendSuccessResponse(response, "[GOOGLEDRIVE.UPLOADFILE]");
+    const id = sfObject.id;
+    const revisionAttached = sfObject.Item_Revision__c;
+    console.log("id:");
+    console.log(id);
+    console.log("revisionAttached:");
+    console.log(revisionAttached);
+      response = {
+        status: parseInt(file.status),
+        data: {
+          ...file.data,
+          sfId: sfObject.id,
+        }
+      };
+    sendSuccessResponse(response, "[GOOGLEDRIVE.UPLOADFILE]");
+    return response;
   } catch (err) {
     return sendErrorResponse(err, "[GOOGLEDRIVE.UPLOADFILE]");
   }
+}
+
+function registerSalesforceUrl(url) {
+  io.emit('targetWindow', url);
 }
 
 function sendSuccessResponse(response, functionName) {
@@ -129,6 +140,7 @@ module.exports = {
   authorize,
   createAuthUrl,
   getTokens,
+  registerSalesforceUrl,
   updateDestinationFolderId,
   uploadFile
 };

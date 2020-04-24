@@ -4,7 +4,7 @@ var namespace;
 var revisionId;
 
 async function connect(sessionId, salesforceUrl) {
-  console.log(salesforceUrl)
+  console.log(salesforceUrl) // THIS WILL BE REUSED FOR POSTMESSAGING
   try {
     connection = new jsConnect.Connection({
       instanceUrl: salesforceUrl,
@@ -80,10 +80,6 @@ function addNamespace(customObject) {
   return customObject;
 }
 
-function sendErrorResponse(error, functionName) {
-  console.log(`${functionName} has failed due to error: ${error}.`);
-  return error;
-}
 
 module.exports = {
   connect,

@@ -5,11 +5,13 @@ const util = require("util");
 const multer = require("multer");
 const cors = require("cors");
 const path = require("path");
-const { connect, updateRevId } = require("./lib/JsForce.js");
+
 
 const app = express();
 module.exports = server = require('http').createServer(app);
 const port = process.env.PORT || 5000;
+
+const JsForce = require("./lib/JsForce.js");
 const GoogleDrive = require("./lib/GoogleDrive.js");
 
 app.use(express.json());
@@ -22,7 +24,8 @@ app.get("/", (req, res) => {
 
 app.post("/auth", async (req, res) => {
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
-  await connect(sessionId, salesforceUrl);
+  GoogleDrive.registerSalesforceUrl(salesforceUrl);
+  await JsForce.connect(sessionId, salesforceUrl);
   if (clientId && clientSecret) {
     const credentials = {clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google`}; //google can be swapped out
     res.status(200).send(
@@ -46,7 +49,7 @@ var tokensFromCredentials;
 
 app.post("/uploadDetails", async (req, res) => {
   ({ revId, destinationFolderId } = req.body);
-  updateRevId(revId);
+  JsForce.updateRevId(revId);
   GoogleDrive.updateDestinationFolderId(destinationFolderId);
   sendSuccessResponse({ revId }, '[ENDPOINT.UPLOADDETAILS]')
   res.status(200).send({ revId })
@@ -71,8 +74,8 @@ app.post("/token", async (req, res) => {
       token_type: "Bearer",
       expiry_date
     };
-
-    await connect(sessionId, salesforceUrl);
+    GoogleDrive.registerSalesforceUrl(salesforceUrl);
+    await JsForce.connect(sessionId, salesforceUrl);
     sendSuccessResponse(tokensFromCredentials, "[ENDPOINT.TOKEN]");
     res.status(200).send(tokensFromCredentials);
   } catch (err) {
