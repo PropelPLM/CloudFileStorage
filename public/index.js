@@ -65,6 +65,7 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
+        console.log(res);
         socket.off("progress")
         spinner.css("visibility", "hidden")
         check.css("visibility", "visible")
