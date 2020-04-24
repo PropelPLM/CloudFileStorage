@@ -56,13 +56,13 @@ async function create(file) {
     "Item_Revision__c": revisionId
   };
 
-  return connection
+  const a = await connection
       .sobject(`${namespace}__Document__c`)
       .create({
         Name: name,
         ...addNamespace(newAttachment)
       })
-
+  return {...a, revisionId}
   // if (revisionId) {
   //   return connection
   //     .sobject(`${namespace}__Document__c`)
