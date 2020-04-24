@@ -20,7 +20,7 @@ $(() => {
 
   //SOCKET IO HELPERS
   const socket = io();
-  socket.on('targetWindow', url => {
+  socket.on('targetWindow', ({url}) => {
     console.log('socket io targetWindow')
     console.log(url)
     targetWindow = url

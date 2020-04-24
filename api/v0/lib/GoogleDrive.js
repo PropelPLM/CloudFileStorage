@@ -74,7 +74,6 @@ async function uploadFile(auth, options) {
     var stat = fs.statSync(`./${options.fileName}`);
     var str = progress({ length: stat.size, time: 20 });
     str.on("progress", p => {
-      console.log(`[UPLOAD-PROGRESS] percentage completion: ${p.percentage}`);
       io.emit('progress', p);
     });
     let fileStream = new Transform({
@@ -118,7 +117,9 @@ async function uploadFile(auth, options) {
 }
 
 function registerSalesforceUrl(url) {
-  io.emit('targetWindow', url);
+  console.log('targetWindow in registersf')
+  console.log(url)
+  io.emit('targetWindow', { url });
 }
 
 function sendSuccessResponse(response, functionName) {
