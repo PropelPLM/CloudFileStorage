@@ -26,13 +26,31 @@ $(() => {
     const test2 = () => window.parent.postMessage({
       "type": "upload",
       "data": {
-        "status": "VISUAL",
+        "status": "regexVISUAL",
         }
-      }, /https:*.visualforce.com/);
+      }, /https:.*\.visualforce\.com/);
+
+      const test3 = () => window.parent.postMessage({
+        "type": "upload",
+        "data": {
+          "status": "WELLDONE",
+          }
+        }, "https://clin-dev-ed--plmlaw.visualforce.com");
+
+        const test4 = () => window.parent.postMessage({
+          "type": "upload",
+          "data": {
+            "status": ".?regexVISUAL",
+            }
+          }, /https:.?*\.visualforce\.com/);
   test();
   test2();
+  test3();
+  test4()
   test();
   test2();
+  test3()
+  test4()
 
   const socket = io();
   socket.on('authComplete', ()=> {
