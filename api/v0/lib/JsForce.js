@@ -45,27 +45,26 @@ async function setup() {
 }
 
 async function create(file) {
-  try {
-    console.log(revisionId);
-    ({ name, webViewLink, id, fileExtension, webContentLink } = file);
-    const newAttachment = {
-      "Item_Revision__c": revisionId,
-      "External_Attachment_URL__c": webViewLink,
-      "File_Extension__c": fileExtension,
-      "Google_File_Id__c": id,
-      "External_Attachment_Download_URL__c": webContentLink,
-      "Content_Location__c": 'E'
-    };
-    
+  console.log('revisionId', revisionId);
+  ({ name, webViewLink, id, fileExtension, webContentLink } = file);
+  const newAttachment = {
+    "External_Attachment_URL__c": webViewLink,
+    "File_Extension__c": fileExtension,
+    "Google_File_Id__c": id,
+    "External_Attachment_Download_URL__c": webContentLink,
+    "Content_Location__c": 'E'
+  };
+  if (revisionId) {
+    newAttachment["Item_Revision__c"] = revisionId
+
     return connection
     .sobject(`${namespace}__Document__c`)
     .create({
       Name: name,
       ...addNamespace(newAttachment)
     })
-  } catch (err) {
-    sendErrorResponse(err, "[JSFORCE.CREATE]");
   }
+  return addNamespace(newAttachment)
 }
 
 function addNamespace(customObject) {
