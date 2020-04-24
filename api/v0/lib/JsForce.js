@@ -4,6 +4,7 @@ var namespace;
 var revisionId;
 
 async function connect(sessionId, salesforceUrl) {
+  console.log(salesforceUrl)
   try {
     connection = new jsConnect.Connection({
       instanceUrl: salesforceUrl,
