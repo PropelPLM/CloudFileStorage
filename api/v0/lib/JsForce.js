@@ -44,7 +44,7 @@ async function setup() {
   })
 }
 
-function create(file) {
+async function create(file) {
   try {
     console.log(revisionId)
     ({ name, webViewLink, id, fileExtension, webContentLink } = file);
@@ -64,7 +64,7 @@ function create(file) {
       ...addNamespace(newAttachment)
     })
   } catch (err) {
-    return sendErrorResponse(err, "[JSFORCE.CREATE]");
+    sendErrorResponse(err, "[JSFORCE.CREATE]");
   }
 }
 
