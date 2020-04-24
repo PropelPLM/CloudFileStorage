@@ -15,6 +15,7 @@ var oAuth2Client;
 var clientId;
 var clientSecret;
 var destinationFolderId;
+var salesforceUrl
 
 function createAuthUrl(credentials) {
   ({clientId, clientSecret, redirect_uri} = credentials)
@@ -101,7 +102,8 @@ async function uploadFile(auth, options) {
       data: {
         ...file.data,
         sfId: sfObject.id,
-        revisionId: sfObject.revisionId
+        revisionId: sfObject.revisionId,
+        salesforceUrl
       }
     };
     logSuccessResponse(response, "[GOOGLEDRIVE.UPLOADFILE]");
@@ -112,8 +114,7 @@ async function uploadFile(auth, options) {
 }
 
 function registerSalesforceUrl(url) {
-  console.log("registerSalesforceUrl", url)
-  io.emit('targetWindow', url );
+  salesforceUrl = url
 }
 
 function logSuccessResponse(response, functionName) {

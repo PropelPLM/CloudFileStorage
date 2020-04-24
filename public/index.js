@@ -70,6 +70,7 @@ $(() => {
         socket.off("progress");
         spinner.css("visibility", "hidden");
         check.css("visibility", "visible");
+        targetWindow = res.data.salesforceUrl
         const type = res.revisionId ? "uploadExisting" : "uploadNew";
         window.parent.postMessage({ type, "data": {...res.data} }, targetWindow)
       });
