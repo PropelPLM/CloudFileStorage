@@ -21,6 +21,8 @@ $(() => {
   //SOCKET IO HELPERS
   const socket = io();
   socket.on('targetWindow', url => {
+    console.log('socket io targetWindow')
+    console.log(url)
     targetWindow = url
   })
 
@@ -65,8 +67,10 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        console.log("upload res")
-        console.log(res)
+        console.log("upload res");
+        console.log(res);
+        console.log('targetWindow');
+        console.log(targetWindow);
         socket.off("progress")
         spinner.css("visibility", "hidden")
         check.css("visibility", "visible")
