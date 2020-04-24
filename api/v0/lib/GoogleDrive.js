@@ -96,10 +96,6 @@ async function uploadFile(auth, options) {
       fields: "id, name, webViewLink, mimeType, fileExtension, webContentLink"
     });
     const sfObject = await create(file.data);
-    console.log('printing key')
-    for (key in Object.keys(sfObject)) {
-      console.log(key);
-    }
     const id = sfObject.id;
     const revisionAttached = sfObject.Item_Revision__c;
       response = {

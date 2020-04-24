@@ -59,12 +59,14 @@ async function create(file) {
     newAttachment["Item_Revision__c"] = revisionId
   }
 
-  return connection
+  const a = connection
     .sobject(`${namespace}__Document__c`)
     .create({
       Name: name,
       ...addNamespace(newAttachment)
     })
+  console.log(a);
+  return a;
 }
 
 function addNamespace(customObject) {
