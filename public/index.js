@@ -21,7 +21,7 @@ $(() => {
   //SOCKET IO HELPERS
   const socket = io();
   socket.on('targetWindow', ({url}) => {
-    targetWindow = url
+    targetWindow = url;
   })
 
   socket.on('authComplete', ()=> {
@@ -65,11 +65,11 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        console.log(targetWindow)
-        socket.off("progress")
-        spinner.css("visibility", "hidden")
-        check.css("visibility", "visible")
-        const type = res.revisionId ? "uploadExisting" : "uploadNew"
+        console.log('targetWindow', targetWindow);
+        socket.off("progress");
+        spinner.css("visibility", "hidden");
+        check.css("visibility", "visible");
+        const type = res.revisionId ? "uploadExisting" : "uploadNew";
         window.parent.postMessage({ type, "data": {...res.data} }, targetWindow)
       });
   };
