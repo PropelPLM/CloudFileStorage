@@ -95,11 +95,8 @@ async function uploadFile(auth, options) {
       supportsAllDrives: true,
       fields: "id, name, webViewLink, mimeType, fileExtension, webContentLink"
     });
-    console.log(11);
     const sfObject = await create(file.data);
-    const id = sfObject.id;
-    console.log(12);
-    response = {
+    const response = {
       status: parseInt(file.status),
       data: {
         ...file.data,
@@ -107,7 +104,6 @@ async function uploadFile(auth, options) {
         revisionId: sfObject.revisionId
       }
     };
-    console.log(13);
     logSuccessResponse(response, "[GOOGLEDRIVE.UPLOADFILE]");
     return response;
   } catch (err) {

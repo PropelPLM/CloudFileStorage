@@ -68,15 +68,8 @@ $(() => {
         socket.off("progress")
         spinner.css("visibility", "hidden")
         check.css("visibility", "visible")
-
         const type = res.revisionId ? "uploadExisting" : "uploadNew"
-        window.parent.postMessage({
-          type,
-          "data": {
-            "status": res.status,
-            "sfId": res.data.sfId
-            }
-          }, targetWindow)
-      })
+        window.parent.postMessage({ type, "data": {...res} }, targetWindow)
+      });
   };
 });
