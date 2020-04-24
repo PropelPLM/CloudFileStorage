@@ -2,114 +2,64 @@ $(() => {
   $(window).scrollTop($(window).height() / 2);
   $(window).scrollLeft($(window).width() / 2);
   const fileName = $("#file-name");
-  const tooltipWrapper = $("#tooltip-wrapper");
-  const tooltip = $("#tooltip");
   const fileSelect = $("#file-select");
-  const uploadConfirm = $("#upload-confirm");
-  const status = $("#status");
-  const details = $("#details");
   const dropzone = $("#dropzone");
+  const progressContainer = $("#progress-container");
   const progressBar = $("#progress-bar");
   const progressBarText = $("#progress-bar-text");
+  const spinner =  $("#spinner")
+  const check =  $("#check")
+  const resetIcons = () => {
+    check.css("visibility", "hidden")
+    spinner.css("visibility", "hidden")
+    $("#js-status").css("display", "block")
+  }
+  resetIcons();
 
-  const dropFilesDefaultText = "Or drop files here!";
   const socket = io();
-
   socket.on('authComplete', ()=> {
     window.parent.postMessage({
       "type": "authComplete",
     }, '*')
   })
 
-  socket.on('progress', progress => {
-    const percentageCompletion = parseInt(progress.percentage);
-    progressBar.css('width', `${parseInt(percentageCompletion)}%`);
-    progressBarText.text(`${percentageCompletion}%`);
-  });
-
-  socket.on('test', p => {
-    progressBar.css('width', `${parseInt(p)}%`);
-    progressBarText.text(`${p}% Complete`);
-  });
-
-  [
-    "drag",
-    "dragstart",
-    "dragend",
-    "dragover",
-    "dragenter",
-    "dragleave",
-    "drop"
-  ].forEach(function (event) {
-    dropzone.on(event, function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    });
-  });
-
-  fileName.hover(
-    function () {
-      tooltipWrapper.css("visibility", "visible");
-    },
-    function () {
-      tooltipWrapper.css("visibility", "hidden");
-    }
-  );
-
   fileSelect.on("change", function (e) {
     e.preventDefault();
-    var inputFileName = String.raw`${$(this).val()}`;
-    if (inputFileName) {
-      uploadConfirm.prop('disabled', false);
-      uploadConfirm.removeClass('isDisabled');
+    resetIcons();
+    const file = fileSelect.prop("files")[0];
+    if (file) {
+      progressBar.css('width', `0%`);
+      progressBarText.text(`0%`);
+      fileName.text(file.name);
+      progressContainer.css("visibility", "visible")
+      uploadFile(file);
     } else {
-      uploadConfirm.prop('disabled', true);
-      uploadConfirm.addClass('isDisabled');
+      fileName.text("");
+      progressContainer.css("visibility", "hidden")
     }
-    progressBar.css('width', `0%`);
-    progressBarText.text(`0% Complete`);
-    reflectNameChange(inputFileName);
   });
 
-  dropzone.on("drop", e => {
-    var files = e.target.files;
-    if (!files || files.length === 0)
-      files = e.dataTransfer
-        ? e.dataTransfer.files
-        : e.originalEvent.dataTransfer.files;
-    reflectNameChange(files[0].name);
-    fileSelect.prop("files", files);
-  });
-
-  uploadConfirm.click(event => {
-    event.preventDefault();
-    uploadFile(fileSelect.prop("files")[0]);
-  });
-
-  const reflectNameChange = async inputFileName => {
-    if (!inputFileName) {
-      inputFileName = dropFilesDefaultText;
-    } else {
-      if (inputFileName.lastIndexOf("/") + 1 !== 0) {
-        inputFileName = inputFileName.substr(
-          inputFileName.lastIndexOf("/") + 1
-        );
-      } else {
-        inputFileName = inputFileName.substr(
-          inputFileName.lastIndexOf("\\") + 1
-        );
+  const trackProgress = async () => {
+    await socket.on('progress', progress => {
+      const percentageCompletion = parseInt(progress.percentage);
+      progressBar.css('width', `${parseInt(percentageCompletion)}%`);
+      progressBarText.text(`${percentageCompletion}%`);
+      if (percentageCompletion === 100) {
+        spinner.css("visibility", "visible")
       }
-    }
-    fileName.text(inputFileName);
-    tooltip.text(inputFileName);
-  };
+    });
+  }
 
-  const uploadFile = fileData => {
+  const uploadFile = async fileData => {
     var data = new FormData();
     data.append("file", fileData);
+    await trackProgress();
     axios
       .post(`/upload`, data)
       .then(res => {
+        socket.off("progress")
+        spinner.css("visibility", "hidden")
+        check.css("visibility", "visible")
         window.parent.postMessage({
           "type": "upload",
           "data": {

@@ -21,7 +21,6 @@ function updateRevId(revId) {
 
 async function sendTokens(tokens) {
   const newSetting = {
-    "Platform__c": "GoogleDrive",
     "Access_Token__c": tokens.access_token,
     "Refresh_Token__c": tokens.refresh_token,
     "Expiry_Date__c": tokens.expiry_date,
@@ -32,7 +31,7 @@ async function sendTokens(tokens) {
     .sobject(`${namespace}__Cloud_Storage__c`)
     .upsert({
       ...addNamespace(newSetting)
-    }, `${namespace}__Platform__c`)
+    }, `${namespace}__Client_Id__c`)
 }
 
 async function setup() {
@@ -46,22 +45,26 @@ async function setup() {
 }
 
 function create(file) {
-  ({ name, webViewLink, id, fileExtension, webContentLink } = file);
-  const newAttachment = {
-    "Item_Revision__c": revisionId,
-    "External_Attachment_URL__c": webViewLink,
-    "File_Extension__c": fileExtension,
-    "Google_File_Id__c": id,
-    "External_Attachment_Download_URL__c": webContentLink,
-    "Content_Location__c": 'E'
-  };
-
-  return connection
+  try {
+    ({ name, webViewLink, id, fileExtension, webContentLink } = file);
+    const newAttachment = {
+      "Item_Revision__c": revisionId,
+      "External_Attachment_URL__c": webViewLink,
+      "File_Extension__c": fileExtension,
+      "Google_File_Id__c": id,
+      "External_Attachment_Download_URL__c": webContentLink,
+      "Content_Location__c": 'E'
+    };
+    
+    return connection
     .sobject(`${namespace}__Document__c`)
     .create({
       Name: name,
       ...addNamespace(newAttachment)
     })
+  } catch (err) {
+    return sendErrorResponse(err, "[JSFORCE.CREATE]");
+  }
 }
 
 function addNamespace(customObject) {
@@ -74,6 +77,11 @@ function addNamespace(customObject) {
     delete customObject[key]
   }
   return customObject;
+}
+
+function sendErrorResponse(error, functionName) {
+  console.log(`${functionName} has failed due to error: ${error}.`);
+  return error;
 }
 
 module.exports = {
