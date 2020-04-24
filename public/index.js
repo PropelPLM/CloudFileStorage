@@ -65,12 +65,12 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        console.log(res);
+        console.log(targetWindow)
         socket.off("progress")
         spinner.css("visibility", "hidden")
         check.css("visibility", "visible")
         const type = res.revisionId ? "uploadExisting" : "uploadNew"
-        window.parent.postMessage({ "type": type, "data": {...res.data} }, targetWindow)
+        window.parent.postMessage({ type, "data": {...res.data} }, targetWindow)
       });
   };
 });
