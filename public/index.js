@@ -20,7 +20,7 @@ $(() => {
 
   //SOCKET IO HELPERS
   const socket = io();
-  
+
   // socket.on('targetWindow', (url) => {
   //   console.log('socket io url', url)
   //   targetWindow = url;
@@ -72,7 +72,7 @@ $(() => {
         check.css("visibility", "visible");
         targetWindow = res.data.salesforceUrl
         const type = res.revisionId ? "uploadExisting" : "uploadNew";
-        window.parent.postMessage({ type, "data": {...res.data} }, targetWindow)
+        window.parent.postMessage({ type, ...res.data }, targetWindow)
       });
   };
 });
