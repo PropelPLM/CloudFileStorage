@@ -59,7 +59,7 @@ async function create(file) {
     newAttachment["Item_Revision__c"] = revisionId
   }
 
-  const a = connection
+  const a = await connection
     .sobject(`${namespace}__Document__c`)
     .create({
       Name: name,
