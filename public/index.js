@@ -68,8 +68,10 @@ $(() => {
         socket.off("progress")
         spinner.css("visibility", "hidden")
         check.css("visibility", "visible")
+
+        const type = res.revisionId ? "uploadExisting" : "uploadNew"
         window.parent.postMessage({
-          "type": "upload",
+          type,
           "data": {
             "status": res.status,
             "sfId": res.data.sfId

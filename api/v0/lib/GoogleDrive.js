@@ -97,18 +97,18 @@ async function uploadFile(auth, options) {
     });
     const sfObject = await create(file.data);
     const id = sfObject.id;
-    const revisionAttached = sfObject.Item_Revision__c;
-      response = {
-        status: parseInt(file.status),
-        data: {
-          ...file.data,
-          sfId: sfObject.id,
-        }
-      };
-    sendSuccessResponse(response, "[GOOGLEDRIVE.UPLOADFILE]");
+    response = {
+      status: parseInt(file.status),
+      data: {
+        ...file.data,
+        sfId: sfObject.id,
+        revisionId: sfObject.revisionId
+      }
+    };
+    logSuccessResponse(response, "[GOOGLEDRIVE.UPLOADFILE]");
     return response;
   } catch (err) {
-    return sendErrorResponse(err, "[GOOGLEDRIVE.UPLOADFILE]");
+    return logErrorResponse(err, "[GOOGLEDRIVE.UPLOADFILE]");
   }
 }
 
@@ -116,14 +116,14 @@ function registerSalesforceUrl(url) {
   io.emit('targetWindow', { url });
 }
 
-function sendSuccessResponse(response, functionName) {
+function logSuccessResponse(response, functionName) {
   console.log(
     `${functionName} has succeeded with response: ${JSON.stringify(response)}.`
   );
   return response;
 }
 
-function sendErrorResponse(error, functionName) {
+function logErrorResponse(error, functionName) {
   console.log(
     `${functionName} has failed due to error: ${JSON.stringify(error)}.`
   );

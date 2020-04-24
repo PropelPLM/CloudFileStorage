@@ -51,7 +51,7 @@ app.post("/uploadDetails", async (req, res) => {
   ({ revId, destinationFolderId } = req.body);
   JsForce.updateRevId(revId);
   GoogleDrive.updateDestinationFolderId(destinationFolderId);
-  sendSuccessResponse({ revId }, '[ENDPOINT.UPLOADDETAILS]')
+  logSuccessResponse({ revId }, '[ENDPOINT.UPLOADDETAILS]')
   res.status(200).send({ revId })
 });
 
@@ -76,10 +76,10 @@ app.post("/token", async (req, res) => {
     };
     GoogleDrive.registerSalesforceUrl(salesforceUrl);
     await JsForce.connect(sessionId, salesforceUrl);
-    sendSuccessResponse(tokensFromCredentials, "[ENDPOINT.TOKEN]");
+    logSuccessResponse(tokensFromCredentials, "[ENDPOINT.TOKEN]");
     res.status(200).send(tokensFromCredentials);
   } catch (err) {
-    sendErrorResponse(err, "[ENDPOINT.TOKEN]");
+    logErrorResponse(err, "[ENDPOINT.TOKEN]");
     res.send(`Failed to receive tokens: ${err}`);
   }
 });
@@ -127,7 +127,7 @@ server.listen(port, () => {
   console.log("Endpoints ready.");
 });
 
-function sendSuccessResponse(response, functionName) {
+function logSuccessResponse(response, functionName) {
   const logEnding =
     Object.entries(response).length === 0 && response.constructor === Object
       ? ""
@@ -136,7 +136,7 @@ function sendSuccessResponse(response, functionName) {
   return response;
 }
 
-function sendErrorResponse(error, functionName) {
+function logErrorResponse(error, functionName) {
   console.log(`${functionName} has failed due to error: ${error}.`);
   return error;
 }

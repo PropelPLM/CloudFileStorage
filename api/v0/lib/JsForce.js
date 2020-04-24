@@ -4,7 +4,6 @@ var namespace;
 var revisionId;
 
 async function connect(sessionId, salesforceUrl) {
-  console.log(salesforceUrl) // THIS WILL BE REUSED FOR POSTMESSAGING
   try {
     connection = new jsConnect.Connection({
       instanceUrl: salesforceUrl,
@@ -46,27 +45,34 @@ async function setup() {
 }
 
 async function create(file) {
-  console.log('revisionId', revisionId);
+  console.log(revisionId)
   ({ name, webViewLink, id, fileExtension, webContentLink } = file);
   const newAttachment = {
     "External_Attachment_URL__c": webViewLink,
     "File_Extension__c": fileExtension,
     "Google_File_Id__c": id,
     "External_Attachment_Download_URL__c": webContentLink,
-    "Content_Location__c": 'E'
+    "Content_Location__c": 'E',
+    "Item_Revision__c": revisionId
   };
-  if (revisionId) {
-    newAttachment["Item_Revision__c"] = revisionId
-  }
 
-  const a = await connection
-    .sobject(`${namespace}__Document__c`)
-    .create({
-      Name: name,
-      ...addNamespace(newAttachment)
-    })
-  console.log(a);
-  return a;
+  return connection
+      .sobject(`${namespace}__Document__c`)
+      .create({
+        Name: name,
+        ...addNamespace(newAttachment)
+      })
+
+  // if (revisionId) {
+  //   return connection
+  //     .sobject(`${namespace}__Document__c`)
+  //     .create({
+  //       Name: name,
+  //       ...addNamespace(newAttachment)
+  //     })
+  //   };
+  //   return { ...sObject, revisionId }
+
 }
 
 function addNamespace(customObject) {
@@ -80,7 +86,6 @@ function addNamespace(customObject) {
   }
   return customObject;
 }
-
 
 module.exports = {
   connect,
