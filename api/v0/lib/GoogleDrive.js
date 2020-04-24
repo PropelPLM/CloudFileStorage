@@ -96,12 +96,12 @@ async function uploadFile(auth, options) {
       fields: "id, name, webViewLink, mimeType, fileExtension, webContentLink"
     });
     const sfObject = await create(file.data);
+    console.log('printing key')
+    for (key in Object.keys(sfObject)) {
+      console.log(key);
+    }
     const id = sfObject.id;
     const revisionAttached = sfObject.Item_Revision__c;
-    console.log("id:");
-    console.log(id);
-    console.log("revisionAttached:");
-    console.log(revisionAttached);
       response = {
         status: parseInt(file.status),
         data: {
@@ -117,8 +117,6 @@ async function uploadFile(auth, options) {
 }
 
 function registerSalesforceUrl(url) {
-  console.log('targetWindow in registersf')
-  console.log(url)
   io.emit('targetWindow', { url });
 }
 
