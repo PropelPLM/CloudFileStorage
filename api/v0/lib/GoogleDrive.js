@@ -85,14 +85,16 @@ async function uploadFile(auth, options) {
       }
     });
     console.log(2)
+    fs.createReadStream(`./${options.fileName}`)
+    .pipe(str)
+    .pipe(fileStream);
+    console.log(3)
     var media = {
       mimeType: options.mimeType,
       body: fileStream
     };
-    fs.createReadStream(`./${options.fileName}`)
-      .pipe(str)
-      .pipe(fileStream);
-      console.log(3)
+    console.log(4)
+    console.log(media)
     const file = await drive.files.create({
       resource: fileMetadata,
       media,
