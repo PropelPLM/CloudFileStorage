@@ -113,7 +113,7 @@ async function uploadFile(auth, options) {
 
 function registerSalesforceUrl(url) {
   console.log("registerSalesforceUrl", url)
-  io.emit('targetWindow', { url });
+  io.emit('targetWindow', url );
 }
 
 function logSuccessResponse(response, functionName) {
