@@ -19,17 +19,16 @@ $(() => {
   const test = () => window.parent.postMessage({
     "type": "upload",
     "data": {
-      "status": "WELLDONE",
+      "status": "LIGHTNING",
       }
     }, "https://clin-dev-ed.lightning.force.com");
   
     const test2 = () => window.parent.postMessage({
       "type": "upload",
       "data": {
-        "status": "WELLDONE",
+        "status": "VISUAL",
         }
-      }, "https://clin-dev-ed--plmlaw.visualforce.com");
-
+      }, /https:*.visualforce.com/);
   test();
   test2();
   test();
