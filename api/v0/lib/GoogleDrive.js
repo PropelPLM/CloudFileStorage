@@ -104,9 +104,9 @@ async function uploadFile(auth, options) {
         sfId: sfObject.id,
       }
     };
-    return sendSuccessResponse(response, "uploadFile");
+    return sendSuccessResponse(response, "[GOOGLEDRIVE.UPLOADFILE]");
   } catch (err) {
-    return sendErrorResponse(err, "uploadFile");
+    return sendErrorResponse(err, "[GOOGLEDRIVE.UPLOADFILE]");
   }
 }
 

@@ -48,7 +48,7 @@ app.post("/uploadDetails", async (req, res) => {
   ({ revId, destinationFolderId } = req.body);
   updateRevId(revId);
   GoogleDrive.updateDestinationFolderId(destinationFolderId);
-  sendSuccessResponse({ revId }, '/uploadDetails endpoint')
+  sendSuccessResponse({ revId }, '[ENDPOINT.UPLOADDETAILS]')
   res.status(200).send({ revId })
 });
 
@@ -73,10 +73,10 @@ app.post("/token", async (req, res) => {
     };
 
     await connect(sessionId, salesforceUrl);
-    sendSuccessResponse(tokensFromCredentials, "/tokens endpoint");
+    sendSuccessResponse(tokensFromCredentials, "[ENDPOINT.TOKEN]");
     res.status(200).send(tokensFromCredentials);
   } catch (err) {
-    sendErrorResponse(err, "/tokens endpoint");
+    sendErrorResponse(err, "[ENDPOINT.TOKEN]");
     res.send(`Failed to receive tokens: ${err}`);
   }
 });
