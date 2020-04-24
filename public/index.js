@@ -20,10 +20,11 @@ $(() => {
 
   //SOCKET IO HELPERS
   const socket = io();
-  socket.on('targetWindow', (url) => {
-    console.log('socket io url', url)
-    targetWindow = url;
-  })
+  
+  // socket.on('targetWindow', (url) => {
+  //   console.log('socket io url', url)
+  //   targetWindow = url;
+  // })
 
   socket.on('authComplete', ()=> {
     window.parent.postMessage({
@@ -66,7 +67,6 @@ $(() => {
     axios
       .post(`/upload`, data)
       .then(res => {
-        console.log('targetWindow', targetWindow);
         socket.off("progress");
         spinner.css("visibility", "hidden");
         check.css("visibility", "visible");
