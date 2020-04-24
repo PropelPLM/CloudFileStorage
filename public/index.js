@@ -15,6 +15,14 @@ $(() => {
     $("#js-status").css("display", "block")
   }
   resetIcons();
+
+  const test = () => window.parent.postMessage({
+    "type": "upload",
+    "data": {
+      "status": "WELLDONE",
+      }
+    }, "https://clin-dev-ed.lightning.force.com/lightning/r/PLMLAW__Item__c/a0X6g0000015uH3EAI/view");
+  
   test();
   test();
   test();
@@ -74,12 +82,4 @@ $(() => {
           }, '*')
       })
   };
-
-  const test = () => window.parent.postMessage({
-    "type": "upload",
-    "data": {
-      "status": "WELLDONE",
-      }
-    }, "https://clin-dev-ed.lightning.force.com/lightning/r/PLMLAW__Item__c/a0X6g0000015uH3EAI/view");
-  
 });
