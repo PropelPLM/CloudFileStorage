@@ -56,6 +56,7 @@ $(() => {
       fileName.text("");
       progressContainer.css("visibility", "hidden")
     }
+  });
 
   const uploadFile = async fileData => {
     var data = new FormData();
