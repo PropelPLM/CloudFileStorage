@@ -46,17 +46,17 @@ async function setup() {
 
 async function create(file) {
   console.log('revisionId', revisionId)
-  console.log(1)
+  console.log(1);
   ({ name, webViewLink, id, fileExtension, webContentLink } = file);
   const newAttachment = {
+    "Item_Revision__c": revisionId,
     "External_Attachment_URL__c": webViewLink,
     "File_Extension__c": fileExtension,
     "Google_File_Id__c": id,
     "External_Attachment_Download_URL__c": webContentLink,
-    "Content_Location__c": 'E',
-    "Item_Revision__c": revisionId
+    "Content_Location__c": 'E'
   };
-  console.log(2)
+  console.log(2);
 
   const a = await connection
       .sobject(`${namespace}__Document__c`)
@@ -64,7 +64,7 @@ async function create(file) {
         Name: name,
         ...addNamespace(newAttachment)
       })
-      console.log(3)
+      console.log(3);
   return {...a, revisionId}
   // if (revisionId) {
   //   return connection
