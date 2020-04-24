@@ -45,7 +45,8 @@ async function setup() {
 }
 
 async function create(file) {
-  console.log(revisionId)
+  console.log('revisionId', revisionId)
+  console.log(1)
   ({ name, webViewLink, id, fileExtension, webContentLink } = file);
   const newAttachment = {
     "External_Attachment_URL__c": webViewLink,
@@ -55,6 +56,7 @@ async function create(file) {
     "Content_Location__c": 'E',
     "Item_Revision__c": revisionId
   };
+  console.log(2)
 
   const a = await connection
       .sobject(`${namespace}__Document__c`)
@@ -62,6 +64,7 @@ async function create(file) {
         Name: name,
         ...addNamespace(newAttachment)
       })
+      console.log(3)
   return {...a, revisionId}
   // if (revisionId) {
   //   return connection
