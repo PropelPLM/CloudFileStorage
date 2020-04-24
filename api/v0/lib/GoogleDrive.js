@@ -94,7 +94,6 @@ async function uploadFile(auth, options) {
       body: fileStream
     };
     console.log(4)
-    console.log(media)
     const file = await drive.files.create({
       resource: fileMetadata,
       media,

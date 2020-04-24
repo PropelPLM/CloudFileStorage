@@ -46,7 +46,7 @@ async function setup() {
 
 async function create(file) {
   try {
-    console.log(revisionId)
+    console.log(revisionId);
     ({ name, webViewLink, id, fileExtension, webContentLink } = file);
     const newAttachment = {
       "Item_Revision__c": revisionId,
