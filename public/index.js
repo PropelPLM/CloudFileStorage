@@ -8,7 +8,7 @@ $(() => {
   const progressBarText = $("#progress-bar-text");
   const spinner =  $("#spinner")
   const check =  $("#check")
-  const targetWindow;
+  var targetWindow;
 
   // INIT
   const resetIcons = () => {
