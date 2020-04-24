@@ -21,13 +21,19 @@ $(() => {
     "data": {
       "status": "WELLDONE",
       }
-    }, "https://clin-dev-ed.lightning.force.com/lightning/r/PLMLAW__Item__c/a0X6g0000015uH3EAI/view");
+    }, "https://clin-dev-ed.lightning.force.com");
   
+    const test2 = () => window.parent.postMessage({
+      "type": "upload",
+      "data": {
+        "status": "WELLDONE",
+        }
+      }, "https://clin-dev-ed--plmlaw.visualforce.com");
+
   test();
+  test2();
   test();
-  test();
-  test();
-  test();
+  test2();
 
   const socket = io();
   socket.on('authComplete', ()=> {

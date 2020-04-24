@@ -77,32 +77,26 @@ async function uploadFile(auth, options) {
       console.log(`[UPLOAD-PROGRESS] percentage completion: ${p.percentage}`);
       io.emit('progress', p);
     });
-    console.log(1)
     let fileStream = new Transform({
       transform(chunk, encoding, callback) {
         this.push(chunk);
         callback();
       }
     });
-    console.log(2)
     fs.createReadStream(`./${options.fileName}`)
     .pipe(str)
     .pipe(fileStream);
-    console.log(3)
     var media = {
       mimeType: options.mimeType,
       body: fileStream
     };
-    console.log(4)
     const file = await drive.files.create({
       resource: fileMetadata,
       media,
       supportsAllDrives: true,
       fields: "id, name, webViewLink, mimeType, fileExtension, webContentLink"
     });
-    console.log(4)
     const sfObject = await create(file.data);
-    console.log(5)
     const response = {
       status: parseInt(file.status),
       data: {
