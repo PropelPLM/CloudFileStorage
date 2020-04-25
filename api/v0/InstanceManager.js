@@ -12,7 +12,9 @@ const instanceMap = {}
 const debug = () => {
     console.log('debug');
     Object.entries(instanceMap).forEach(([key, value]) => {
+        console.log('key');
         console.log(key);
+        console.log('value');
         console.log(value);
     })
 }
