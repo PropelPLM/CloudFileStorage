@@ -27,8 +27,7 @@ app.post("/auth", async (req, res) => {
   let sessionId, salesforceUrl, clientId, clientSecret;
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
-  // const instanceKey = InstanceManager.start(sessionId);
-  const instanceKey = InstanceManager.start("instanceKey");
+  const instanceKey = InstanceManager.start(sessionId);
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   InstanceManager.add(instanceKey, instanceDetails);
   console.log("instanceKey", instanceKey);
