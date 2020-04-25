@@ -40,7 +40,7 @@ module.exports = {
         // debug();
     },
 
-    get: (instanceKey, ...detailKeys) => {
+    get: (instanceKey, detailKeys) => {
         // debug();
         const requestedDetails = {};
         detailKeys.forEach(key => {
