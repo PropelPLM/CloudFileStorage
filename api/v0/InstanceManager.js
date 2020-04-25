@@ -9,6 +9,13 @@ const _ = require("lodash");
  */
 
 const instanceMap = {}
+const debug = () => {
+    console.log('debug');
+    Object.entries(instanceMap).forEach(([key, value]) => {
+        console.log(key);
+        console.log(value);
+    })
+}
 
 module.exports = {
     start: (sessionId) => {
@@ -28,6 +35,7 @@ module.exports = {
         Object.entries(keyValuePairs).forEach(([key, value]) => {
             instanceMap[instanceKey][key] = _.cloneDeep(value);
         })
+        debug();
     },
 
     get: (instanceKey, ...detailKeys) => {
