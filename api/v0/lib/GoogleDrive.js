@@ -32,6 +32,8 @@ function createAuthUrl(credentials, instanceKey) {
 
 async function getTokens(code, instanceKey) {
   let clientId, clientSecret, oAuth2Client;
+  console.log('origKey', origKey)
+  console.log('instanceKey', instanceKey)
   console.log("equivalence", instanceKey === origKey);
   ({ clientId, clientSecret, oAuth2Client } = InstanceManager.get(instanceKey, ["clientId", "clientSecret", "oAuth2Client"]));
   console.log("oAuth2Client", oAuth2Client);
