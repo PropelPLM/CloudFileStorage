@@ -34,7 +34,8 @@ async function getTokens(code, instanceKey) {
   let clientId, clientSecret, oAuth2Client;
   console.log('origKey', origKey)
   console.log('instanceKey', instanceKey)
-  console.log("equivalence", instanceKey === origKey);
+  console.log("2equivalence", instanceKey == origKey);
+  console.log("3equivalence", instanceKey === origKey);
   ({ clientId, clientSecret, oAuth2Client } = InstanceManager.get(instanceKey, ["clientId", "clientSecret", "oAuth2Client"]));
   console.log("oAuth2Client", oAuth2Client);
   oAuth2Client.getToken(code, (err, token) => {
