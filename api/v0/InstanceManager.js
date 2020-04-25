@@ -9,22 +9,20 @@
 
 const instanceMap = {}
 
-const keyCleaner = (key) => {
-    if (key.search(".") === -1) {
-        return key;
-    }
-    return keyCleaner(key.replace(".",""));
+const cleanKey = (key) => {
+    return key.replaceAll(".", "");
 }
+
 module.exports = {
     start: (sessionId) => {
-        const instanceKey = keyCleaner(sessionId);
+        const instanceKey = cleanKey(sessionId);
         instanceMap[instanceKey] = {};
         return instanceKey;
     },
 
     startWithRevId: (sessionId, revisionId) => {
         let instanceKey = sessionId + revisionId;
-        instanceKey = keyCleaner(instanceKey);
+        instanceKey = cleanKey(instanceKey);
         instanceMap[instanceKey] = {};
         return instanceKey;
     },
