@@ -37,10 +37,11 @@ module.exports = {
         Object.entries(keyValuePairs).forEach(([key, value]) => {
             instanceMap[instanceKey][key] = _.cloneDeep(value);
         })
-        debug();
+        // debug();
     },
 
     get: (instanceKey, ...detailKeys) => {
+        debug();
         const requestedDetails = {};
         detailKeys.forEach(key => requestedDetails[key] = instanceMap[instanceKey][key]);
         return requestedDetails;
