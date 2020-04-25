@@ -21,7 +21,9 @@ async function createAuthUrl(credentials, instanceKey) {
   
   origKey = instanceKey;
   const oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
+  console.log('creating')
   await InstanceManager.add(instanceKey, { oAuth2Client });
+  console.log('created')
   return oAuth2Client.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
