@@ -73,7 +73,7 @@ async function create(file, instanceKey) {
 function addNamespace(customObject, instanceKey) {
   let namespace;
   ({ namespace } = InstanceManager.get(instanceKey, ["namespace"]));
-  for (key in customObject) {
+  for (const key in customObject) {
     Object.defineProperty(
       customObject,
       `${namespace}__${key}`,
