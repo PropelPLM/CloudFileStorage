@@ -42,7 +42,7 @@ async function setupNamespace(instanceKey) {
 
   connection.query(
     "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'CloudStorageService' LIMIT 1"
-  ).then(res => {
+  ).then(async res => {
     const namespace = res.records[0].NamespacePrefix;
     await InstanceManager.add(instanceKey, "namespace", namespace);
   }).catch(err => {
