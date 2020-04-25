@@ -47,11 +47,10 @@ module.exports = {
             console.log('request key', key);
             console.log('instance value', instanceMap[instanceKey][key]);
             requestedDetails[key] = instanceMap[instanceKey][key];
-        });
+        });c
         Object.entries(requestedDetails).forEach(([key, value]) => {
             console.log('return key', key);
             console.log('return value');
-            console.log(value);
         })
         return requestedDetails;
     }

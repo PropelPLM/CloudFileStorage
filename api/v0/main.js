@@ -28,7 +28,6 @@ app.post("/auth", async (req, res) => {
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
   const instanceKey = InstanceManager.start(sessionId);
-  // const instanceKey = InstanceManager.start("instanceKey");
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   InstanceManager.add(instanceKey, instanceDetails);
   await JsForce.connect(sessionId, salesforceUrl, instanceKey);
