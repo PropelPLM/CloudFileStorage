@@ -10,7 +10,10 @@
 const instanceMap = {}
 
 const cleanKey = (key) => {
-    return key.replaceAll(".", "");
+    if (!key.includes(".")) {
+        return key;
+    }
+    return cleanKey(key.replace(".",""));
 }
 
 module.exports = {
