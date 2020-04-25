@@ -44,12 +44,11 @@ module.exports = {
         // debug();
         const requestedDetails = {};
         detailKeys.forEach(key => {
-            console.log('request key', key);
             requestedDetails[key] = instanceMap[instanceKey][key];
         });
-        Object.entries(requestedDetails).forEach(([key, value]) => {
-            console.log('return key', key);
-        })
+        // Object.entries(requestedDetails).forEach(([key, value]) => {
+        //     console.log('return key', key);
+        // })
         return requestedDetails;
     }
 }

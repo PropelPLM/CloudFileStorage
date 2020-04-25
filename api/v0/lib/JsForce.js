@@ -37,8 +37,10 @@ async function sendTokens(tokens, instanceKey) {
 }
 
 async function setupNamespace(instanceKey) {
+  console.log('setupNamespace', setupNamespace);
   let connection;
   ({ connection } = await InstanceManager.get(instanceKey, ["connection"]));
+  console.log('connection', connection);
 
   connection.query(
     "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'CloudStorageService' LIMIT 1"
