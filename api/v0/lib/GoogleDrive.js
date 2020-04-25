@@ -18,7 +18,7 @@ function createAuthUrl(credentials, instanceKey) {
   ({clientId, clientSecret, redirect_uri} = credentials);
 
   const oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
-  InstanceManager.add("instanceKey", { oAuth2Client });
+  InstanceManager.add(instanceKey, { oAuth2Client });
   return oAuth2Client.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
@@ -114,7 +114,7 @@ async function uploadFile(auth, options) {
 }
 
 function setInstanceOnForm(instanceKey) {
-  io.emit('instanceKey', instanceKey);
+  io.emit("instanceKey", instanceKey);
 }
 
 function logSuccessResponse(response, functionName) {
