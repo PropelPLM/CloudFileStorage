@@ -11,7 +11,7 @@ const _ = require("lodash");
 const instanceMap = {}
 const debug = () => {
     console.log('debug');
-    Object.entries(instanceMap).forEach(([key, value]) => {
+    Object.entries(instanceMap["instanceKey"]).forEach(([key, value]) => {
         console.log('key');
         console.log(key);
         console.log('value');
