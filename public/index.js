@@ -21,21 +21,21 @@ $(() => {
   //SOCKET IO HELPERS
   const socket = io();
 
-  // socket.on('targetWindow', (url) => {
-  //   console.log('socket io url', url)
+  // socket.on("targetWindow", (url) => {
+  //   console.log("socket io url", url)
   //   targetWindow = url;
   // })
 
-  socket.on('authComplete', ()=> {
+  socket.on("authComplete", ()=> {
     window.parent.postMessage({
       "type": "authComplete",
     }, targetWindow)
   })
 
   const trackProgress = async () => {
-    await socket.on('progress', progress => {
+    await socket.on("progress", progress => {
       const percentageCompletion = parseInt(progress.percentage);
-      progressBar.css('width', `${parseInt(percentageCompletion)}%`);
+      progressBar.css("width", `${parseInt(percentageCompletion)}%`);
       progressBarText.text(`${percentageCompletion}%`);
       if (percentageCompletion === 100) {
         spinner.css("visibility", "visible")
@@ -49,7 +49,7 @@ $(() => {
     resetIcons();
     const file = fileSelect.prop("files")[0];
     if (file) {
-      progressBar.css('width', `0%`);
+      progressBar.css("width", `0%`);
       progressBarText.text(`0%`);
       fileName.text(file.name);
       progressContainer.css("visibility", "visible")

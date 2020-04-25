@@ -1,10 +1,11 @@
 const { google } = require("googleapis");
+const { Transform } = require("stream");
 const fs = require("fs");
 const progress = require("progress-stream");
-const { Transform } = require("stream");
-const { create, sendTokens } = require("./JsForce.js");
 const server = require("../main.js");
-const io = require('socket.io')(server);
+const io = require("socket.io")(server);
+
+const JsForce = require("./JsForce.js");
 
 const redirect_uris = ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"];
 const actions = {
@@ -17,21 +18,22 @@ var clientSecret;
 var destinationFolderId;
 var salesforceUrl
 
-function createAuthUrl(credentials) {
+function createAuthUrl(credentials, instanceKey) {
   ({clientId, clientSecret, redirect_uri} = credentials)
   oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri)
   return oAuth2Client.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
-    scope: actions.driveFiles
+    scope: actions.driveFiles,
+    state: btoa(instanceKey)
   })
 }
 
 async function getTokens(code) {
   oAuth2Client.getToken(code, (err, token) => {
-    sendTokens({...token, clientId, clientSecret});
+    JsForce.sendTokens({...token, clientId, clientSecret});
   })
-  io.emit('authComplete', {});
+  io.emit("authComplete", {});
 }
 
 /**
@@ -75,7 +77,7 @@ async function uploadFile(auth, options) {
     var stat = fs.statSync(`./${options.fileName}`);
     var str = progress({ length: stat.size, time: 20 });
     str.on("progress", p => {
-      io.emit('progress', p);
+      io.emit("progress", p);
     });
     let fileStream = new Transform({
       transform(chunk, encoding, callback) {
@@ -96,7 +98,7 @@ async function uploadFile(auth, options) {
       supportsAllDrives: true,
       fields: "id, name, webViewLink, mimeType, fileExtension, webContentLink"
     });
-    const sfObject = await create(file.data);
+    const sfObject = await JsForce.create(file.data);
     const response = {
       status: parseInt(file.status),
       data: {
@@ -106,10 +108,10 @@ async function uploadFile(auth, options) {
         salesforceUrl
       }
     };
-    logSuccessResponse(response, "[GOOGLEDRIVE.UPLOADFILE]");
+    logSuccessResponse(response, "[GOOGLEDRIVE.UPLOAD_FILE]");
     return response;
   } catch (err) {
-    return logErrorResponse(err, "[GOOGLEDRIVE.UPLOADFILE]");
+    return logErrorResponse(err, "[GOOGLEDRIVE.UPLOAD_FILE]");
   }
 }
 

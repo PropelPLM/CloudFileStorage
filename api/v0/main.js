@@ -1,18 +1,22 @@
-"use-strict";
+"use strict";
 
-const express = require("express");
-const util = require("util");
-const multer = require("multer");
+const _ = require("lodash");
 const cors = require("cors");
+const express = require("express");
+const multer = require("multer");
 const path = require("path");
+const util = require("util");
 
+const InstanceManager = require("./InstanceManager.js");
+const GoogleDrive = require("./lib/GoogleDrive.js");
+const JsForce = require("./lib/JsForce.js");
 
 const app = express();
-module.exports = server = require('http').createServer(app);
+const server = require("http").createServer(app);
+module.exports = server;
 const port = process.env.PORT || 5000;
 
-const JsForce = require("./lib/JsForce.js");
-const GoogleDrive = require("./lib/GoogleDrive.js");
+const curriedKey = _.curry(GoogleDrive.getTokens)
 
 app.use(express.json());
 app.use(cors());
@@ -24,22 +28,22 @@ app.get("/", (req, res) => {
 
 app.post("/auth", async (req, res) => {
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
-  GoogleDrive.registerSalesforceUrl(salesforceUrl);
-  await JsForce.connect(sessionId, salesforceUrl);
+
+  const instanceKey = InstanceManager.start(sessionId);
+  InstanceManager.add(instanceKey, 'salesforceUrl', salesforceUrl);
+  await JsForce.connect(sessionId, salesforceUrl, instanceKey);
+
   if (clientId && clientSecret) {
     const credentials = {clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google`}; //google can be swapped out
-    res.status(200).send(
-      {
-        "url": GoogleDrive.createAuthUrl(credentials)
-      });
+    res.status(200).send({ "url": GoogleDrive.createAuthUrl(credentials, instanceKey) });
   } else {
-    res.status(400).send("Authorization failed, please ensure client credentials are populated.")
+    res.status(400).send("Authorization failed, please ensure client credentials are populated.");
   }
 });
 
 app.get("/auth/callback/google", (req, res) => {
   const code = req.query.code;
-  GoogleDrive.getTokens(code);
+  GoogleDrive.getTokens(code, instanceKey);
   res.send("<script>window.close()</script>");
 });
 
@@ -49,9 +53,11 @@ var tokensFromCredentials;
 
 app.post("/uploadDetails", async (req, res) => {
   ({ revId, destinationFolderId } = req.body);
-  JsForce.updateRevId(revId);
+
+  InstanceManager.add(instanceKey, 'revisionId', revId);
   GoogleDrive.updateDestinationFolderId(destinationFolderId);
-  logSuccessResponse({ revId }, '[ENDPOINT.UPLOADDETAILS]')
+
+  logSuccessResponse({ revId }, "[ENDPOINT.UPLOAD_DETAILS]")
   res.status(200).send({ revId })
 });
 
