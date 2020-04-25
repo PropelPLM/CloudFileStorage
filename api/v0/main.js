@@ -30,6 +30,7 @@ app.post("/auth", async (req, res) => {
   const instanceKey = InstanceManager.start(sessionId);
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   InstanceManager.add(instanceKey, instanceDetails);
+  console.log("instanceKey", instanceKey);
   await JsForce.connect(sessionId, salesforceUrl, instanceKey);
 
   if (clientId && clientSecret) {
@@ -42,6 +43,8 @@ app.post("/auth", async (req, res) => {
 
 app.get("/auth/callback/google", (req, res) => {
   const instanceKey = Buffer.from(req.query.state, "base64").toString();
+  console.log("callbackk");
+  console.log("instanceKey", instanceKey);
   const code = req.query.code;
   GoogleDrive.getTokens(code, instanceKey);
   res.send("<script>window.close()</script>");
