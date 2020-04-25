@@ -11,14 +11,21 @@ const instanceMap = {}
 
 module.exports = {
     start: (sessionId) => {
-        const instanceKey = Date.now.toString() + sessionId;
+        const instanceKey = sessionId;
         instanceMap[instanceKey] = {};
         return instanceKey;
     },
 
-    add: (instanceKey, detailKey, detailValue) => {
-        instanceMap[instanceKey][detailKey] = detailValue;
-        return this;
+    startWithRevId: (sessionId, revisionId) => {
+        const instanceKey = sessionId + revisionId;
+        instanceMap[instanceKey] = {};
+        return instanceKey;
+    },
+
+    add: (instanceKey, keyValuePairs) => {
+        Object.entries(keyValuePairs).forEach(([key, value]) => {
+            instanceMap[instanceKey][key] = value;
+        })
     },
 
     get: (instanceKey, ...detailKeys) => {

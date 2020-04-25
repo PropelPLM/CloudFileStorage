@@ -13,17 +13,12 @@ const actions = {
   driveFiles: "https://www.googleapis.com/auth/drive.file"
 }
 
-var oAuth2Client;
-var clientId;
-var clientSecret;
-var destinationFolderId;
-var salesforceUrl
-
 function createAuthUrl(credentials, instanceKey) {
   let clientId, clientSecret, redirect_uri;
   ({clientId, clientSecret, redirect_uri} = credentials);
 
-  oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
+  const oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
+  InstanceManager.add("instanceKey", { oAuth2Client });
   return oAuth2Client.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
@@ -33,8 +28,8 @@ function createAuthUrl(credentials, instanceKey) {
 }
 
 async function getTokens(code, instanceKey) {
-  let clientId, clientSecret;
-  ({ clientId, clientSecret } = InstanceManager.get(instanceKey, ["clientId", "clientSecret"]));
+  let clientId, clientSecret, oAuth2Client;
+  ({ clientId, clientSecret, oAuth2Client } = InstanceManager.get(instanceKey, ["clientId", "clientSecret", "oAuth2Client"]));
   oAuth2Client.getToken(code, (err, token) => {
     JsForce.sendTokens({...token, clientId, clientSecret}, instanceKey);
   })
@@ -68,6 +63,8 @@ async function authorize(clientId, clientSecret, tokens, options, callback) {
  * @param {Object} options Specifies how the file should be created in the external file storage
  */
 async function uploadFile(auth, options) {
+  let destinationFolderId, salesforceUrl;
+  ({ destinationFolderId, salesforceUrl } = InstanceManager.get(options.instanceKey, ["destinationFolderId", "salesforceUrl"]));
   var fileMetadata = {
     name: options.fileName,
     driveId: destinationFolderId,
@@ -99,7 +96,7 @@ async function uploadFile(auth, options) {
       supportsAllDrives: true,
       fields: "id, name, webViewLink, mimeType, fileExtension, webContentLink"
     });
-    const sfObject = await JsForce.create(file.data);
+    const sfObject = await JsForce.create(file.data, instanceKey);
     const response = {
       status: parseInt(file.status),
       data: {
@@ -116,8 +113,8 @@ async function uploadFile(auth, options) {
   }
 }
 
-function registerSalesforceUrl(url) {
-  salesforceUrl = url
+function setInstanceOnForm(instanceKey) {
+  io.emit('instanceKey', instanceKey);
 }
 
 function logSuccessResponse(response, functionName) {
@@ -139,6 +136,6 @@ module.exports = {
   authorize,
   createAuthUrl,
   getTokens,
-  registerSalesforceUrl,
+  setInstanceOnForm,
   uploadFile
 };

@@ -9,8 +9,8 @@ async function connect(sessionId, salesforceUrl, instanceKey) {
       instanceUrl: salesforceUrl,
       sessionId
     });
-    InstanceManager.add(instanceKey, "connection", connection);
-    setup(instanceKey);
+    InstanceManager.add(instanceKey, { connection });
+    setupNamespace(instanceKey);
   } catch (err) {
     console.log(`Log in failed: ${err}`);
   }
@@ -32,10 +32,10 @@ async function sendTokens(tokens, instanceKey) {
     .sobject(`${namespace}__Cloud_Storage__c`)
     .upsert({
       ...addNamespace(newSetting, instanceKey)
-    }, `${namespace}__Client_Id__c`)
+    }, `${namespace}__Client_Id__c`);
 }
 
-async function setup(instanceKey) {
+async function setupNamespace(instanceKey) {
   let connection;
   ({ connection } = InstanceManager.get(instanceKey, ["connection"]));
 

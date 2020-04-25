@@ -28,10 +28,8 @@ app.post("/auth", async (req, res) => {
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
   const instanceKey = InstanceManager.start(sessionId);
-  InstanceManager
-    .add(instanceKey, "salesforceUrl", salesforceUrl)
-    .add(instanceKey, "clientId", clientId)
-    .add(instanceKey, "clientSecret", clientSecret);
+  const instanceDetails = { salesforceUrl, clientId, clientSecret };
+  InstanceManager.add(instanceKey, instanceDetails);
   await JsForce.connect(sessionId, salesforceUrl, instanceKey);
 
   if (clientId && clientSecret) {
@@ -49,17 +47,14 @@ app.get("/auth/callback/google", (req, res) => {
   res.send("<script>window.close()</script>");
 });
 
-var client_id;
-var client_secret;
-var tokensFromCredentials;
-
 app.post("/uploadDetails", async (req, res) => {
-  let revId, destinationFolderId;
-  ({ revId, destinationFolderId } = req.body);
+  let revId, destinationFolderId, sessionId, salesforceUrl;
+  ({ revId, destinationFolderId, sessionId, salesforceUrl } = req.body);
 
-  InstanceManager
-    .add(instanceKey, "revisionId", revId)
-    .add(instanceKey, "desitonationFolderId", destinationFolderId)
+  const instanceKey = sessionId + revisionId;
+  const instanceDetails = { revisionId: revId, destinationFolderId };
+  InstanceManager.add(instanceKey, instanceDetails);
+  GoogleDrive.setInstanceOnForm(instanceKey);
 
   logSuccessResponse({ revId }, "[ENDPOINT.UPLOAD_DETAILS]")
   res.status(200).send({ revId })
@@ -67,7 +62,7 @@ app.post("/uploadDetails", async (req, res) => {
 
 app.post("/token", async (req, res) => {
   try {
-    let client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl;
+    let client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl, revisionId, tokensFromCredentials;
     ({
       client_secret,
       client_id,
@@ -75,12 +70,9 @@ app.post("/token", async (req, res) => {
       refresh_token,
       expiry_date,
       sessionId,
-      salesforceUrl
+      salesforceUrl, 
+      revisionId
     } = req.body);
-
-    const instanceKey = InstanceManager.start(sessionId);
-    InstanceManager.add(instanceKey, "clientSecret", client_secret);
-    InstanceManager.add(instanceKey, "clientId", client_id);
 
     tokensFromCredentials = {
       access_token,
@@ -89,7 +81,11 @@ app.post("/token", async (req, res) => {
       token_type: "Bearer",
       expiry_date
     };
-    GoogleDrive.registerSalesforceUrl(salesforceUrl);
+
+    const instanceKey = InstanceManager.startWithRevId(sessionId, revisionId);
+    const instanceDetails = { sessionId, salesforceUrl, clientId: client_id, clientSecret: client_secret, tokensFromCredentials, revisionId };
+    InstanceManager.add(instanceKey, instanceDetails);
+
     await JsForce.connect(sessionId, salesforceUrl);
     logSuccessResponse(tokensFromCredentials, "[ENDPOINT.TOKEN]");
     res.status(200).send(tokensFromCredentials);
@@ -99,7 +95,8 @@ app.post("/token", async (req, res) => {
   }
 });
 
-app.post("/upload", async (req, res) => {
+app.post("/upload/:instanceKey", async (req, res) => {
+  const instanceKey = req.params.instanceKey;
   var fileName;
   var mimeType;
   var storage = multer.diskStorage({
@@ -119,14 +116,14 @@ app.post("/upload", async (req, res) => {
     console.log(`Upload from local failed with ${err}`);
   }
   try {
-    options = {
-      fileName: fileName,
-      mimeType: mimeType
-    };
-    // Authorize a client with credentials, then call the Google Drive API.
+    let clientId, clientSecret, tokensFromCredentials;
+
+    ({ clientId, clientSecret, tokensFromCredentials } = InstanceManager.get(instanceKey, ["clientId", "clientSecret", "tokensFromCredentials"]));
+
+    options = { fileName, mimeType, instanceKey };
     const response = await GoogleDrive.authorize(
-      client_id,
-      client_secret,
+      clientId,
+      clientSecret,
       tokensFromCredentials,
       options,
       GoogleDrive.uploadFile

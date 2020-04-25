@@ -1,6 +1,7 @@
 $(() => {
   $(window).scrollTop($(window).height() / 2);
   $(window).scrollLeft($(window).width() / 2);
+  const form = $("#form");
   const fileName = $("#file-name");
   const fileSelect = $("#file-select");
   const progressContainer = $("#progress-container");
@@ -21,10 +22,9 @@ $(() => {
   //SOCKET IO HELPERS
   const socket = io();
 
-  // socket.on("targetWindow", (url) => {
-  //   console.log("socket io url", url)
-  //   targetWindow = url;
-  // })
+  socket.on("instanceKey", (instanceKey) => {
+     form.data("instanceKey", instanceKey);
+  })
 
   socket.on("authComplete", ()=> {
     window.parent.postMessage({
@@ -65,7 +65,7 @@ $(() => {
     data.append("file", fileData);
     await trackProgress();
     axios
-      .post(`/upload`, data)
+      .post(`/uploa/${form.data("instanceKey")}`, data)
       .then(res => {
         socket.off("progress");
         spinner.css("visibility", "hidden");
