@@ -26,8 +26,8 @@ function createAuthUrl(credentials, instanceKey) {
     access_type: "offline",
     prompt: "consent",
     scope: actions.driveFiles,
-    state: btoa(instanceKey)
-  })
+    state: Buffer.from(instanceKey).toString('base64')
+  });
 }
 
 async function getTokens(code) {
