@@ -2,7 +2,6 @@
 
 const jsConnect = require("jsforce");
 const InstanceManager = require("../InstanceManager.js");
-var revisionId;
 
 async function connect(sessionId, salesforceUrl, instanceKey) {
   try {
@@ -25,7 +24,10 @@ async function sendTokens(tokens, instanceKey) {
     "Client_Id__c": tokens.clientId,
     "Client_Secret__c": tokens.clientSecret,
   }
+
+  let connection, namespace;
   ({ connection, namespace } = InstanceManager.get(instanceKey, ['connection', 'namespace']));
+
   return connection
     .sobject(`${namespace}__Cloud_Storage__c`)
     .upsert({
@@ -34,7 +36,9 @@ async function sendTokens(tokens, instanceKey) {
 }
 
 async function setup(instanceKey) {
+  let connection;
   ({ connection } = InstanceManager.get(instanceKey, ['connection']));
+
   connection.query(
     "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'CloudStorageService' LIMIT 1"
   ).then(res => {
@@ -46,6 +50,7 @@ async function setup(instanceKey) {
 }
 
 async function create(file, instanceKey) {
+  let connection, namespace, revisionId, name, webViewLink, id, fileExtension, webContentLink;
   ({ connection, namespace, revisionId } = InstanceManager.get(instanceKey, ['connection', 'namespace', 'revisionId']));
   ({ name, webViewLink, id, fileExtension, webContentLink } = file);
   const newAttachment = {
@@ -66,6 +71,7 @@ async function create(file, instanceKey) {
 }
 
 function addNamespace(customObject, instanceKey) {
+  let namespace;
   ({ namespace } = InstanceManager.get(instanceKey, ['namespace']));
   for (key in customObject) {
     Object.defineProperty(

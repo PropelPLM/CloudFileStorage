@@ -19,6 +19,7 @@ var destinationFolderId;
 var salesforceUrl
 
 function createAuthUrl(credentials, instanceKey) {
+  let clientId, clientSecret, redirect_uri;
   ({clientId, clientSecret, redirect_uri} = credentials)
   oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri)
   return oAuth2Client.generateAuthUrl({

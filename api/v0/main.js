@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/auth", async (req, res) => {
-  console.log(req.body);
+  let sessionId, salesforceUrl, clientId, clientSecret;
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
   const instanceKey = InstanceManager.start(sessionId);
@@ -53,6 +53,7 @@ var client_secret;
 var tokensFromCredentials;
 
 app.post("/uploadDetails", async (req, res) => {
+  let revId, destinationFolderId;
   ({ revId, destinationFolderId } = req.body);
 
   InstanceManager.add(instanceKey, 'revisionId', revId);
@@ -64,6 +65,7 @@ app.post("/uploadDetails", async (req, res) => {
 
 app.post("/token", async (req, res) => {
   try {
+    let client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl;
     ({
       client_secret,
       client_id,
@@ -73,6 +75,10 @@ app.post("/token", async (req, res) => {
       sessionId,
       salesforceUrl
     } = req.body);
+
+    const instanceKey = InstanceManager.start(sessionId);
+    InstanceManager.add(instanceKey, 'clientSecret', client_secret);
+    InstanceManager.add(instanceKey, 'clientId', client_id);
 
     tokensFromCredentials = {
       access_token,
