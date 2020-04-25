@@ -9,7 +9,7 @@ async function connect(sessionId, salesforceUrl, instanceKey) {
       instanceUrl: salesforceUrl,
       sessionId
     });
-    InstanceManager.add(instanceKey, { connection });
+    await InstanceManager.add(instanceKey, { connection });
     setupNamespace(instanceKey);
   } catch (err) {
     console.log(`Log in failed: ${err}`);
@@ -26,25 +26,25 @@ async function sendTokens(tokens, instanceKey) {
   }
 
   let connection, namespace;
-  ({ connection, namespace } = InstanceManager.get(instanceKey, ["connection", "namespace"]));
+  ({ connection, namespace } = await InstanceManager.get(instanceKey, ["connection", "namespace"]));
   console.log('connection', connection);
   console.log('namespace', namespace);
   return connection
     .sobject(`${namespace}__Cloud_Storage__c`)
     .upsert({
-      ...addNamespace(newSetting, instanceKey)
+      ...await addNamespace(newSetting, instanceKey)
     }, `${namespace}__Client_Id__c`);
 }
 
 async function setupNamespace(instanceKey) {
   let connection;
-  ({ connection } = InstanceManager.get(instanceKey, ["connection"]));
+  ({ connection } = await InstanceManager.get(instanceKey, ["connection"]));
 
   connection.query(
     "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'CloudStorageService' LIMIT 1"
   ).then(res => {
     const namespace = res.records[0].NamespacePrefix;
-    InstanceManager.add(instanceKey, "namespace", namespace);
+    await InstanceManager.add(instanceKey, "namespace", namespace);
   }).catch(err => {
     console.log(`error setting up: ${err}`);
   });
@@ -52,7 +52,7 @@ async function setupNamespace(instanceKey) {
 
 async function create(file, instanceKey) {
   let connection, namespace, revisionId, name, webViewLink, id, fileExtension, webContentLink;
-  ({ connection, namespace, revisionId } = InstanceManager.get(instanceKey, ["connection", "namespace", "revisionId"]));
+  ({ connection, namespace, revisionId } = await InstanceManager.get(instanceKey, ["connection", "namespace", "revisionId"]));
   ({ name, webViewLink, id, fileExtension, webContentLink } = file);
   const newAttachment = {
     "Item_Revision__c": revisionId,
@@ -66,14 +66,14 @@ async function create(file, instanceKey) {
       .sobject(`${namespace}__Document__c`)
       .create({
         Name: name,
-        ...addNamespace(newAttachment, instanceKey)
+        ...await addNamespace(newAttachment, instanceKey)
       });
   return {...sObject, revisionId};
 }
 
-function addNamespace(customObject, instanceKey) {
+async function addNamespace(customObject, instanceKey) {
   let namespace;
-  ({ namespace } = InstanceManager.get(instanceKey, ["namespace"]));
+  ({ namespace } = await InstanceManager.get(instanceKey, ["namespace"]));
   for (const key in customObject) {
     Object.defineProperty(
       customObject,

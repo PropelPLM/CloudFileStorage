@@ -27,9 +27,9 @@ app.post("/auth", async (req, res) => {
   let sessionId, salesforceUrl, clientId, clientSecret;
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
-  const instanceKey = InstanceManager.start(sessionId);
+  const instanceKey = await InstanceManager.start(sessionId);
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
-  InstanceManager.add(instanceKey, instanceDetails);
+  await InstanceManager.add(instanceKey, instanceDetails);
   await JsForce.connect(sessionId, salesforceUrl, instanceKey);
 
   if (clientId && clientSecret) {
@@ -55,7 +55,7 @@ app.post("/uploadDetails", async (req, res) => {
 
   const instanceKey = sessionId + revisionId;
   const instanceDetails = { revisionId: revId, destinationFolderId };
-  InstanceManager.add(instanceKey, instanceDetails);
+  await InstanceManager.add(instanceKey, instanceDetails);
   GoogleDrive.setInstanceOnForm(instanceKey);
 
   logSuccessResponse({ revId }, "[ENDPOINT.UPLOAD_DETAILS]")
@@ -84,9 +84,9 @@ app.post("/token", async (req, res) => {
       expiry_date
     };
 
-    const instanceKey = InstanceManager.startWithRevId(sessionId, revisionId);
+    const instanceKey = await InstanceManager.startWithRevId(sessionId, revisionId);
     const instanceDetails = { sessionId, salesforceUrl, clientId: client_id, clientSecret: client_secret, tokensFromCredentials, revisionId };
-    InstanceManager.add(instanceKey, instanceDetails);
+    await InstanceManager.add(instanceKey, instanceDetails);
 
     await JsForce.connect(sessionId, salesforceUrl);
     logSuccessResponse(tokensFromCredentials, "[ENDPOINT.TOKEN]");
@@ -120,7 +120,7 @@ app.post("/upload/:instanceKey", async (req, res) => {
   try {
     let clientId, clientSecret, tokensFromCredentials;
 
-    ({ clientId, clientSecret, tokensFromCredentials } = InstanceManager.get(instanceKey, ["clientId", "clientSecret", "tokensFromCredentials"]));
+    ({ clientId, clientSecret, tokensFromCredentials } = await InstanceManager.get(instanceKey, ["clientId", "clientSecret", "tokensFromCredentials"]));
 
     options = { fileName, mimeType, instanceKey };
     const response = await GoogleDrive.authorize(
