@@ -1,6 +1,5 @@
 "use strict";
 
-const _ = require("lodash");
 const cors = require("cors");
 const express = require("express");
 const multer = require("multer");
@@ -16,8 +15,6 @@ const server = require("http").createServer(app);
 module.exports = server;
 const port = process.env.PORT || 5000;
 
-const curriedKey = _.curry(GoogleDrive.getTokens)
-
 app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, "../../public")));
@@ -31,7 +28,7 @@ app.post("/auth", async (req, res) => {
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
   const instanceKey = InstanceManager.start(sessionId);
-  InstanceManager.add(instanceKey, 'salesforceUrl', salesforceUrl);
+  InstanceManager.add(instanceKey, "salesforceUrl", salesforceUrl);
   await JsForce.connect(sessionId, salesforceUrl, instanceKey);
 
   if (clientId && clientSecret) {
@@ -43,7 +40,7 @@ app.post("/auth", async (req, res) => {
 });
 
 app.get("/auth/callback/google", (req, res) => {
-  console.log(req);
+  const instanceKey = Buffer.from(req.query.state, "base64").toString();
   const code = req.query.code;
   GoogleDrive.getTokens(code, instanceKey);
   res.send("<script>window.close()</script>");
@@ -57,7 +54,7 @@ app.post("/uploadDetails", async (req, res) => {
   let revId, destinationFolderId;
   ({ revId, destinationFolderId } = req.body);
 
-  InstanceManager.add(instanceKey, 'revisionId', revId);
+  InstanceManager.add(instanceKey, "revisionId", revId);
   GoogleDrive.updateDestinationFolderId(destinationFolderId);
 
   logSuccessResponse({ revId }, "[ENDPOINT.UPLOAD_DETAILS]")
@@ -78,8 +75,8 @@ app.post("/token", async (req, res) => {
     } = req.body);
 
     const instanceKey = InstanceManager.start(sessionId);
-    InstanceManager.add(instanceKey, 'clientSecret', client_secret);
-    InstanceManager.add(instanceKey, 'clientId', client_id);
+    InstanceManager.add(instanceKey, "clientSecret", client_secret);
+    InstanceManager.add(instanceKey, "clientId", client_id);
 
     tokensFromCredentials = {
       access_token,

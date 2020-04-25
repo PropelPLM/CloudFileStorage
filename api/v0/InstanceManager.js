@@ -1,4 +1,4 @@
-'use strict'
+"use strict"
 /**
  * Time of access and the sessionId will be used to demultiplex different iframe sessions
  * SessionID: allows different users to use the this app at the same time

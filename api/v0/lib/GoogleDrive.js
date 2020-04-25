@@ -26,7 +26,7 @@ function createAuthUrl(credentials, instanceKey) {
     access_type: "offline",
     prompt: "consent",
     scope: actions.driveFiles,
-    state: Buffer.from(instanceKey).toString('base64')
+    state: Buffer.from(instanceKey).toString("base64")
   });
 }
 
