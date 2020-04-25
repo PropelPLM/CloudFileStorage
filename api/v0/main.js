@@ -29,8 +29,10 @@ app.post("/auth", async (req, res) => {
 
   const instanceKey = await InstanceManager.start(sessionId);
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
-  await InstanceManager.add(instanceKey, instanceDetails);
-  await JsForce.connect(sessionId, salesforceUrl, instanceKey);
+  await Promise.all([
+    InstanceManager.add(instanceKey, instanceDetails),
+    JsForce.connect(sessionId, salesforceUrl, instanceKey)
+  ])
 
   if (clientId && clientSecret) {
     const credentials = {clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google`}; //google can be swapped out

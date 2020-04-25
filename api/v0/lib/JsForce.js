@@ -9,8 +9,10 @@ async function connect(sessionId, salesforceUrl, instanceKey) {
       instanceUrl: salesforceUrl,
       sessionId
     });
-    await InstanceManager.add(instanceKey, { connection });
-    await setupNamespace(instanceKey);
+    await Promise.all([
+      InstanceManager.add(instanceKey, { connection }),
+      setupNamespace(instanceKey)
+    ]);
     console.log('done with setup!!')
   } catch (err) {
     console.log(`Log in failed: ${err}`);

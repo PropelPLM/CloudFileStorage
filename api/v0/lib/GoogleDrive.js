@@ -24,12 +24,14 @@ async function createAuthUrl(credentials, instanceKey) {
   console.log('creating')
   await InstanceManager.add(instanceKey, { oAuth2Client });
   console.log('created')
-  return oAuth2Client.generateAuthUrl({
+  const url = oAuth2Client.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
     scope: actions.driveFiles,
     state: Buffer.from(instanceKey).toString("base64")
   });
+  console.log('url', url);
+  return url;
 }
 
 async function getTokens(code, instanceKey) {
