@@ -41,13 +41,19 @@ module.exports = {
     },
 
     get: (instanceKey, ...detailKeys) => {
-        debug();
+        // debug();
         const requestedDetails = {};
         detailKeys.forEach(key => {
             console.log('key', key);
             console.log('instanceMap[instanceKey][key]', instanceMap[instanceKey][key]);
             requestedDetails[key] = instanceMap[instanceKey][key];
         });
+        Object.entries(requestedDetails).forEach(([key, value]) => {
+            console.log('key');
+            console.log(key);
+            console.log('value');
+            console.log(value);
+        })
         return requestedDetails;
     }
 }
