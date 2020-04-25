@@ -28,7 +28,10 @@ app.post("/auth", async (req, res) => {
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
   const instanceKey = InstanceManager.start(sessionId);
-  InstanceManager.add(instanceKey, "salesforceUrl", salesforceUrl);
+  InstanceManager
+    .add(instanceKey, "salesforceUrl", salesforceUrl)
+    .add(instanceKey, "clientId", clientId)
+    .add(instanceKey, "clientSecret", clientSecret);
   await JsForce.connect(sessionId, salesforceUrl, instanceKey);
 
   if (clientId && clientSecret) {
@@ -54,8 +57,9 @@ app.post("/uploadDetails", async (req, res) => {
   let revId, destinationFolderId;
   ({ revId, destinationFolderId } = req.body);
 
-  InstanceManager.add(instanceKey, "revisionId", revId);
-  GoogleDrive.updateDestinationFolderId(destinationFolderId);
+  InstanceManager
+    .add(instanceKey, "revisionId", revId)
+    .add(instanceKey, "desitonationFolderId", destinationFolderId)
 
   logSuccessResponse({ revId }, "[ENDPOINT.UPLOAD_DETAILS]")
   res.status(200).send({ revId })

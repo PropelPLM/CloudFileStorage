@@ -18,6 +18,7 @@ module.exports = {
 
     add: (instanceKey, detailKey, detailValue) => {
         instanceMap[instanceKey][detailKey] = detailValue;
+        return instanceMap;
     },
 
     get: (instanceKey, ...detailKeys) => {

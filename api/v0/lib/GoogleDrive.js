@@ -5,6 +5,7 @@ const progress = require("progress-stream");
 const server = require("../main.js");
 const io = require("socket.io")(server);
 
+const InstanceManager = require("../InstanceManager.js");
 const JsForce = require("./JsForce.js");
 
 const redirect_uris = ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"];
@@ -20,8 +21,9 @@ var salesforceUrl
 
 function createAuthUrl(credentials, instanceKey) {
   let clientId, clientSecret, redirect_uri;
-  ({clientId, clientSecret, redirect_uri} = credentials)
-  oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri)
+  ({clientId, clientSecret, redirect_uri} = credentials);
+
+  oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
   return oAuth2Client.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
@@ -30,9 +32,11 @@ function createAuthUrl(credentials, instanceKey) {
   });
 }
 
-async function getTokens(code) {
+async function getTokens(code, instanceKey) {
+  let clientId, clientSecret;
+  ({ clientId, clientSecret } = InstanceManager.get(instanceKey, ["clientId", "clientSecret"]));
   oAuth2Client.getToken(code, (err, token) => {
-    JsForce.sendTokens({...token, clientId, clientSecret});
+    JsForce.sendTokens({...token, clientId, clientSecret}, instanceKey);
   })
   io.emit("authComplete", {});
 }
@@ -55,10 +59,6 @@ async function authorize(clientId, clientSecret, tokens, options, callback) {
   );
   oAuth2Client.setCredentials(tokens);
   return await callback(oAuth2Client, options);
-}
-
-function updateDestinationFolderId(folderId) {
-  destinationFolderId = folderId;
 }
 
 /**
@@ -140,6 +140,5 @@ module.exports = {
   createAuthUrl,
   getTokens,
   registerSalesforceUrl,
-  updateDestinationFolderId,
   uploadFile
 };
