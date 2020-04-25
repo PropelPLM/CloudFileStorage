@@ -27,7 +27,7 @@ async function sendTokens(tokens, instanceKey) {
 
   let connection, namespace;
   ({ connection, namespace } = InstanceManager.get(instanceKey, ["connection", "namespace"]));
-
+  console.log('connection', connection);
   return connection
     .sobject(`${namespace}__Cloud_Storage__c`)
     .upsert({

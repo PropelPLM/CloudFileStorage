@@ -37,7 +37,6 @@ async function getTokens(code, instanceKey) {
   console.log("2equivalence", instanceKey == origKey);
   console.log("3equivalence", instanceKey === origKey);
   ({ clientId, clientSecret, oAuth2Client } = InstanceManager.get(instanceKey, ["clientId", "clientSecret", "oAuth2Client"]));
-  console.log("oAuth2Client", oAuth2Client);
   oAuth2Client.getToken(code, (err, token) => {
     JsForce.sendTokens({...token, clientId, clientSecret}, instanceKey);
   })
