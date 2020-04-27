@@ -42,16 +42,11 @@ async function setupNamespace(instanceKey) {
   console.log('setupNamespace');
   let connection;
   ({ connection } = await InstanceManager.get(instanceKey, ["connection"]));
-  connection.query(
-    "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'CloudStorageService' LIMIT 1"
-  ).then(async res => {
-    const namespace = res.records[0].NamespacePrefix;
-    console.log('namespace', namespace);
-    await InstanceManager.add(instanceKey, "namespace", namespace);
-    console.log('namespace DONE', namespace);
-  }).catch(err => {
-    console.log(`error setting up: ${err}`);
-  });
+  const jsForceRecords = await connection.query("SELECT NamespacePrefix FROM ApexClass WHERE Name = 'CloudStorageService' LIMIT 1");
+  const namespace = jsForceRecords.records[0].NamespacePrefix;
+  console.log('namespace', namespace);
+  await InstanceManager.add(instanceKey, "namespace", namespace);
+  console.log('namespace DONE', namespace);
 }
 
 async function create(file, instanceKey) {
