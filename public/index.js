@@ -33,12 +33,11 @@ $(() => {
 
   socket.on("authComplete", ()=> {
     window.parent.postMessage({
-      "type": "fucku cb",
-      "url": form.data("targetWindow")
-    }, '*')
-    // window.parent.postMessage({
-    //   "type": "authComplete",
-    // }, form.data("targetWindow"))
+      "type": form.data("target_window")
+    }, "*")
+    window.parent.postMessage({
+      "type": "authComplete",
+    }, form.data("target_window"))
   })
 
   const trackProgress = async () => {
@@ -74,7 +73,7 @@ $(() => {
     data.append("file", fileData);
     await trackProgress();
     axios
-      .post(`/upload/${form.data("instanceKey")}`, data)
+      .post(`/upload/${form.data("instance_key")}`, data)
       .then(res => {
         socket.off("progress");
         spinner.css("visibility", "hidden");

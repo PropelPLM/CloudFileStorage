@@ -28,7 +28,7 @@ app.post("/auth", async (req, res) => {
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
   const instanceKey = await InstanceManager.start(sessionId);
-  GoogleDrive.setAttributeOnForm({ targetWindow: salesforceUrl });
+  GoogleDrive.setAttributeOnForm({ target_window: salesforceUrl });
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   await Promise.all([
     InstanceManager.add(instanceKey, instanceDetails),
@@ -54,10 +54,11 @@ app.post("/uploadDetails", async (req, res) => {
   let revId, destinationFolderId, sessionId, salesforceUrl;
   ({ revId, destinationFolderId, sessionId, salesforceUrl } = req.body);
 
-  const instanceKey = sessionId + revisionId;
+  //INSTANCEKEY IS IN SNAKE CASE BECAUSE OF DOM DATA ATTRIBUTE RESTRICTIONS
+  const instance_key = sessionId + revisionId;
   const instanceDetails = { revisionId: revId, destinationFolderId };
-  await InstanceManager.add(instanceKey, instanceDetails);
-  GoogleDrive.setAttributeOnForm({ instanceKey });
+  await InstanceManager.add(instance_key, instanceDetails);
+  GoogleDrive.setAttributeOnForm({ instance_key });
 
   logSuccessResponse({ revId }, "[ENDPOINT.UPLOAD_DETAILS]")
   res.status(200).send({ revId })
