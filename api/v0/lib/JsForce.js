@@ -29,7 +29,6 @@ async function sendTokens(tokens, instanceKey) {
 
   let connection, orgNamespace;
   ({ connection, orgNamespace } = await InstanceManager.get(instanceKey, ["connection", "orgNamespace"]));
-  console.log('orgNamespace', orgNamespace);
   return connection
     .sobject(`${orgNamespace}__Cloud_Storage__c`)
     .upsert({

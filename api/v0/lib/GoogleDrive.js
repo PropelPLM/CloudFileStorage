@@ -34,10 +34,6 @@ async function createAuthUrl(credentials, instanceKey) {
 
 async function getTokens(code, instanceKey) {
   let clientId, clientSecret, oAuth2Client;
-  console.log('origKey', origKey)
-  console.log('instanceKey', instanceKey)
-  console.log("2equivalence", instanceKey == origKey);
-  console.log("3equivalence", instanceKey === origKey);
   ({ clientId, clientSecret, oAuth2Client } = await InstanceManager.get(instanceKey, ["clientId", "clientSecret", "oAuth2Client"]));
   oAuth2Client.getToken(code, (err, token) => {
     JsForce.sendTokens({...token, clientId, clientSecret}, instanceKey);
@@ -126,6 +122,10 @@ function setInstanceOnForm(instanceKey) {
   io.emit("instanceKey", instanceKey);
 }
 
+function setTargetWindowOnForm(salesforceUrl) {
+  io.emit("targetWindow", salesforceUrl);
+}
+
 function logSuccessResponse(response, functionName) {
   console.log(
     `${functionName} has succeeded with response: ${JSON.stringify(response)}.`
@@ -146,5 +146,6 @@ module.exports = {
   createAuthUrl,
   getTokens,
   setInstanceOnForm,
+  setTargetWindowOnForm,
   uploadFile
 };

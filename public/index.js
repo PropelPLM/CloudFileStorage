@@ -26,10 +26,14 @@ $(() => {
      form.data("instanceKey", instanceKey);
   })
 
+  socket.on("targetWindow", (salesforceUrl) => {
+    form.data("targetWindow", salesforceUrl);
+ })
+
   socket.on("authComplete", ()=> {
     window.parent.postMessage({
       "type": "authComplete",
-    }, targetWindow)
+    }, form.data("targetWindow"))
   })
 
   const trackProgress = async () => {
@@ -65,7 +69,7 @@ $(() => {
     data.append("file", fileData);
     await trackProgress();
     axios
-      .post(`/uploa/${form.data("instanceKey")}`, data)
+      .post(`/upload/${form.data("instanceKey")}`, data)
       .then(res => {
         socket.off("progress");
         spinner.css("visibility", "hidden");
