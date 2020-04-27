@@ -33,14 +33,14 @@ $(() => {
     })
   })
 
-  socket.on("authComplete", ()=> {
-    // window.parent.postMessage({
-    //   "type": "tt"
-    // }, "*");
-    window.parent.postMessage({
-      "type": form.data("targetwindow"),
-    }, form.data("https://clin-dev-ed--plmlaw.visualforce.com"))
-  })
+  // socket.on("authComplete", ()=> {
+  //   // window.parent.postMessage({
+  //   //   "type": "tt"
+  //   // }, "*");
+  //   window.parent.postMessage({
+  //     "type": form.data("targetwindow"),
+  //   }, form.data("https://clin-dev-ed--plmlaw.visualforce.com"))
+  // })
 
   const trackProgress = async () => {
     await socket.on("progress", progress => {
