@@ -14,13 +14,10 @@ const actions = {
   driveFiles: "https://www.googleapis.com/auth/drive.file"
 }
 
-var origKey;
-
 function createAuthUrl(credentials, instanceKey) {
   let clientId, clientSecret, redirect_uri;
   ({clientId, clientSecret, redirect_uri} = credentials);
   
-  origKey = instanceKey;
   const oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
   InstanceManager.add(instanceKey, { oAuth2Client });
   return oAuth2Client.generateAuthUrl({
