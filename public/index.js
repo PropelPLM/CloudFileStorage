@@ -36,9 +36,9 @@ $(() => {
       "type": "fucku cb",
       "url": form.data("targetWindow")
     }, '*')
-    window.parent.postMessage({
-      "type": "authComplete",
-    }, form.data("targetWindow"))
+    // window.parent.postMessage({
+    //   "type": "authComplete",
+    // }, form.data("targetWindow"))
   })
 
   const trackProgress = async () => {
