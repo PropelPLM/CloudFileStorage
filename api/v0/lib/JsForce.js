@@ -42,6 +42,7 @@ async function setupNamespace(instanceKey) {
   ({ connection } = await InstanceManager.get(instanceKey, ["connection"]));
   const jsForceRecords = await connection.query("SELECT NamespacePrefix FROM ApexClass WHERE Name = 'CloudStorageService' LIMIT 1");
   const orgNamespace = jsForceRecords.records[0].NamespacePrefix;
+  console.log('orgNamespace to be added', orgNamespace);
   await InstanceManager.add(instanceKey, "orgNamespace", orgNamespace);
   console.log('added orgNamespace', await InstanceManager.get(instanceKey, ["orgNamespace"]));
 }
