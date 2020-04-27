@@ -30,7 +30,6 @@ async function sendTokens(tokens, instanceKey) {
 
   let connection, namespace;
   ({ connection, namespace } = await InstanceManager.get(instanceKey, ["connection", "namespace"]));
-  console.log('connection', connection);
   console.log('namespace', namespace);
   return connection
     .sobject(`${namespace}__Cloud_Storage__c`)
@@ -40,11 +39,9 @@ async function sendTokens(tokens, instanceKey) {
 }
 
 async function setupNamespace(instanceKey) {
-  console.log('setupNamespace', setupNamespace);
+  console.log('setupNamespace');
   let connection;
   ({ connection } = await InstanceManager.get(instanceKey, ["connection"]));
-  console.log('connection', connection);
-
   connection.query(
     "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'CloudStorageService' LIMIT 1"
   ).then(async res => {
