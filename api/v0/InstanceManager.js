@@ -9,15 +9,6 @@ const _ = require("lodash");
  */
 
 const instanceMap = {}
-const debug = () => {
-    console.log('debug');
-    Object.entries(instanceMap["instanceKey"]).forEach(([key, value]) => {
-        console.log('key');
-        console.log(key);
-        console.log('value');
-        console.log(value);
-    })
-}
 
 module.exports = {
     start: (sessionId) => {
@@ -44,12 +35,8 @@ module.exports = {
         // debug();
         const requestedDetails = {};
         detailKeys.forEach(key => {
-            console.log(key)
             requestedDetails[key] = instanceMap[instanceKey][key];
         });
-        // Object.entries(requestedDetails).forEach(([key, value]) => {
-        //     console.log('return key', key);
-        // })
         return requestedDetails;
     }
 }

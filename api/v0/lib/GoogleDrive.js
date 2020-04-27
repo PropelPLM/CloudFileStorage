@@ -119,6 +119,10 @@ async function uploadFile(auth, options) {
 }
 
 function setAttributeOnForm(object) {
+  Object.entries(object).forEach(([key, value]) => {
+    console.log('key', key)
+    console.log('value', value)
+  })
   io.emit("setAttribute", object);
 }
 
