@@ -6,15 +6,15 @@ const multer = require("multer");
 const path = require("path");
 const util = require("util");
 
-const InstanceManager = require("./InstanceManager.js");
-const GoogleDrive = require("./lib/GoogleDrive.js");
-const JsForce = require("./lib/JsForce.js");
-
 const app = express();
 const server = require("http").createServer(app);
 console.log('server', server)
 module.exports = server;
 const port = process.env.PORT || 5000;
+
+const InstanceManager = require("./InstanceManager.js");
+const GoogleDrive = require("./lib/GoogleDrive.js");
+const JsForce = require("./lib/JsForce.js");
 
 app.use(express.json());
 app.use(cors());
