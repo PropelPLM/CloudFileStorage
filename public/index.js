@@ -12,16 +12,16 @@ $(() => {
 
   // INIT
   const resetIcons = () => {
-    check.css("visibility", "hidden")
-    spinner.css("visibility", "hidden")
-    $("#js-status").css("display", "block")
+    check.css("visibility", "hidden");
+    spinner.css("visibility", "hidden");
+    $("#js-status").css("display", "block");
   }
   resetIcons();
 
   //SOCKET IO HELPERS
   const socket = io();
   socket.on('authComplete', ()=> {
-    alert('authComplete')
+    alert('authComplete');
     $("#debug").text("skjsndsa");
     $("#debug1").text(form.data("targetwindow"));
     window.parent.postMessage({
