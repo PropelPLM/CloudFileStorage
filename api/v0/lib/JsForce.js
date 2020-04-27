@@ -23,8 +23,8 @@ async function sendTokens(tokens, instanceKey) {
     "Access_Token__c": tokens.access_token,
     "Refresh_Token__c": tokens.refresh_token,
     "Expiry_Date__c": tokens.expiry_date,
-    "Client_Id__c": tokens.clientId,
-    "Client_Secret__c": tokens.clientSecret,
+    "Client_Id__c": tokens.client_id, //SNAKE CASE REQUIRED GOOGLE API RETURN VALUE
+    "Client_Secret__c": tokens.client_secret,
   }
 
   let connection, orgNamespace;
