@@ -33,6 +33,8 @@ $(() => {
     Object.entries(object).forEach(([key, value]) => {
       form.attr(`data-${key}`, value);
     })
+    $("#debug").text("settingattris");
+    $("#debug1").text(form.data("targetwindow"));
   })
 
   // socket.on("authComplete", ()=> {
