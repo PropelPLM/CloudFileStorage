@@ -34,10 +34,9 @@ async function createAuthUrl(credentials, instanceKey) {
 
 async function getTokens(code, instanceKey) {
   let clientId, clientSecret, oAuth2Client;
-  ({ oAuth2Client } = await InstanceManager.get(instanceKey, ["oAuth2Client"]));
+  ({ clientId, clientSecret, oAuth2Client } = await InstanceManager.get(instanceKey, ["clientId", "clientSecret", "oAuth2Client"]));
   oAuth2Client.getToken(code, (err, token) => {
-    console.log(token);
-    JsForce.sendTokens(token, instanceKey);
+    JsForce.sendTokens({...token, clientId, clientSecret}, instanceKey);
   })
   io.emit("authComplete", {});
 }
