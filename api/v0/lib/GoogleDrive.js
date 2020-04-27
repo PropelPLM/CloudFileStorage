@@ -28,11 +28,9 @@ function createAuthUrl(credentials, instanceKey) {
     scope: actions.driveFiles,
     state: Buffer.from(instanceKey).toString("base64")
   });
-  // console.log('url', url);
-  // return url;
 }
 
-async function getTokens(code, instanceKey) {
+function getTokens(code, instanceKey) {
   let clientId, clientSecret, oAuth2Client;
   ({ clientId, clientSecret, oAuth2Client } = InstanceManager.get(instanceKey, ["clientId", "clientSecret", "oAuth2Client"]));
   oAuth2Client.getToken(code, (err, token) => {

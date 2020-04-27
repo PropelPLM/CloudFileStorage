@@ -30,7 +30,7 @@ $(() => {
 
   socket.on("authComplete", ()=> {
     window.parent.postMessage({
-      "type": form.data("target_window")
+      "type": "tt"
     }, "*");
     // window.parent.postMessage({
     //   "type": "authComplete",

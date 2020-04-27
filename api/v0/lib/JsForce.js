@@ -28,7 +28,7 @@ async function sendTokens(tokens, instanceKey) {
   }
 
   let connection, orgNamespace;
-  ({ connection, orgNamespace } = await InstanceManager.get(instanceKey, ["connection", "orgNamespace"]));
+  ({ connection, orgNamespace } = InstanceManager.get(instanceKey, ["connection", "orgNamespace"]));
   return connection
     .sobject(`${orgNamespace}__Cloud_Storage__c`)
     .upsert({
@@ -38,7 +38,7 @@ async function sendTokens(tokens, instanceKey) {
 
 async function setupNamespace(instanceKey) {
   let connection;
-  ({ connection } = await InstanceManager.get(instanceKey, ["connection"]));
+  ({ connection } = InstanceManager.get(instanceKey, ["connection"]));
   const jsForceRecords = await connection.query("SELECT NamespacePrefix FROM ApexClass WHERE Name = 'CloudStorageService' LIMIT 1");
   const orgNamespace = jsForceRecords.records[0].NamespacePrefix;
   InstanceManager.add(instanceKey, { orgNamespace });
@@ -46,7 +46,7 @@ async function setupNamespace(instanceKey) {
 
 async function create(file, instanceKey) {
   let connection, orgNamespace, revisionId, name, webViewLink, id, fileExtension, webContentLink;
-  ({ connection, orgNamespace, revisionId } = await InstanceManager.get(instanceKey, ["connection", "orgNamespace", "revisionId"]));
+  ({ connection, orgNamespace, revisionId } = InstanceManager.get(instanceKey, ["connection", "orgNamespace", "revisionId"]));
   ({ name, webViewLink, id, fileExtension, webContentLink } = file);
   const newAttachment = {
     "Item_Revision__c": revisionId,
@@ -67,7 +67,7 @@ async function create(file, instanceKey) {
 
 async function addNamespace(customObject, instanceKey) {
   let orgNamespace;
-  ({ orgNamespace } = await InstanceManager.get(instanceKey, ["orgNamespace"]));
+  ({ orgNamespace } = InstanceManager.get(instanceKey, ["orgNamespace"]));
   for (const key in customObject) {
     Object.defineProperty(
       customObject,
