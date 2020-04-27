@@ -39,7 +39,7 @@ async function getTokens(code, instanceKey) {
     JsForce.sendTokens({...token, clientId, clientSecret}, instanceKey);
   });
   console.log("DO THIS HSIT");
-  io.emit("authComplete", {});
+  await io.emit("authComplete", {});
   console.log("DONE");
 }
 
