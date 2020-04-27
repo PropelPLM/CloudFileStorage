@@ -28,7 +28,7 @@ app.post("/auth", async (req, res) => {
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
   const instanceKey = await InstanceManager.start(sessionId);
-  setTargetWindowOnForm(salesforceUrl);
+  GoogleDrive.setTargetWindowOnForm(salesforceUrl);
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   await Promise.all([
     InstanceManager.add(instanceKey, instanceDetails),
