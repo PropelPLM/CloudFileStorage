@@ -43,10 +43,10 @@ app.post("/auth", async (req, res) => {
   }
 });
 
-app.get("/auth/callback/google", (req, res) => {
+app.get("/auth/callback/google", async (req, res) => {
   const instanceKey = Buffer.from(req.query.state, "base64").toString();
   const code = req.query.code;
-  GoogleDrive.getTokens(code, instanceKey);
+  await GoogleDrive.getTokens(code, instanceKey);
   res.send("<script>window.close()</script>");
 });
 

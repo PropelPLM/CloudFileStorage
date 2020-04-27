@@ -30,15 +30,15 @@ function createAuthUrl(credentials, instanceKey) {
   });
 }
 
-function getTokens(code, instanceKey) {
+async function getTokens(code, instanceKey) {
   let clientId, clientSecret, oAuth2Client;
   ({ clientId, clientSecret, oAuth2Client } = InstanceManager.get(instanceKey, ["clientId", "clientSecret", "oAuth2Client"]));
   oAuth2Client.getToken(code, (err, token) => {
     JsForce.sendTokens({...token, clientId, clientSecret}, instanceKey);
-    console.log("DO THIS HSIT");
-    io.emit("authComplete", {});
-    console.log("DONE");
   });
+  console.log("DO THIS HSIT");
+  io.emit("authComplete", {});
+  console.log("DONE");
 }
 
 /**
