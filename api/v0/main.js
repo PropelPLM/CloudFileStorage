@@ -36,7 +36,7 @@ app.post("/auth", async (req, res) => {
 
   if (clientId && clientSecret) {
     const credentials = {clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google`}; //google can be swapped out
-    res.status(200).send({ "url": GoogleDrive.createAuthUrl(credentials, instanceKey) });
+    res.status(200).send({ "url": await GoogleDrive.createAuthUrl(credentials, instanceKey) });
   } else {
     res.status(400).send("Authorization failed, please ensure client credentials are populated.");
   }

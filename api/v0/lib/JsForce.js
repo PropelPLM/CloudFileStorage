@@ -13,7 +13,6 @@ async function connect(sessionId, salesforceUrl, instanceKey) {
       InstanceManager.add(instanceKey, { connection }),
       setupNamespace(instanceKey)
     ]);
-    console.log('done with setup!!')
   } catch (err) {
     console.log(`Log in failed: ${err}`);
   }
@@ -39,14 +38,11 @@ async function sendTokens(tokens, instanceKey) {
 }
 
 async function setupNamespace(instanceKey) {
-  console.log('setupNamespace');
   let connection;
   ({ connection } = await InstanceManager.get(instanceKey, ["connection"]));
   const jsForceRecords = await connection.query("SELECT NamespacePrefix FROM ApexClass WHERE Name = 'CloudStorageService' LIMIT 1");
   const namespace = jsForceRecords.records[0].NamespacePrefix;
-  console.log('namespace', namespace);
   await InstanceManager.add(instanceKey, "namespace", namespace);
-  console.log('namespace DONE', namespace);
 }
 
 async function create(file, instanceKey) {
