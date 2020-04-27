@@ -29,6 +29,7 @@ $(() => {
   })
 
   socket.on("authComplete", ()=> {
+    console.log(form.attr("targetWindow"))
     window.parent.postMessage({
       "type": "authComplete",
     }, form.attr("targetWindow"))
