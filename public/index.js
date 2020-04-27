@@ -20,6 +20,12 @@ $(() => {
 
   //SOCKET IO HELPERS
   const socket = io();
+  socket.on('authComplete', ()=> {
+    window.parent.postMessage({
+      "type": "authComplete",
+    }, '*')
+  })
+
 
   socket.on("setAttribute", object => {
     Object.entries(object).forEach(([key, value]) => {
