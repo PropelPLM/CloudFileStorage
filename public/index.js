@@ -29,12 +29,12 @@ $(() => {
   })
 
   socket.on("authComplete", ()=> {
-    window.parent.postMessage({
-      "type": "tt"
-    }, "*");
     // window.parent.postMessage({
-    //   "type": "authComplete",
-    // }, form.data("target_window"))
+    //   "type": "tt"
+    // }, "*");
+    window.parent.postMessage({
+      "type": "authComplete",
+    }, form.data("https://clin-dev-ed--plmlaw.visualforce.com"))
   })
 
   const trackProgress = async () => {
