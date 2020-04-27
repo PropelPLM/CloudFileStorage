@@ -118,12 +118,8 @@ async function uploadFile(auth, options) {
   }
 }
 
-function setInstanceOnForm(instanceKey) {
-  io.emit("instanceKey", instanceKey);
-}
-
-function setTargetWindowOnForm(salesforceUrl) {
-  io.emit("targetWindow", salesforceUrl);
+function setAttributeOnForm(object) {
+  io.emit("setAttribute", object);
 }
 
 function logSuccessResponse(response, functionName) {
@@ -145,7 +141,6 @@ module.exports = {
   authorize,
   createAuthUrl,
   getTokens,
-  setInstanceOnForm,
-  setTargetWindowOnForm,
+  setAttributeOnForm,
   uploadFile
 };

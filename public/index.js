@@ -22,18 +22,16 @@ $(() => {
   //SOCKET IO HELPERS
   const socket = io();
 
-  socket.on("instanceKey", (instanceKey) => {
-     form.data("instanceKey", instanceKey);
+  socket.on("setAttribute", object => {
+    Object.entries(object).forEach(([key, value]) => {
+      form.attr(`data-${key}`, value);
+    })
   })
-
-  socket.on("targetWindow", (salesforceUrl) => {
-    form.data("targetWindow", salesforceUrl);
- })
 
   socket.on("authComplete", ()=> {
     window.parent.postMessage({
       "type": "authComplete",
-    }, form.data("targetWindow"))
+    }, form.attr("targetWindow"))
   })
 
   const trackProgress = async () => {

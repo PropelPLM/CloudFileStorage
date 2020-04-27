@@ -28,7 +28,7 @@ app.post("/auth", async (req, res) => {
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
   const instanceKey = await InstanceManager.start(sessionId);
-  GoogleDrive.setTargetWindowOnForm(salesforceUrl);
+  GoogleDrive.setAttributeOnForm({ targetWindow });
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   await Promise.all([
     InstanceManager.add(instanceKey, instanceDetails),
@@ -59,7 +59,7 @@ app.post("/uploadDetails", async (req, res) => {
   const instanceKey = sessionId + revisionId;
   const instanceDetails = { revisionId: revId, destinationFolderId };
   await InstanceManager.add(instanceKey, instanceDetails);
-  GoogleDrive.setInstanceOnForm(instanceKey);
+  GoogleDrive.setAttributeOnForm({ instanceKey });
 
   logSuccessResponse({ revId }, "[ENDPOINT.UPLOAD_DETAILS]")
   res.status(200).send({ revId })
