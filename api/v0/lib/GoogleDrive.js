@@ -15,13 +15,13 @@ const actions = {
 
 var origKey;
 
-async function createAuthUrl(credentials, instanceKey) {
+function createAuthUrl(credentials, instanceKey) {
   let clientId, clientSecret, redirect_uri;
   ({clientId, clientSecret, redirect_uri} = credentials);
   
   origKey = instanceKey;
   const oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
-  await InstanceManager.add(instanceKey, { oAuth2Client });
+  InstanceManager.add(instanceKey, { oAuth2Client });
   return oAuth2Client.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
@@ -34,12 +34,12 @@ async function createAuthUrl(credentials, instanceKey) {
 
 async function getTokens(code, instanceKey) {
   let clientId, clientSecret, oAuth2Client;
-  ({ clientId, clientSecret, oAuth2Client } = await InstanceManager.get(instanceKey, ["clientId", "clientSecret", "oAuth2Client"]));
+  ({ clientId, clientSecret, oAuth2Client } = InstanceManager.get(instanceKey, ["clientId", "clientSecret", "oAuth2Client"]));
   oAuth2Client.getToken(code, (err, token) => {
     JsForce.sendTokens({...token, clientId, clientSecret}, instanceKey);
   });
   console.log("DO THIS HSIT");
-  await io.emit("authComplete", {});
+  io.emit("authComplete", {});
   console.log("DONE");
 }
 
@@ -71,7 +71,7 @@ async function authorize(clientId, clientSecret, tokens, options, callback) {
  */
 async function uploadFile(auth, options) {
   let destinationFolderId, salesforceUrl;
-  ({ destinationFolderId, salesforceUrl } = await InstanceManager.get(options.instanceKey, ["destinationFolderId", "salesforceUrl"]));
+  ({ destinationFolderId, salesforceUrl } = InstanceManager.get(options.instanceKey, ["destinationFolderId", "salesforceUrl"]));
   var fileMetadata = {
     name: options.fileName,
     driveId: destinationFolderId,

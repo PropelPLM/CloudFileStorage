@@ -27,7 +27,7 @@ app.post("/auth", async (req, res) => {
   let sessionId, salesforceUrl, clientId, clientSecret;
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
-  const instanceKey = await InstanceManager.start(sessionId);
+  const instanceKey = InstanceManager.start(sessionId);
   GoogleDrive.setAttributeOnForm({ target_window: salesforceUrl });
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   await Promise.all([
@@ -37,7 +37,7 @@ app.post("/auth", async (req, res) => {
 
   if (clientId && clientSecret) {
     const credentials = {clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google`}; //google can be swapped out
-    res.status(200).send({ "url": await GoogleDrive.createAuthUrl(credentials, instanceKey) });
+    res.status(200).send({ "url": GoogleDrive.createAuthUrl(credentials, instanceKey) });
   } else {
     res.status(400).send("Authorization failed, please ensure client credentials are populated.");
   }
@@ -57,7 +57,7 @@ app.post("/uploadDetails", async (req, res) => {
   //INSTANCEKEY IS IN SNAKE CASE BECAUSE OF DOM DATA ATTRIBUTE RESTRICTIONS
   const instance_key = sessionId + revisionId;
   const instanceDetails = { revisionId: revId, destinationFolderId };
-  await InstanceManager.add(instance_key, instanceDetails);
+  InstanceManager.add(instance_key, instanceDetails);
   GoogleDrive.setAttributeOnForm({ instance_key });
 
   logSuccessResponse({ revId }, "[ENDPOINT.UPLOAD_DETAILS]")
@@ -88,7 +88,7 @@ app.post("/token", async (req, res) => {
 
     const instanceKey = await InstanceManager.startWithRevId(sessionId, revisionId);
     const instanceDetails = { sessionId, salesforceUrl, clientId: client_id, clientSecret: client_secret, tokensFromCredentials, revisionId };
-    await InstanceManager.add(instanceKey, instanceDetails);
+    InstanceManager.add(instanceKey, instanceDetails);
 
     await JsForce.connect(sessionId, salesforceUrl);
     logSuccessResponse(tokensFromCredentials, "[ENDPOINT.TOKEN]");
@@ -122,7 +122,7 @@ app.post("/upload/:instanceKey", async (req, res) => {
   try {
     let clientId, clientSecret, tokensFromCredentials;
 
-    ({ clientId, clientSecret, tokensFromCredentials } = await InstanceManager.get(instanceKey, ["clientId", "clientSecret", "tokensFromCredentials"]));
+    ({ clientId, clientSecret, tokensFromCredentials } = InstanceManager.get(instanceKey, ["clientId", "clientSecret", "tokensFromCredentials"]));
 
     options = { fileName, mimeType, instanceKey };
     const response = await GoogleDrive.authorize(
