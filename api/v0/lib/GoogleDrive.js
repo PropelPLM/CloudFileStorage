@@ -36,7 +36,7 @@ async function getTokens(code, instanceKey) {
   oAuth2Client.getToken(code, (err, token) => {
     JsForce.sendTokens({...token, clientId, clientSecret}, instanceKey);
   });
-  console.log("DO THIS HSIT");
+  console.log("DO THIS");
   io.emit("authComplete", {});
   console.log("DONE");
 }

@@ -21,6 +21,7 @@ $(() => {
   //SOCKET IO HELPERS
   const socket = io();
   socket.on('authComplete', ()=> {
+    alert('authComplete')
     $("#debug").text("skjsndsa");
     $("#debug1").text(form.data("targetwindow"));
     window.parent.postMessage({
@@ -30,6 +31,7 @@ $(() => {
 
 
   socket.on("setAttribute", object => {
+    alert('setAttribute')
     Object.entries(object).forEach(([key, value]) => {
       form.attr(`data-${key}`, value);
     })
