@@ -32,8 +32,10 @@ $(() => {
   })
 
   socket.on("authComplete", ()=> {
-    console.log('authcb');
-    console.log(form.data("targetWindow"));
+    window.parent.postMessage({
+      "type": "fucku cb",
+      "url": form.data("targetWindow")
+    }, '*')
     window.parent.postMessage({
       "type": "authComplete",
     }, form.data("targetWindow"))
