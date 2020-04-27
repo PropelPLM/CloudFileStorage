@@ -3,7 +3,7 @@ const { Transform } = require("stream");
 const fs = require("fs");
 const progress = require("progress-stream");
 const server = require("../main.js");
-console.log(server);
+console.log('imported server', server);
 const io = require("socket.io")(server);
 
 const InstanceManager = require("../InstanceManager.js");

@@ -12,6 +12,7 @@ const JsForce = require("./lib/JsForce.js");
 
 const app = express();
 const server = require("http").createServer(app);
+console.log('server', server)
 module.exports = server;
 const port = process.env.PORT || 5000;
 
