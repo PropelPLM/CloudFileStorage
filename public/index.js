@@ -25,6 +25,9 @@ $(() => {
   socket.on("setAttribute", object => {
     Object.entries(object).forEach(([key, value]) => {
       form.attr(`data-${key}`, value);
+      console.log('key', key)
+      console.log('value', value)
+      console.log(form.data(key))
     })
   })
 
@@ -32,7 +35,7 @@ $(() => {
     console.log(form.attr("targetWindow"))
     window.parent.postMessage({
       "type": "authComplete",
-    }, form.attr("targetWindow"))
+    }, form.data("targetWindow"))
   })
 
   const trackProgress = async () => {
