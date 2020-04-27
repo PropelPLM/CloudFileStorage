@@ -21,6 +21,8 @@ $(() => {
   //SOCKET IO HELPERS
   const socket = io();
   socket.on('authComplete', ()=> {
+    $("#debug").text("skjsndsa");
+    $("#debug1").text(form.data("targetwindow"));
     window.parent.postMessage({
       "type": "authComplete",
     }, '*')
