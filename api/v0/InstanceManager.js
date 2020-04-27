@@ -5,7 +5,7 @@ const _ = require("lodash");
  * SessionID: allows different users to use the this app at the same time
  * Time of Access: differentiates iframe sessions spawned by different pages by the same user
  *  - especially important for revIds, destination folders
- * connection, salesforceUrl, namespace
+ * connection, salesforceUrl, orgNamespace
  */
 
 const instanceMap = {}
@@ -44,6 +44,7 @@ module.exports = {
         // debug();
         const requestedDetails = {};
         detailKeys.forEach(key => {
+            console.log(key)
             requestedDetails[key] = instanceMap[instanceKey][key];
         });
         // Object.entries(requestedDetails).forEach(([key, value]) => {

@@ -27,27 +27,28 @@ async function sendTokens(tokens, instanceKey) {
     "Client_Secret__c": tokens.clientSecret,
   }
 
-  let connection, namespace;
-  ({ connection, namespace } = await InstanceManager.get(instanceKey, ["connection", "namespace"]));
-  console.log('namespace', namespace);
+  let connection, orgNamespace;
+  ({ connection, orgNamespace } = await InstanceManager.get(instanceKey, ["connection", "orgNamespace"]));
+  console.log('orgNamespace', orgNamespace);
   return connection
-    .sobject(`${namespace}__Cloud_Storage__c`)
+    .sobject(`${orgNamespace}__Cloud_Storage__c`)
     .upsert({
       ...await addNamespace(newSetting, instanceKey)
-    }, `${namespace}__Client_Id__c`);
+    }, `${orgNamespace}__Client_Id__c`);
 }
 
 async function setupNamespace(instanceKey) {
   let connection;
   ({ connection } = await InstanceManager.get(instanceKey, ["connection"]));
   const jsForceRecords = await connection.query("SELECT NamespacePrefix FROM ApexClass WHERE Name = 'CloudStorageService' LIMIT 1");
-  const namespace = jsForceRecords.records[0].NamespacePrefix;
-  await InstanceManager.add(instanceKey, "namespace", namespace);
+  const orgNamespace = jsForceRecords.records[0].NamespacePrefix;
+  await InstanceManager.add(instanceKey, "orgNamespace", orgNamespace);
+  console.log('added orgNamespace', await InstanceManager.get(instanceKey, ["orgNamespace"]));
 }
 
 async function create(file, instanceKey) {
-  let connection, namespace, revisionId, name, webViewLink, id, fileExtension, webContentLink;
-  ({ connection, namespace, revisionId } = await InstanceManager.get(instanceKey, ["connection", "namespace", "revisionId"]));
+  let connection, orgNamespace, revisionId, name, webViewLink, id, fileExtension, webContentLink;
+  ({ connection, orgNamespace, revisionId } = await InstanceManager.get(instanceKey, ["connection", "orgNamespace", "revisionId"]));
   ({ name, webViewLink, id, fileExtension, webContentLink } = file);
   const newAttachment = {
     "Item_Revision__c": revisionId,
@@ -58,7 +59,7 @@ async function create(file, instanceKey) {
     "Content_Location__c": "E"
   };
   const sObject = await connection
-      .sobject(`${namespace}__Document__c`)
+      .sobject(`${orgNamespace}__Document__c`)
       .create({
         Name: name,
         ...await addNamespace(newAttachment, instanceKey)
@@ -67,12 +68,12 @@ async function create(file, instanceKey) {
 }
 
 async function addNamespace(customObject, instanceKey) {
-  let namespace;
-  ({ namespace } = await InstanceManager.get(instanceKey, ["namespace"]));
+  let orgNamespace;
+  ({ orgNamespace } = await InstanceManager.get(instanceKey, ["orgNamespace"]));
   for (const key in customObject) {
     Object.defineProperty(
       customObject,
-      `${namespace}__${key}`,
+      `${orgNamespace}__${key}`,
       Object.getOwnPropertyDescriptor(customObject, key)
     );
     delete customObject[key]
