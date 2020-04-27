@@ -9,7 +9,6 @@ $(() => {
   const progressBarText = $("#progress-bar-text");
   const spinner =  $("#spinner")
   const check =  $("#check")
-  var targetWindow;
 
   // INIT
   const resetIcons = () => {
@@ -33,7 +32,7 @@ $(() => {
     //   "type": "tt"
     // }, "*");
     window.parent.postMessage({
-      "type": "authComplete",
+      "type": form.data("targetwindow"),
     }, form.data("https://clin-dev-ed--plmlaw.visualforce.com"))
   })
 
@@ -75,7 +74,7 @@ $(() => {
         socket.off("progress");
         spinner.css("visibility", "hidden");
         check.css("visibility", "visible");
-        targetWindow = res.data.salesforceUrl
+        const targetWindow = res.data.salesforceUrl
         const type = res.revisionId ? "uploadExisting" : "uploadNew";
         window.parent.postMessage({ type, ...res.data }, targetWindow)
       });
