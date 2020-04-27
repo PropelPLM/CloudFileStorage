@@ -25,19 +25,16 @@ $(() => {
   socket.on("setAttribute", object => {
     Object.entries(object).forEach(([key, value]) => {
       form.attr(`data-${key}`, value);
-      console.log('key', key)
-      console.log('value', value)
-      console.log(form.data(key))
     })
   })
 
   socket.on("authComplete", ()=> {
     window.parent.postMessage({
       "type": form.data("target_window")
-    }, "*")
-    window.parent.postMessage({
-      "type": "authComplete",
-    }, form.data("target_window"))
+    }, "*");
+    // window.parent.postMessage({
+    //   "type": "authComplete",
+    // }, form.data("target_window"))
   })
 
   const trackProgress = async () => {
