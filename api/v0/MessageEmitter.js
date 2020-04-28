@@ -15,7 +15,7 @@ module.exports = {
         keyedAttribute[`${key}-${attribute}`] = value;
         io.emit("setAttribute", keyedAttribute)
     },
-    postMessage: (topic, payload) => {
-        io.emit(topic, payload);
+    postMessage: (instanceKey, topic, payload) => {
+        io.emit(topic, {instanceKey, payload});
     }
 }

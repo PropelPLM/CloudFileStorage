@@ -27,11 +27,18 @@ $(() => {
     })
   })
 
-  socket.on("instanceKey", key => {
+  socket.on("trigger", ({instanceKey, payload}) => {
     window.parent.postMessage({
-      "type": key,
+      "type": instanceKey,
+      "data": payload
+    }, form.data(`${instanceKey}-targetwindow`));
+  })
+
+  socket.on("instanceKey", ({instanceKey, payload}) => {
+    window.parent.postMessage({
+      "type": instanceKey,
       "data": "document.referrer"
-    }, form.data(`${key}-targetwindow`));
+    }, form.data(`${instanceKey}-targetwindow`));
   })
 
   socket.on("authComplete", ()=> {

@@ -96,7 +96,7 @@ app.post("/uploadDetails", async (req, res) => {
   MessageEmitter.setKeyedAttribute(instanceKey, "target_window", salesforceUrl);
   const instanceDetails = { revisionId, destinationFolderId };
   InstanceManager.add(instanceKey, instanceDetails);
-  MessageEmitter("trigger", )
+  MessageEmitter.postMessage(instanceKey, "trigger", "HELP")
   logSuccessResponse({ instanceKey, revisionId }, "[ENDPOINT.UPLOAD_DETAILS]")
   res.status(200).send({ revisionId })
 });
