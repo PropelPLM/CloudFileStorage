@@ -11,6 +11,7 @@ module.exports = {
         io.emit("setAttribute", keyedAttribute)
     },
     postMessage: (instanceKey, topic, payload) => {
+        console.log(instanceKey, topic, payload);
         io.emit("trigger", {instanceKey, topic, payload});
     }
 }
