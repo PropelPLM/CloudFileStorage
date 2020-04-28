@@ -1,5 +1,6 @@
 "use strict"
 const _ = require("lodash");
+const uuid = require("uuid");
 /**
  * Time of access and the sessionId will be used to demultiplex different iframe sessions
  * SessionID: allows different users to use the this app at the same time
@@ -11,15 +12,8 @@ const _ = require("lodash");
 const instanceMap = {}
 
 module.exports = {
-    start: (sessionId) => {
-        const instanceKey = _.replace(sessionId, /\./g, "");
-        instanceMap[instanceKey] = {};
-        return instanceKey;
-    },
-
-    startWithRevId: (sessionId, revisionId) => {
-        let instanceKey = sessionId + revisionId;
-        instanceKey = _.replace(instanceKey, /\./g, "");
+    start: () => {
+        const instanceKey = uuid.v1();
         instanceMap[instanceKey] = {};
         return instanceKey;
     },

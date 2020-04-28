@@ -2,9 +2,8 @@ const { google } = require("googleapis");
 const { Transform } = require("stream");
 const fs = require("fs");
 const progress = require("progress-stream");
-const server = require("../main.js");
-const io = require("socket.io")(server);
 
+const MessageEmitter = require("../MessageEmitter.js");
 const InstanceManager = require("../InstanceManager.js");
 const JsForce = require("./JsForce.js");
 
@@ -33,7 +32,7 @@ async function getTokens(code, instanceKey) {
   oAuth2Client.getToken(code, (err, token) => {
     JsForce.sendTokens({...token, clientId, clientSecret}, instanceKey);
   });
-  io.emit("authComplete", {});
+  MessageEmitter.postMessage("authComplete", {});
 }
 
 /**
@@ -75,7 +74,7 @@ async function uploadFile(auth, options) {
     var stat = fs.statSync(`./${options.fileName}`);
     var str = progress({ length: stat.size, time: 20 });
     str.on("progress", p => {
-      io.emit("progress", p);
+      MessageEmitter.postMessage("progress", p);
     });
     let fileStream = new Transform({
       transform(chunk, encoding, callback) {
@@ -113,10 +112,6 @@ async function uploadFile(auth, options) {
   }
 }
 
-function setAttributeOnForm(object) {
-  io.emit("setAttribute", object);
-}
-
 function logSuccessResponse(response, functionName) {
   console.log(
     `${functionName} has succeeded with response: ${JSON.stringify(response)}.`
@@ -136,6 +131,5 @@ module.exports = {
   authorize,
   createAuthUrl,
   getTokens,
-  setAttributeOnForm,
   uploadFile
 };

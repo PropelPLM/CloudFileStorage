@@ -27,12 +27,16 @@ $(() => {
     })
   })
 
+  socket.on("instanceKey", key => {
+    window.parent.postMessage({
+      "type": key
+    }, form.data(`${key}-targetwindow`));
+  })
+
   socket.on("authComplete", ()=> {
-    $("#debug").text("skjsndsa");
-    $("#debug1").text(form.data("targetwindow"));
     window.parent.postMessage({
       "type": "authComplete"
-    }, form.data("targetwindow"))
+    }, form.data("targetwindow"));
   })
 
   const trackProgress = async () => {

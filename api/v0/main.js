@@ -27,8 +27,8 @@ app.post("/auth", async (req, res) => {
   let sessionId, salesforceUrl, clientId, clientSecret;
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
-  const instanceKey = InstanceManager.start(sessionId);
-  GoogleDrive.setAttributeOnForm({ targetwindow: salesforceUrl });
+  const instanceKey = InstanceManager.start();
+  MessageEmitter.postMessage("setAttribute", { targetwindow: salesforceUrl });
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   await Promise.all([
     InstanceManager.add(instanceKey, instanceDetails),
@@ -54,12 +54,10 @@ app.post("/uploadDetails", async (req, res) => {
   let revId, destinationFolderId, sessionId, salesforceUrl;
   ({ revId, destinationFolderId, sessionId, salesforceUrl } = req.body);
 
-  //INSTANCEKEY IS IN SNAKE CASE BECAUSE OF DOM DATA ATTRIBUTE RESTRICTIONS
-  const instance_key = sessionId + revisionId;
+  const instanceKey = sessionId + revisionId;
   const instanceDetails = { revisionId: revId, destinationFolderId };
-  InstanceManager.add(instance_key, instanceDetails);
-  GoogleDrive.setAttributeOnForm({ instance_key });
-
+  InstanceManager.add(instanceKey, instanceDetails);
+  //INSTANCEKEY IS IN SNAKE CASE BECAUSE OF DOM DATA ATTRIBUTE RESTRICTIONS
   logSuccessResponse({ revId }, "[ENDPOINT.UPLOAD_DETAILS]")
   res.status(200).send({ revId })
 });
@@ -74,8 +72,7 @@ app.post("/token", async (req, res) => {
       refresh_token,
       expiry_date,
       sessionId,
-      salesforceUrl, 
-      revisionId
+      salesforceUrl
     } = req.body);
 
     tokensFromCredentials = {
@@ -86,11 +83,13 @@ app.post("/token", async (req, res) => {
       expiry_date
     };
 
-    const instanceKey = await InstanceManager.startWithRevId(sessionId, revisionId);
-    const instanceDetails = { sessionId, salesforceUrl, clientId: client_id, clientSecret: client_secret, tokensFromCredentials, revisionId };
+    const instanceKey = await InstanceManager.start();
+    MessageEmitter.setKeyedAttribute(instanceKey, "targetwindow", salesforceUrl);
+    MessageEmitter.postMessage('instanceKey', instanceKey)
+    const instanceDetails = { sessionId, salesforceUrl, clientId: client_id, clientSecret: client_secret, tokensFromCredentials };
     InstanceManager.add(instanceKey, instanceDetails);
 
-    await JsForce.connect(sessionId, salesforceUrl);
+    await JsForce.connect(sessionId, salesforceUrl, instanceKey);
     logSuccessResponse(tokensFromCredentials, "[ENDPOINT.TOKEN]");
     res.status(200).send(tokensFromCredentials);
   } catch (err) {
