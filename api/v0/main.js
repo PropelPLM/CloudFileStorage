@@ -87,30 +87,18 @@ app.post("/token", async (req, res) => {
 });
 
 app.post("/uploadDetails", async (req, res) => {
-  let revisionId, destinationFolderId, currentInstanceKey;
-  ({ revisionId, destinationFolderId, currentInstanceKey } = req.body);
+  let revisionId, destinationFolderId, currentInstanceKey, salesforceUrl;
+  ({ revisionId, destinationFolderId, currentInstanceKey, salesforceUrl } = req.body); 
 
   console.log('currentInstanceKey', currentInstanceKey);
-  const instanceKey = currentInstanceKey ? 
-    (() => {
-      const newKey = InstanceManager.start();
-      InstanceManager.updateKey(currentInstanceKey, newKey);
-      let sessionId, salesforceUrl, clientId, clientSecret, tokensFromCredentials;
-      ({sessionId, salesforceUrl, clientId, clientSecret, tokensFromCredentials} = InstanceManager.get(newKey, ["sessionId", "salesforceUrl", 'clientId', 'clientSecret', 'tokensFromCredentials']))
-      console.log('sessionId',sessionId);
-      console.log('salesforceUrl',salesforceUrl);
-      console.log('clientSecret',clientSecret);
-      console.log('clientId',clientId);
-      console.log('tokensFromCredentials',tokensFromCredentials);
-      return newKey;
-    })() :
-    currentInstanceKey;
-  console.log('instanceKey', instanceKey);
+  const instanceKey = InstanceManager.start();
+  InstanceManager.updateKey(currentInstanceKey, newKey);
+  MessageEmitter.setKeyedAttribute(instanceKey, "target_window", salesforceUrl);
   const instanceDetails = { revisionId, destinationFolderId };
   InstanceManager.add(instanceKey, instanceDetails);
-  //INSTANCEKEY IS IN SNAKE CASE BECAUSE OF DOM DATA ATTRIBUTE RESTRICTIONS
-  logSuccessResponse({ instanceKey, revId }, "[ENDPOINT.UPLOAD_DETAILS]")
-  res.status(200).send({ revId })
+  MessageEmitter("trigger", )
+  logSuccessResponse({ instanceKey, revisionId }, "[ENDPOINT.UPLOAD_DETAILS]")
+  res.status(200).send({ revisionId })
 });
 
 
