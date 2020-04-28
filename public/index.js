@@ -31,14 +31,14 @@ $(() => {
     window.parent.postMessage({
       "type": instanceKey,
       "data": payload
-    }, form.data(`${instanceKey}-targetwindow`));
+    }, form.data(`${instanceKey}-target_window`));
   })
 
   socket.on("instanceKey", ({instanceKey, payload}) => {
     window.parent.postMessage({
       "type": instanceKey,
       "data": "document.referrer"
-    }, form.data(`${instanceKey}-targetwindow`));
+    }, form.data(`${instanceKey}-target_window`));
   })
 
   socket.on("authComplete", ({instanceKey, payload})=> {
