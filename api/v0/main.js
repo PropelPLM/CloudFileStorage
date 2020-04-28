@@ -95,6 +95,7 @@ app.post("/uploadDetails", async (req, res) => {
   
   const instanceDetails = { revisionId, destinationFolderId };
   InstanceManager.add(instanceKey, instanceDetails);
+  MessageEmitter.postMessage(instanceKey, "uploadTrigger", 'please work please this is the trigger');
   logSuccessResponse({ instanceKey, revisionId }, "[ENDPOINT.UPLOAD_DETAILS]")
   res.status(200).send({ revisionId, instanceKey })
 });
