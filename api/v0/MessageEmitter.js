@@ -7,7 +7,7 @@ const io = require("socket.io")(server);
 console.log('message server', server)
 
 module.exports = {
-    setKeyedAttribute: (key, attribute, value) => {
+    setKeyedAttribute: async (key, attribute, value) => {
         console.log('key', key);
         console.log('attribute', attribute);
         console.log('value', value);
@@ -15,7 +15,7 @@ module.exports = {
         keyedAttribute[`${key}-${attribute}`] = value;
         io.emit("setAttribute", keyedAttribute)
     },
-    postMessage: (topic, payload) => {
+    postMessage: async (topic, payload) => {
         io.emit(topic, payload);
     }
 }

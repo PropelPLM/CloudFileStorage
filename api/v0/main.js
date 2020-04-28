@@ -73,7 +73,7 @@ app.post("/token", async (req, res) => {
     };
 
     const instanceKey = await InstanceManager.start();
-    MessageEmitter.setKeyedAttribute(instanceKey, "targetwindow", salesforceUrl);
+    await MessageEmitter.setKeyedAttribute(instanceKey, "targetwindow", salesforceUrl);
     MessageEmitter.postMessage('instanceKey', instanceKey)
     const instanceDetails = { sessionId, salesforceUrl, clientId: client_id, clientSecret: client_secret, tokensFromCredentials };
     InstanceManager.add(instanceKey, instanceDetails);
