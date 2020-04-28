@@ -32,7 +32,7 @@ async function getTokens(code, instanceKey) {
   oAuth2Client.getToken(code, (err, token) => {
     JsForce.sendTokens({...token, clientId, clientSecret}, instanceKey);
   });
-  MessageEmitter.postMessage(instanceKey, "authComplete", {});
+  MessageEmitter.postTrigger(instanceKey, "authComplete", {});
 }
 
 /**
@@ -62,8 +62,9 @@ async function authorize(clientId, clientSecret, tokens, options, callback) {
  * @param {Object} options Specifies how the file should be created in the external file storage
  */
 async function uploadFile(auth, options) {
+  const instanceKey = options.instanceKey
   let destinationFolderId, salesforceUrl;
-  ({ destinationFolderId, salesforceUrl } = InstanceManager.get(options.instanceKey, ["destinationFolderId", "salesforceUrl"]));
+  ({ destinationFolderId, salesforceUrl } = InstanceManager.get(instanceKey, ["destinationFolderId", "salesforceUrl"]));
   var fileMetadata = {
     name: options.fileName,
     driveId: destinationFolderId,
@@ -74,7 +75,7 @@ async function uploadFile(auth, options) {
     var stat = fs.statSync(`./${options.fileName}`);
     var str = progress({ length: stat.size, time: 20 });
     str.on("progress", p => {
-      MessageEmitter.postMessage("progress", p);
+      MessageEmitter.postProgress(instanceKey, p);
     });
     let fileStream = new Transform({
       transform(chunk, encoding, callback) {

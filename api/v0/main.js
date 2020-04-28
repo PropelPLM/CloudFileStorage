@@ -29,6 +29,7 @@ app.post("/auth", async (req, res) => {
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
   const instanceKey = InstanceManager.start();
+  MessageEmitter.init(instanceKey);
   MessageEmitter.setAttribute(instanceKey, "target-window", salesforceUrl);
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   await Promise.all([
@@ -91,11 +92,12 @@ app.post("/uploadDetails", async (req, res) => {
 
   const instanceKey = InstanceManager.start();
   InstanceManager.updateKey(currentInstanceKey, instanceKey);
+  MessageEmitter.init(instanceKey);
   MessageEmitter.setAttribute(instanceKey, "target-window", salesforceUrl);
   
   const instanceDetails = { revisionId, destinationFolderId };
   InstanceManager.add(instanceKey, instanceDetails);
-  MessageEmitter.postMessage(instanceKey, "uploadTrigger", 'please work please this is the trigger');
+  MessageEmitter.postTrigger(instanceKey, "uploadTrigger", 'please work please this is the trigger');
   logSuccessResponse({ instanceKey, revisionId }, "[ENDPOINT.UPLOAD_DETAILS]");
   res.status(200).send({ revisionId, instanceKey });
 });

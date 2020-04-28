@@ -5,7 +5,7 @@ const server = require("./main.js");
 const io = require("socket.io")(server);
 
 module.exports = {
-    join: (instanceKey) => {
+    init: (instanceKey) => {
         io.on('connection', socket => {
             socket.on('start', () => {
                 socket.join(instanceKey);
@@ -18,7 +18,10 @@ module.exports = {
         keyedAttribute[`${attribute}`] = value;
         io.to(instanceKey).emit("setAttribute", keyedAttribute);
     },
-    postMessage: (instanceKey, topic, payload) => {
+    postTrigger: (instanceKey, topic, payload) => {
         io.to(instanceKey).emit("trigger", {topic, payload});
+    },
+    postProgress: (instanceKey, payload) => {
+        io.to(instanceKey).emit("progress", payload);
     }
 }
