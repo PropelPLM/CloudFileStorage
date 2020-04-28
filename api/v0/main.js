@@ -11,7 +11,7 @@ const server = require("http").createServer(app);
 module.exports = server;
 const port = process.env.PORT || 5000;
 
-const MessageEmitter = require("../MessageEmitter.js");
+const MessageEmitter = require("./MessageEmitter.js");
 const InstanceManager = require("./InstanceManager.js");
 const GoogleDrive = require("./lib/GoogleDrive.js");
 const JsForce = require("./lib/JsForce.js");
