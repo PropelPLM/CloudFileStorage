@@ -3,7 +3,6 @@ const { Transform } = require("stream");
 const fs = require("fs");
 const progress = require("progress-stream");
 const server = require("../main.js");
-console.log('imported server', server);
 const io = require("socket.io")(server);
 
 const InstanceManager = require("../InstanceManager.js");
@@ -34,9 +33,7 @@ async function getTokens(code, instanceKey) {
   oAuth2Client.getToken(code, (err, token) => {
     JsForce.sendTokens({...token, clientId, clientSecret}, instanceKey);
   });
-  console.log("DO THIS");
   io.emit("authComplete", {});
-  console.log("DONE");
 }
 
 /**
@@ -117,10 +114,6 @@ async function uploadFile(auth, options) {
 }
 
 function setAttributeOnForm(object) {
-  Object.entries(object).forEach(([key, value]) => {
-    console.log('key', key)
-    console.log('value', value)
-  })
   io.emit("setAttribute", object);
 }
 

@@ -32,6 +32,9 @@ $(() => {
 
   socket.on("setAttribute", object => {
     alert('setAttribute')
+    window.parent.postMessage({
+      "type": object,
+    }, '*')
     Object.entries(object).forEach(([key, value]) => {
       form.attr(`data-${key}`, value);
     })
