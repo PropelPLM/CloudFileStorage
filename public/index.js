@@ -29,9 +29,6 @@ $(() => {
 
   socket.on("instanceKey", key => {
     window.parent.postMessage({
-      "type": "key",
-    }, '*');
-    window.parent.postMessage({
       "type": key,
       "data": "document.referrer"
     }, form.data(`${key}-targetwindow`));

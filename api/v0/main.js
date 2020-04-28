@@ -72,15 +72,14 @@ app.post("/token", async (req, res) => {
       expiry_date
     };
 
-    const instanceKey = await InstanceManager.start();
-    await MessageEmitter.setKeyedAttribute(instanceKey, "targetwindow", salesforceUrl);
-    MessageEmitter.postMessage('instanceKey', instanceKey)
+    const instanceKey = InstanceManager.start();
+    MessageEmitter.setKeyedAttribute(instanceKey, "targetwindow", salesforceUrl);
     const instanceDetails = { sessionId, salesforceUrl, clientId: client_id, clientSecret: client_secret, tokensFromCredentials };
     InstanceManager.add(instanceKey, instanceDetails);
 
     await JsForce.connect(sessionId, salesforceUrl, instanceKey);
     logSuccessResponse(tokensFromCredentials, "[ENDPOINT.TOKEN]");
-    res.status(200).send(tokensFromCredentials);
+    res.status(200).send({...tokensFromCredentials, instanceKey});
   } catch (err) {
     logErrorResponse(err, "[ENDPOINT.TOKEN]");
     res.send(`Failed to receive tokens: ${err}`);
@@ -94,8 +93,9 @@ app.post("/uploadDetails", async (req, res) => {
   console.log('currentInstanceKey', currentInstanceKey);
   const instanceKey = currentInstanceKey ? 
     (() => {
-      InstanceManager.start();
+      const key = InstanceManager.start();
       InstanceManager.updateKey(currentInstanceKey, instanceKey);
+      return key;
     })() :
     currentInstanceKey;
   console.log('instanceKey', instanceKey);
