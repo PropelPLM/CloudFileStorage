@@ -29,7 +29,7 @@ app.post("/auth", async (req, res) => {
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
   const instanceKey = InstanceManager.start();
-  MessageEmitter.postMessage("setAttribute", { targetwindow: salesforceUrl });
+  MessageEmitter.setKeyedAttribute(instanceKey, "target_window", salesforceUrl);
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   await Promise.all([
     InstanceManager.add(instanceKey, instanceDetails),
