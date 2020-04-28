@@ -52,10 +52,11 @@ app.get("/auth/callback/google", async (req, res) => {
 });
 
 app.post("/uploadDetails", async (req, res) => {
-  let revId, destinationFolderId, sessionId, salesforceUrl;
-  ({ revId, destinationFolderId, sessionId, salesforceUrl } = req.body);
+  let revId, destinationFolderId, currentInstanceKey;
+  ({ revId, destinationFolderId, currentInstanceKey } = req.body);
 
-  const instanceKey = sessionId + revisionId;
+  const instanceKey = currentInstanceKey ? InstanceManager.start() : currentInstanceKey;
+  InstanceManager.updateKey(currentInstanceKey, instanceKey);
   const instanceDetails = { revisionId: revId, destinationFolderId };
   InstanceManager.add(instanceKey, instanceDetails);
   //INSTANCEKEY IS IN SNAKE CASE BECAUSE OF DOM DATA ATTRIBUTE RESTRICTIONS

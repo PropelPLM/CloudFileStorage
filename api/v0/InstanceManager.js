@@ -30,5 +30,10 @@ module.exports = {
             requestedDetails[key] = instanceMap[instanceKey][key];
         });
         return requestedDetails;
+    },
+
+    update: (oldKey, newKey) => {
+        instanceMap[newKey] = _.cloneDeep(instanceMap[oldKey]);
+        //delete old key ?
     }
 }
