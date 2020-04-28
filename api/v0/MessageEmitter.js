@@ -16,6 +16,7 @@ module.exports = {
         const keyedAttribute = {}
         keyedAttribute[`instance-key`] = instanceKey;
         keyedAttribute[`${attribute}`] = value;
+        console.log('keyedAttribute', keyedAttribute)
         io.to(instanceKey).emit("setAttribute", keyedAttribute);
     },
     postTrigger: (instanceKey, topic, payload) => {
