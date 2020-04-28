@@ -27,24 +27,11 @@ $(() => {
     })
   })
 
-  socket.on("trigger", ({instanceKey, payload}) => {
+  socket.on("trigger", ({instanceKey, topic, payload}) => {
     window.parent.postMessage({
-      "type": instanceKey,
+      "type": topic,
       "data": payload
-    }, form.data(`${instanceKey}-target_window`));
-  })
-
-  socket.on("instanceKey", ({instanceKey, payload}) => {
-    window.parent.postMessage({
-      "type": instanceKey,
-      "data": "document.referrer"
-    }, form.data(`${instanceKey}-target_window`));
-  })
-
-  socket.on("authComplete", ({instanceKey, payload})=> {
-    window.parent.postMessage({
-      "type": "authComplete"
-    }, form.data(`${instanceKey}-targetwindow`));
+    }, form.data(`${instanceKey}-target-window`));
   })
 
   const trackProgress = async () => {

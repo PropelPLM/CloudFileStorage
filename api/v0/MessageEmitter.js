@@ -6,14 +6,11 @@ const io = require("socket.io")(server);
 
 module.exports = {
     setKeyedAttribute: (key, attribute, value) => {
-        console.log('key', key);
-        console.log('attribute', attribute);
-        console.log('value', value);
         const keyedAttribute = {}
         keyedAttribute[`${key}-${attribute}`] = value;
         io.emit("setAttribute", keyedAttribute)
     },
     postMessage: (instanceKey, topic, payload) => {
-        io.emit(topic, {instanceKey, payload});
+        io.emit("trigger", {instanceKey, topic, payload});
     }
 }

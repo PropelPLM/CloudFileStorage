@@ -29,7 +29,7 @@ app.post("/auth", async (req, res) => {
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
   const instanceKey = InstanceManager.start();
-  MessageEmitter.setKeyedAttribute(instanceKey, "target_window", salesforceUrl);
+  MessageEmitter.setKeyedAttribute(instanceKey, "target-window", salesforceUrl);
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   await Promise.all([
     InstanceManager.add(instanceKey, instanceDetails),
@@ -89,10 +89,9 @@ app.post("/uploadDetails", async (req, res) => {
   let revisionId, destinationFolderId, currentInstanceKey, salesforceUrl;
   ({ revisionId, destinationFolderId, currentInstanceKey, salesforceUrl } = req.body); 
 
-  console.log('currentInstanceKey', currentInstanceKey);
   const instanceKey = InstanceManager.start();
   InstanceManager.updateKey(currentInstanceKey, instanceKey);
-  MessageEmitter.setKeyedAttribute(instanceKey, "target_window", salesforceUrl);
+  MessageEmitter.setKeyedAttribute(instanceKey, "target-window", salesforceUrl);
   const instanceDetails = { revisionId, destinationFolderId };
   InstanceManager.add(instanceKey, instanceDetails);
   MessageEmitter.postMessage(instanceKey, "trigger", "HELP")
