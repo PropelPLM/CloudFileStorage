@@ -10,6 +10,9 @@ $(() => {
   const spinner =  $("#spinner")
   const check =  $("#check")
 
+  window.addEventListener('message', e => {
+    $("#debug").text(e);
+  })
   // INIT
   const resetIcons = () => {
     check.css("visibility", "hidden");
@@ -17,6 +20,7 @@ $(() => {
     $("#js-status").css("display", "block");
   }
   resetIcons();
+
 
   //SOCKET IO HELPERS
   const socket = io();
