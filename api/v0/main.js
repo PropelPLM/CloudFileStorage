@@ -87,20 +87,26 @@ app.post("/token", async (req, res) => {
 });
 
 app.post("/uploadDetails", async (req, res) => {
-  let revId, destinationFolderId, currentInstanceKey;
-  ({ revId, destinationFolderId, currentInstanceKey } = req.body);
+  let revisionId, destinationFolderId, currentInstanceKey;
+  ({ revisionId, destinationFolderId, currentInstanceKey } = req.body);
 
   console.log('currentInstanceKey', currentInstanceKey);
   const instanceKey = currentInstanceKey ? 
     (() => {
       const newKey = InstanceManager.start();
       InstanceManager.updateKey(currentInstanceKey, newKey);
-      console.log('key remade');
+      let sessionId, salesforceUrl, clientId, clientSecret, tokensFromCredentials;
+      ({sessionId, salesforceUrl, clientId, clientSecret, tokensFromCredentials} = InstanceManager.get(newKey, ["sessionId", "salesforceUrl", 'clientId', 'clientSecret', 'tokensFromCredentials']))
+      console.log('sessionId',sessionId);
+      console.log('salesforceUrl',salesforceUrl);
+      console.log('clientSecret',clientSecret);
+      console.log('clientId',clientId);
+      console.log('tokensFromCredentials',tokensFromCredentials);
       return newKey;
     })() :
     currentInstanceKey;
   console.log('instanceKey', instanceKey);
-  const instanceDetails = { revisionId: revId, destinationFolderId };
+  const instanceDetails = { revisionId, destinationFolderId };
   InstanceManager.add(instanceKey, instanceDetails);
   //INSTANCEKEY IS IN SNAKE CASE BECAUSE OF DOM DATA ATTRIBUTE RESTRICTIONS
   logSuccessResponse({ instanceKey, revId }, "[ENDPOINT.UPLOAD_DETAILS]")
