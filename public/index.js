@@ -20,34 +20,18 @@ $(() => {
 
   //SOCKET IO HELPERS
   const socket = io();
-  socket.on('authComplete', ()=> {
-    alert('authComplete');
-    $("#debug").text("skjsndsa");
-    $("#debug1").text(form.data("targetwindow"));
-    window.parent.postMessage({
-      "type": "authComplete",
-    }, '*')
-  })
-
 
   socket.on("setAttribute", object => {
-    alert('setAttribute')
-    window.parent.postMessage({
-      "type": object,
-    }, '*')
     Object.entries(object).forEach(([key, value]) => {
       form.attr(`data-${key}`, value);
     })
   })
 
-  // socket.on("authComplete", ()=> {
-  //   // window.parent.postMessage({
-  //   //   "type": "tt"
-  //   // }, "*");
-  //   window.parent.postMessage({
-  //     "type": form.data("targetwindow"),
-  //   }, form.data("https://clin-dev-ed--plmlaw.visualforce.com"))
-  // })
+  socket.on("authComplete", ()=> {
+    window.parent.postMessage({
+      "type": "authComplete"
+    }, form.data("targetwindow"))
+  })
 
   const trackProgress = async () => {
     await socket.on("progress", progress => {
