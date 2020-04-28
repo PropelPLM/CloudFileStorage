@@ -51,19 +51,6 @@ app.get("/auth/callback/google", async (req, res) => {
   res.send("<script>window.close()</script>");
 });
 
-app.post("/uploadDetails", async (req, res) => {
-  let revId, destinationFolderId, currentInstanceKey;
-  ({ revId, destinationFolderId, currentInstanceKey } = req.body);
-
-  const instanceKey = currentInstanceKey ? InstanceManager.start() : currentInstanceKey;
-  InstanceManager.updateKey(currentInstanceKey, instanceKey);
-  const instanceDetails = { revisionId: revId, destinationFolderId };
-  InstanceManager.add(instanceKey, instanceDetails);
-  //INSTANCEKEY IS IN SNAKE CASE BECAUSE OF DOM DATA ATTRIBUTE RESTRICTIONS
-  logSuccessResponse({ revId }, "[ENDPOINT.UPLOAD_DETAILS]")
-  res.status(200).send({ revId })
-});
-
 app.post("/token", async (req, res) => {
   try {
     let client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl, revisionId, tokensFromCredentials;
@@ -99,6 +86,26 @@ app.post("/token", async (req, res) => {
     res.send(`Failed to receive tokens: ${err}`);
   }
 });
+
+app.post("/uploadDetails", async (req, res) => {
+  let revId, destinationFolderId, currentInstanceKey;
+  ({ revId, destinationFolderId, currentInstanceKey } = req.body);
+
+  console.log('currentInstanceKey', currentInstanceKey);
+  const instanceKey = currentInstanceKey ? 
+    (() => {
+      InstanceManager.start();
+      InstanceManager.updateKey(currentInstanceKey, instanceKey);
+    })() :
+    currentInstanceKey;
+  console.log('instanceKey', instanceKey);
+  const instanceDetails = { revisionId: revId, destinationFolderId };
+  InstanceManager.add(instanceKey, instanceDetails);
+  //INSTANCEKEY IS IN SNAKE CASE BECAUSE OF DOM DATA ATTRIBUTE RESTRICTIONS
+  logSuccessResponse({ revId }, "[ENDPOINT.UPLOAD_DETAILS]")
+  res.status(200).send({ revId })
+});
+
 
 app.post("/upload/:instanceKey", async (req, res) => {
   const instanceKey = req.params.instanceKey;
