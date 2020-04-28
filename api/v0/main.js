@@ -92,7 +92,7 @@ app.post("/uploadDetails", async (req, res) => {
 
   console.log('currentInstanceKey', currentInstanceKey);
   const instanceKey = InstanceManager.start();
-  InstanceManager.updateKey(currentInstanceKey, newKey);
+  InstanceManager.updateKey(currentInstanceKey, instanceKey);
   MessageEmitter.setKeyedAttribute(instanceKey, "target_window", salesforceUrl);
   const instanceDetails = { revisionId, destinationFolderId };
   InstanceManager.add(instanceKey, instanceDetails);

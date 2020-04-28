@@ -4,8 +4,6 @@
 const server = require("./main.js");
 const io = require("socket.io")(server);
 
-console.log('message server', server)
-
 module.exports = {
     setKeyedAttribute: (key, attribute, value) => {
         console.log('key', key);

@@ -41,10 +41,10 @@ $(() => {
     }, form.data(`${instanceKey}-targetwindow`));
   })
 
-  socket.on("authComplete", ()=> {
+  socket.on("authComplete", ({instanceKey, payload})=> {
     window.parent.postMessage({
       "type": "authComplete"
-    }, form.data("targetwindow"));
+    }, form.data(`${instanceKey}-targetwindow`));
   })
 
   const trackProgress = async () => {
