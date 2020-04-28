@@ -93,9 +93,9 @@ app.post("/uploadDetails", async (req, res) => {
   console.log('currentInstanceKey', currentInstanceKey);
   const instanceKey = currentInstanceKey ? 
     (() => {
-      const key = InstanceManager.start();
-      InstanceManager.updateKey(currentInstanceKey, instanceKey);
-      return key;
+      const newKey = InstanceManager.start();
+      InstanceManager.updateKey(currentInstanceKey, newKey);
+      return newKey;
     })() :
     currentInstanceKey;
   console.log('instanceKey', instanceKey);
