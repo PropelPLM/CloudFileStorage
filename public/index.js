@@ -33,11 +33,11 @@ $(() => {
     })
   })
 
-  socket.on("trigger", ({instanceKey, topic, payload}) => {
+  socket.on("trigger", ({topic, payload}) => {
     window.parent.postMessage({
       "type": topic,
       "data": payload
-    }, form.data(`${instanceKey}-target-window`));
+    }, form.data(`target-window`));
   })
 
   const trackProgress = async () => {
@@ -72,17 +72,14 @@ $(() => {
     var data = new FormData();
     data.append("file", fileData);
     await trackProgress();
-    window.parent.postMessage({
-      "type": "uploadTrigger",
-      "data": payload
-    }, '*');
+    const instanceKey = form.data(`instance-key`)
+    const targetWindow = form.data(`target-window`)
     axios
-      .post(`/upload/${form.data("instance_key")}`, data)
+      .post(`/upload/${instanceKey}`, data)
       .then(res => {
         socket.off("progress");
         spinner.css("visibility", "hidden");
         check.css("visibility", "visible");
-        const targetWindow = res.data.salesforceUrl
         const type = res.revisionId ? "uploadExisting" : "uploadNew";
         window.parent.postMessage({ type, ...res.data }, targetWindow)
       });
