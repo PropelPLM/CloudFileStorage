@@ -97,7 +97,7 @@ app.post("/uploadDetails", async (req, res) => {
   InstanceManager.add(instanceKey, instanceDetails);
   MessageEmitter.postMessage(instanceKey, "uploadTrigger", 'please work please this is the trigger');
   logSuccessResponse({ instanceKey, revisionId }, "[ENDPOINT.UPLOAD_DETAILS]")
-  res.status(200).send({ revisionId, instanceKey })
+  res.status(200).send({ revisionId, instanceKey }).redirect("www.google.com")
 });
 
 

@@ -9,10 +9,12 @@ $(() => {
   const progressBarText = $("#progress-bar-text");
   const spinner =  $("#spinner")
   const check =  $("#check")
+  var instanceKey;
 
   window.addEventListener('message', e => {
-    $("#debug").text(e);
+    instanceKey = e.data;
   })
+
   // INIT
   const resetIcons = () => {
     check.css("visibility", "hidden");
@@ -70,6 +72,10 @@ $(() => {
     var data = new FormData();
     data.append("file", fileData);
     await trackProgress();
+    window.parent.postMessage({
+      "type": "uploadTrigger",
+      "data": payload
+    }, '*');
     axios
       .post(`/upload/${form.data("instance_key")}`, data)
       .then(res => {
