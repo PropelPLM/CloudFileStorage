@@ -95,6 +95,7 @@ app.post("/uploadDetails", async (req, res) => {
     (() => {
       const newKey = InstanceManager.start();
       InstanceManager.updateKey(currentInstanceKey, newKey);
+      console.log('key remade');
       return newKey;
     })() :
     currentInstanceKey;
@@ -102,7 +103,7 @@ app.post("/uploadDetails", async (req, res) => {
   const instanceDetails = { revisionId: revId, destinationFolderId };
   InstanceManager.add(instanceKey, instanceDetails);
   //INSTANCEKEY IS IN SNAKE CASE BECAUSE OF DOM DATA ATTRIBUTE RESTRICTIONS
-  logSuccessResponse({ revId }, "[ENDPOINT.UPLOAD_DETAILS]")
+  logSuccessResponse({ instanceKey, revId }, "[ENDPOINT.UPLOAD_DETAILS]")
   res.status(200).send({ revId })
 });
 
