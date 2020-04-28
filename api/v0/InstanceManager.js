@@ -32,7 +32,7 @@ module.exports = {
         return requestedDetails;
     },
 
-    update: (oldKey, newKey) => {
+    updateKey: (oldKey, newKey) => {
         instanceMap[newKey] = _.cloneDeep(instanceMap[oldKey]);
         //delete old key ?
     }
