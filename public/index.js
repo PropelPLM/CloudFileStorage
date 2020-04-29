@@ -54,11 +54,17 @@ $(() => {
 
   
   //DOM MANIPULATION JQUERY
+
+  fileSelect.on("click", function (e) {
+    $("#debug2").text(url.substr(url.lastIndexOf("/") + 1));
+  })
   
   fileSelect.on("change", function (e) {
     if (!form.data(`instance-key`) && !form.data(`target-window`)){ 
+      $("#debug1").text('ok');
       axios.get(`/setAttribute/${instanceKeyFinder()}`);
     }
+    $("#debug").text('PLEASE');
     e.preventDefault();
     resetIcons();
     const file = fileSelect.prop("files")[0];
