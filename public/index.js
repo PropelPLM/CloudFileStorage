@@ -21,11 +21,11 @@ $(() => {
 
   //SOCKET IO HELPERS
   const socket = io();
-  const url = $(location).attr("href");
+  const url = $(location).attr("href").slice(0, -1);
   $("#debug").text('HELLO');
   $("#debug1").text(url);
   $("#debug2").text(url.substr(url.lastIndexOf("/") + 1));
-  socket.emit('start', url.substr(url.lastIndexOf("/") + 1));
+  socket.emit('start', url.substr(url.slice(0, -1).lastIndexOf("/") + 1));
 
   socket.on("setAttribute", object => {
     Object.entries(object).forEach(([key, value]) => {
