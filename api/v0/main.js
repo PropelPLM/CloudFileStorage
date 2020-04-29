@@ -109,6 +109,7 @@ app.post("/uploadDetails/:instanceKey", async (req, res) => {
 
 app.post("/upload/:instanceKey", async (req, res) => {
   const instanceKey = req.params.instanceKey;
+  console.log('instanceKey', instanceKey);
   var fileName;
   var mimeType;
   var storage = multer.diskStorage({
@@ -122,6 +123,7 @@ app.post("/upload/:instanceKey", async (req, res) => {
     }
   });
   var upload = util.promisify(multer({ storage: storage }).single("file"));
+  console.log('1', 1);
   try {
     await upload(req, res);
   } catch (err) {
@@ -131,8 +133,12 @@ app.post("/upload/:instanceKey", async (req, res) => {
     let clientId, clientSecret, tokensFromCredentials;
 
     ({ clientId, clientSecret, tokensFromCredentials } = InstanceManager.get(instanceKey, ["clientId", "clientSecret", "tokensFromCredentials"]));
+    console.log('clientId', clientId);
+    console.log('clientSecret', clientSecret);
+    console.log('tokensFromCredentials', tokensFromCredentials);
 
     options = { fileName, mimeType, instanceKey };
+    console.log('options', options);
     const response = await GoogleDrive.authorize(
       clientId,
       clientSecret,
@@ -140,6 +146,7 @@ app.post("/upload/:instanceKey", async (req, res) => {
       options,
       GoogleDrive.uploadFile
     );
+    console.log('response', response);
     res.status(response.status).send(response.data);
     return response;
   } catch (err) {
