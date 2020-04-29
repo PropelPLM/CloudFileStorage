@@ -7,7 +7,7 @@ it("authorize with correct credentials", async () => {
   const setCredentialsCallback = jest.fn((...args) => {
     return {
       status: data.success_status,
-      data: data.file_data
+      data: data.file_data,
     };
   });
   const callbackResult = await google.authorize(
@@ -26,7 +26,7 @@ it("authorize with correct credentials", async () => {
   expect(callbackResult).toEqual(
     expect.objectContaining({
       status: expect.any(Number),
-      data: expect.any(String)
+      data: expect.any(String),
     })
   );
 });
@@ -40,7 +40,7 @@ it("successful upload to drive", async () => {
   expect(uploadResponse).toEqual(
     expect.objectContaining({
       status: 200,
-      data: data.file_data
+      data: data.file_data,
     })
   );
 });
@@ -49,7 +49,7 @@ it("failed upload to drive", async () => {
   const uploadResponse = await google.uploadFile({}, null, null);
   expect(uploadResponse).toEqual(
     expect.objectContaining({
-      status: 503
+      status: 503,
     })
   );
 });

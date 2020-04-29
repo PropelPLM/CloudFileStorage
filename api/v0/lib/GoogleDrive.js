@@ -3,35 +3,43 @@ const { Transform } = require("stream");
 const fs = require("fs");
 const progress = require("progress-stream");
 
-const {logSuccessResponse, logErrorResponse} = require("../Logger.js");
+const { logSuccessResponse, logErrorResponse } = require("../Logger.js");
 const MessageEmitter = require("../MessageEmitter.js");
 const InstanceManager = require("../InstanceManager.js");
 const JsForce = require("./JsForce.js");
 
 const redirect_uris = ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"];
 const actions = {
-  driveFiles: "https://www.googleapis.com/auth/drive.file"
-}
+  driveFiles: "https://www.googleapis.com/auth/drive.file",
+};
 
 function createAuthUrl(credentials, instanceKey) {
   let clientId, clientSecret, redirect_uri;
-  ({clientId, clientSecret, redirect_uri} = credentials);
-  
-  const oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
+  ({ clientId, clientSecret, redirect_uri } = credentials);
+
+  const oAuth2Client = new google.auth.OAuth2(
+    clientId,
+    clientSecret,
+    redirect_uri
+  );
   InstanceManager.add(instanceKey, { oAuth2Client });
   return oAuth2Client.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
     scope: actions.driveFiles,
-    state: Buffer.from(instanceKey).toString("base64")
+    state: Buffer.from(instanceKey).toString("base64"),
   });
 }
 
 async function getTokens(code, instanceKey) {
   let clientId, clientSecret, oAuth2Client;
-  ({ clientId, clientSecret, oAuth2Client } = InstanceManager.get(instanceKey, ["clientId", "clientSecret", "oAuth2Client"]));
+  ({ clientId, clientSecret, oAuth2Client } = InstanceManager.get(instanceKey, [
+    "clientId",
+    "clientSecret",
+    "oAuth2Client",
+  ]));
   oAuth2Client.getToken(code, (err, token) => {
-    JsForce.sendTokens({...token, clientId, clientSecret}, instanceKey);
+    JsForce.sendTokens({ ...token, clientId, clientSecret }, instanceKey);
   });
   logSuccessResponse({}, "[GOOGLE_DRIVE.GET_TOKENS]");
   MessageEmitter.postTrigger(instanceKey, "authComplete", {});
@@ -64,39 +72,40 @@ async function authorize(clientId, clientSecret, tokens, options, callback) {
  * @param {Object} options Specifies how the file should be created in the external file storage
  */
 async function uploadFile(auth, options) {
-  const instanceKey = options.instanceKey
+  const instanceKey = options.instanceKey;
   let destinationFolderId, salesforceUrl;
-  ({ destinationFolderId, salesforceUrl } = InstanceManager.get(instanceKey, ["destinationFolderId", "salesforceUrl"]));
+  ({ destinationFolderId, salesforceUrl } = InstanceManager.get(instanceKey, [
+    "destinationFolderId",
+    "salesforceUrl",
+  ]));
   var fileMetadata = {
     name: options.fileName,
     driveId: destinationFolderId,
-    parents: [destinationFolderId]
+    parents: [destinationFolderId],
   };
   try {
     const drive = google.drive({ version: "v3", auth });
     var stat = fs.statSync(`./${options.fileName}`);
     var str = progress({ length: stat.size, time: 20 });
-    str.on("progress", p => {
+    str.on("progress", (p) => {
       MessageEmitter.postProgress(instanceKey, p);
     });
     let fileStream = new Transform({
       transform(chunk, encoding, callback) {
         this.push(chunk);
         callback();
-      }
+      },
     });
-    fs.createReadStream(`./${options.fileName}`)
-    .pipe(str)
-    .pipe(fileStream);
+    fs.createReadStream(`./${options.fileName}`).pipe(str).pipe(fileStream);
     var media = {
       mimeType: options.mimeType,
-      body: fileStream
+      body: fileStream,
     };
     const file = await drive.files.create({
       resource: fileMetadata,
       media,
       supportsAllDrives: true,
-      fields: "id, name, webViewLink, mimeType, fileExtension, webContentLink"
+      fields: "id, name, webViewLink, mimeType, fileExtension, webContentLink",
     });
     const sfObject = await JsForce.create(file.data, instanceKey);
     const response = {
@@ -105,8 +114,8 @@ async function uploadFile(auth, options) {
         ...file.data,
         sfId: sfObject.id,
         revisionId: sfObject.revisionId,
-        salesforceUrl
-      }
+        salesforceUrl,
+      },
     };
     logSuccessResponse(response, "[GOOGLE_DRIVE.UPLOAD_FILE]");
     return response;
@@ -120,5 +129,5 @@ module.exports = {
   authorize,
   createAuthUrl,
   getTokens,
-  uploadFile
+  uploadFile,
 };
