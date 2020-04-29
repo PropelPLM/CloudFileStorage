@@ -37,16 +37,11 @@ app.get("/setAttribute/:instanceKey", (req, res) => {
 });
 
 app.post("/auth/:instanceKey", async (req, res) => {
-  console.log(1);
   const instanceKey = req.params.instanceKey;
-  console.log(2);
   let sessionId, salesforceUrl, clientId, clientSecret;
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
   InstanceManager.register(instanceKey);
-  console.log(3);
-  MessageEmitter.setAttribute(instanceKey, "target-window", salesforceUrl);
-  console.log(4);
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   await Promise.all([
     InstanceManager.add(instanceKey, instanceDetails),
@@ -59,7 +54,9 @@ app.post("/auth/:instanceKey", async (req, res) => {
       clientSecret,
       redirect_uri: `https://${req.hostname}/auth/callback/google`,
     }; //google can be swapped out
+
     const url = GoogleDrive.createAuthUrl(credentials, instanceKey);
+    MessageEmitter.setAttribute(instanceKey, "target-window", salesforceUrl);
     logSuccessResponse(instanceKey, "[END_POINT.AUTH_REDIRECT]");
     res.status(200).send({ url });
   } else {
