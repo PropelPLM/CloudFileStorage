@@ -65,16 +65,20 @@ async function uploadFile(auth, options) {
   const instanceKey = options.instanceKey
   let destinationFolderId, salesforceUrl;
   ({ destinationFolderId, salesforceUrl } = InstanceManager.get(instanceKey, ["destinationFolderId", "salesforceUrl"]));
+  console.log(10);
   var fileMetadata = {
     name: options.fileName,
     driveId: destinationFolderId,
     parents: [destinationFolderId]
   };
+  console.log('fileMetadata', fileMetadata);
+  console.log(20);
   try {
     const drive = google.drive({ version: "v3", auth });
     var stat = fs.statSync(`./${options.fileName}`);
     var str = progress({ length: stat.size, time: 20 });
     str.on("progress", p => {
+      console.log('P', p);
       MessageEmitter.postProgress(instanceKey, p);
     });
     let fileStream = new Transform({
@@ -90,6 +94,7 @@ async function uploadFile(auth, options) {
       mimeType: options.mimeType,
       body: fileStream
     };
+    console.log(30);
     const file = await drive.files.create({
       resource: fileMetadata,
       media,
@@ -106,6 +111,7 @@ async function uploadFile(auth, options) {
         salesforceUrl
       }
     };
+    console.log(40, response);
     logSuccessResponse(response, "[GOOGLEDRIVE.UPLOAD_FILE]");
     return response;
   } catch (err) {
