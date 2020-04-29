@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, "../../public")));
 
-app.get("/:sessionId", (req, res) => {
+app.get("/:instanceKey", (req, res) => {
   const instanceKey = req.params.instanceKey;
   res.sendFile("index.html", {root: path.join(__dirname, "../../public/")});
   let salesforceUrl;
