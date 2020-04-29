@@ -57,6 +57,7 @@ app.post("/auth/:instanceKey", async (req, res) => {
 
     const url = GoogleDrive.createAuthUrl(credentials, instanceKey);
     MessageEmitter.setAttribute(instanceKey, "target-window", salesforceUrl);
+    console.log("instanceKey NORMAL", instanceKey);
     logSuccessResponse(instanceKey, "[END_POINT.AUTH_REDIRECT]");
     res.status(200).send({ url });
   } else {
@@ -72,6 +73,7 @@ app.post("/auth/:instanceKey", async (req, res) => {
 app.get("/auth/callback/google", async (req, res) => {
   const instanceKey = Buffer.from(req.query.state, "base64").toString();
   const code = req.query.code;
+  console.log("instanceKey ACLLBACK", instanceKey);
   await GoogleDrive.getTokens(code, instanceKey);
   res.send("<script>window.close()</script>");
 });
