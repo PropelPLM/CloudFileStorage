@@ -21,7 +21,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, "../../public")));
 
 app.get("/:sessionId", (req, res) => {
-  res.sendFile("index.html");
+  res.sendFile("./index.html");
 });
 
 app.post("/auth", async (req, res) => {
