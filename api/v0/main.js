@@ -22,6 +22,7 @@ app.use(express.static(path.join(__dirname, "../../public")));
 
 app.get("/:instanceKey", (req, res) => {
   const instanceKey = req.params.instanceKey;
+  logSuccessResponse(instanceKey, "[ENDPOINT.INSTANCE_KEY]");
   res.sendFile("index.html", {root: path.join(__dirname, "../../public/")});
   let salesforceUrl;
   ({ salesforceUrl} = InstanceManager.get(instanceKey, ["salesforceUrl"]));
