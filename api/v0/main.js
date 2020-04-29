@@ -141,7 +141,7 @@ app.post("/upload/:instanceKey", async (req, res) => {
     console.log('fileName', fileName);
     console.log('mimeType', mimeType);
     console.log('instanceKey', instanceKey);
-    options = { fileName, mimeType, instanceKey };
+    const options = { fileName, mimeType, instanceKey };
     console.log('two')
     console.log('options', options);
     const response = await GoogleDrive.authorize(
