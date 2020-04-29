@@ -24,6 +24,12 @@ app.get("/:instanceKey", (req, res) => {
   const instanceKey = req.params.instanceKey;
   logSuccessResponse(instanceKey, "[ENDPOINT.INSTANCE_KEY]");
   res.sendFile("index.html", {root: path.join(__dirname, "../../public/")});
+});
+
+app.get("/setAttribute/:instanceKey", (req, res) => {
+  const instanceKey = req.params.instanceKey;
+  logSuccessResponse(instanceKey, "[ENDPOINT.SET_ATTRIBUTE]");
+  res.send("OK")
   let salesforceUrl;
   ({ salesforceUrl} = InstanceManager.get(instanceKey, ["salesforceUrl"]));
   MessageEmitter.setAttribute(instanceKey, "target-window", salesforceUrl);

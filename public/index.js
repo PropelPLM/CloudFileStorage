@@ -9,7 +9,6 @@ $(() => {
   const progressBarText = $("#progress-bar-text");
   const spinner =  $("#spinner")
   const check =  $("#check")
-  var instanceKey;
 
   // INIT
   const resetIcons = () => {
@@ -19,13 +18,15 @@ $(() => {
   }
   resetIcons();
 
+  const instanceKeyFinder = () => {
+    const url = $(location).attr("href").slice(0, -1);
+    return url.substr(url.slice(0, -1).lastIndexOf("/") + 1);
+  }
+
   //SOCKET IO HELPERS
   const socket = io();
-  const url = $(location).attr("href").slice(0, -1);
-  $("#debug").text('HELLO');
-  $("#debug1").text(url);
   $("#debug2").text(url.substr(url.lastIndexOf("/") + 1));
-  socket.emit('start', url.substr(url.slice(0, -1).lastIndexOf("/") + 1));
+  socket.emit('start', instanceKeyFinder);
 
   socket.on("setAttribute", object => {
     Object.entries(object).forEach(([key, value]) => {
@@ -51,7 +52,14 @@ $(() => {
     });
   }
 
+  
   //DOM MANIPULATION JQUERY
+  fileSelect.on("click", function (e) {
+    if (!form.data(`instance-key`) && !form.data(`target-window`)){ 
+      axios.get(`/setAttribute/${instanceKeyFinder()}`);
+    }
+  });
+
   fileSelect.on("change", function (e) {
     e.preventDefault();
     resetIcons();
@@ -72,8 +80,8 @@ $(() => {
     var data = new FormData();
     data.append("file", fileData);
     await trackProgress();
-    const instanceKey = form.data(`instance-key`)
-    const targetWindow = form.data(`target-window`)
+    const instanceKey = form.data(`instance-key`);
+    const targetWindow = form.data(`target-window`);
     axios
       .post(`/upload/${instanceKey}`, data)
       .then(res => {
