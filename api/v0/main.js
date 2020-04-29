@@ -21,7 +21,11 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, "../../public")));
 
 app.get("/:sessionId", (req, res) => {
+  const instanceKey = req.params.instanceKey;
   res.sendFile("index.html", {root: path.join(__dirname, "../../public/")});
+  let salesforceUrl;
+  ({ salesforceUrl} = InstanceManager.get(instanceKey, ["salesforceUrl"]));
+  MessageEmitter.setAttribute(instanceKey, "target-window", salesforceUrl);
 });
 
 app.post("/auth", async (req, res) => {
@@ -88,11 +92,8 @@ app.post("/token/:instanceKey", async (req, res) => {
 
 app.post("/uploadDetails/:instanceKey", async (req, res) => {
   const instanceKey = req.params.instanceKey;
-  console.log('instanceKey from endpoint', instanceKey);
-  let revisionId, destinationFolderId, salesforceUrl;
-  ({ revisionId, destinationFolderId, salesforceUrl } = req.body); 
-
-  MessageEmitter.setAttribute(instanceKey, "target-window", salesforceUrl);
+  let revisionId, destinationFolderId;
+  ({ revisionId, destinationFolderId } = req.body); 
   const instanceDetails = { revisionId, destinationFolderId };
   InstanceManager.add(instanceKey, instanceDetails);
   logSuccessResponse({ instanceKey }, "[ENDPOINT.UPLOAD_DETAILS]");
