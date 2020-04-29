@@ -126,14 +126,16 @@ app.post("/token/:instanceKey", async (req, res) => {
   }
 });
 
-app.post("/uploadDetails/:instanceKey", async (req, res) => {
-  const instanceKey = req.params.instanceKey;
-  let revisionId, destinationFolderId;
-  ({ revisionId, destinationFolderId } = req.body);
+app.post("/uploadDetails/:newInstanceKey", async (req, res) => {
+  const newInstanceKey = req.params.newInstanceKey;
+  let revisionId, destinationFolderId, oldInstanceKey;
+  ({ revisionId, destinationFolderId, oldInstanceKey } = req.body);
   const instanceDetails = { revisionId, destinationFolderId };
-  InstanceManager.add(instanceKey, instanceDetails);
-  logSuccessResponse({ instanceKey }, "[END_POINT.UPLOAD_DETAILS]");
-  res.status(200).send({ instanceKey });
+  InstanceManager.register(newInstanceKey);
+  InstanceManager.updateKey(oldInstanceKey, newInstanceKey);
+  InstanceManager.add(newInstanceKey, instanceDetails);
+  logSuccessResponse({ newInstanceKey }, "[END_POINT.UPLOAD_DETAILS]");
+  res.status(200).send({ newInstanceKey });
 });
 
 app.post("/upload/:instanceKey", async (req, res) => {
