@@ -89,7 +89,7 @@ $(() => {
         socket.off("progress");
         spinner.css("visibility", "hidden");
         check.css("visibility", "visible");
-        const type = res.revisionId ? "uploadExisting" : "uploadNew";
+        const type = res.data.revisionId ? "uploadExisting" : "uploadNew";
         window.parent.postMessage({ type, ...res.data }, targetWindow)
       });
   };
