@@ -88,6 +88,7 @@ app.post("/token/:instanceKey", async (req, res) => {
 
 app.post("/uploadDetails/:instanceKey", async (req, res) => {
   const instanceKey = req.params.instanceKey;
+  console.log(instanceKey);
   let revisionId, destinationFolderId, salesforceUrl;
   ({ revisionId, destinationFolderId, salesforceUrl } = req.body); 
 
