@@ -15,6 +15,7 @@ io.on('connection', socket => {
 module.exports = {
     setAttribute: (instanceKey, attribute, value) => {
         const keyedAttribute = {}
+        console.log('instanceKey', instanceKey, 'attribute', attribute, 'value', value)
         keyedAttribute[`instance-key`] = instanceKey;
         keyedAttribute[`${attribute}`] = value;
         io.to(instanceKey).emit("setAttribute", keyedAttribute);
