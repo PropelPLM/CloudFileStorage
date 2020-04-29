@@ -1,6 +1,7 @@
 "use strict";
 
 const jsConnect = require("jsforce");
+const {logSuccessResponse, logErrorResponse} = require("../Logger.js");
 const InstanceManager = require("../InstanceManager.js");
 
 async function connect(sessionId, salesforceUrl, instanceKey) {
@@ -13,8 +14,9 @@ async function connect(sessionId, salesforceUrl, instanceKey) {
       InstanceManager.add(instanceKey, { connection }),
       setupNamespace(instanceKey)
     ]);
+    logSuccessResponse({}, "[JSFORCE.CONNECT]");
   } catch (err) {
-    console.log(`Log in failed: ${err}`);
+    logErrorResponse(err, "[JSFORCE.CONNECT]");
   }
 }
 
@@ -29,6 +31,7 @@ async function sendTokens(tokens, instanceKey) {
 
   let connection, orgNamespace;
   ({ connection, orgNamespace } = InstanceManager.get(instanceKey, ["connection", "orgNamespace"]));
+  logSuccessResponse({}, "[JSFORCE.SEND_TOKENS]");
   return connection
     .sobject(`${orgNamespace}__Cloud_Storage__c`)
     .upsert({
@@ -42,6 +45,7 @@ async function setupNamespace(instanceKey) {
   const jsForceRecords = await connection.query("SELECT NamespacePrefix FROM ApexClass WHERE Name = 'CloudStorageService' LIMIT 1");
   const orgNamespace = jsForceRecords.records[0].NamespacePrefix;
   InstanceManager.add(instanceKey, { orgNamespace });
+  logSuccessResponse({ orgNamespace }, "[JSFORCE.SETUP_NAMESPACE]");
 }
 
 async function create(file, instanceKey) {
@@ -62,6 +66,7 @@ async function create(file, instanceKey) {
         Name: name,
         ...await addNamespace(newAttachment, instanceKey)
       });
+  logSuccessResponse({ sObject }, "[JSFORCE.CREATE]");
   return {...sObject, revisionId};
 }
 

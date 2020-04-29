@@ -3,19 +3,18 @@
 // Will be used more widely when there are different storages
 const server = require("./main.js");
 const io = require("socket.io")(server);
-const InstanceManager = require("./InstanceManager.js");
+const {logSuccessResponse} = require("./Logger.js");
 
 io.on('connection', socket => {
     socket.on('start', instanceKey => {
-        console.log('instanceKey in messageEmitter', instanceKey);
         socket.join(instanceKey);
+        logSuccessResponse({instanceKey}, "[MESSAGE_EMITTER.JOIN_ROOM]")
     });
 });
 
 module.exports = {
     setAttribute: (instanceKey, attribute, value) => {
         const keyedAttribute = {}
-        console.log('instanceKey', instanceKey, 'attribute', attribute, 'value', value)
         keyedAttribute[`instance-key`] = instanceKey;
         keyedAttribute[`${attribute}`] = value;
         io.to(instanceKey).emit("setAttribute", keyedAttribute);
