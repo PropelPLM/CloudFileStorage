@@ -25,8 +25,8 @@ $(() => {
 
   //SOCKET IO HELPERS
   const socket = io();
-  $("#debug2").text(url.substr(url.lastIndexOf("/") + 1));
-  socket.emit('start', instanceKeyFinder);
+  $("#debug2").text(instanceKeyFinder());
+  socket.emit('start', instanceKeyFinder());
 
   socket.on("setAttribute", object => {
     Object.entries(object).forEach(([key, value]) => {
@@ -56,7 +56,7 @@ $(() => {
   //DOM MANIPULATION JQUERY
 
   fileSelect.on("click", function (e) {
-    $("#debug2").text(url.substr(url.lastIndexOf("/") + 1));
+    $("#debug2").text(instanceKeyFinder());
   })
   
   fileSelect.on("change", function (e) {
