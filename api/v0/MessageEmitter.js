@@ -7,6 +7,7 @@ const InstanceManager = require("./InstanceManager.js");
 
 io.on('connection', socket => {
     socket.on('start', instanceKey => {
+        console.log('instanceKey in messageEmitter', instanceKey);
         socket.join(instanceKey);
     });
 });

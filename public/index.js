@@ -19,10 +19,11 @@ $(() => {
   }
   resetIcons();
 
-  const url = $(location).attr("href")
-
   //SOCKET IO HELPERS
   const socket = io();
+  const url = $(location).attr("href");
+  console.log(url.substr(url.lastIndexOf("/") + 1));
+  $("#debug").text(url.substr(url.lastIndexOf("/") + 1));
   socket.emit('start', url.substr(url.lastIndexOf("/") + 1));
 
   socket.on("setAttribute", object => {
