@@ -20,10 +20,6 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, "../../public")));
 
-app.get("/:sessionId", (req, res) => {
-  res.send(":)");
-});
-
 app.post("/auth", async (req, res) => {
   let sessionId, salesforceUrl, clientId, clientSecret;
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
