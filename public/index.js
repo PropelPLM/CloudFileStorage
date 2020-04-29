@@ -11,10 +11,6 @@ $(() => {
   const check =  $("#check")
   var instanceKey;
 
-  window.addEventListener('message', e => {
-    instanceKey = e.data;
-  })
-
   // INIT
   const resetIcons = () => {
     check.css("visibility", "hidden");
@@ -23,9 +19,11 @@ $(() => {
   }
   resetIcons();
 
+  const url = $(location).attr("href")
 
   //SOCKET IO HELPERS
   const socket = io();
+  socket.emit('start', url.substr(url.lastIndexOf("/") + 1));
 
   socket.on("setAttribute", object => {
     Object.entries(object).forEach(([key, value]) => {

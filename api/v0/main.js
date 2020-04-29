@@ -11,8 +11,8 @@ const server = require("http").createServer(app);
 module.exports = server;
 const port = process.env.PORT || 5000;
 
-const MessageEmitter = require("./MessageEmitter.js");
 const InstanceManager = require("./InstanceManager.js");
+const MessageEmitter = require("./MessageEmitter.js");
 const GoogleDrive = require("./lib/GoogleDrive.js");
 const JsForce = require("./lib/JsForce.js");
 
@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, "../../public")));
 
-app.get("/", (req, res) => {
+app.get("/:sessionId", (req, res) => {
   res.sendFile(__dirname + "../../public/index.html");
 });
 
@@ -28,8 +28,7 @@ app.post("/auth", async (req, res) => {
   let sessionId, salesforceUrl, clientId, clientSecret;
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
-  const instanceKey = InstanceManager.start();
-  MessageEmitter.init(instanceKey);
+  InstanceManager.register(instanceKey);
   MessageEmitter.setAttribute(instanceKey, "target-window", salesforceUrl);
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   await Promise.all([
@@ -52,9 +51,10 @@ app.get("/auth/callback/google", async (req, res) => {
   res.send("<script>window.close()</script>");
 });
 
-app.post("/token", async (req, res) => {
+app.post("/token/:instanceKey", async (req, res) => {
+  const instanceKey = req.params.instanceKey;
   try {
-    let client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl, revisionId, tokensFromCredentials;
+    let client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl, tokensFromCredentials;
     ({
       client_secret,
       client_id,
@@ -73,7 +73,7 @@ app.post("/token", async (req, res) => {
       expiry_date
     };
 
-    const instanceKey = InstanceManager.start();
+    InstanceManager.register(instanceKey);
     const instanceDetails = { sessionId, salesforceUrl, clientId: client_id, clientSecret: client_secret, tokensFromCredentials };
     InstanceManager.add(instanceKey, instanceDetails);
 
@@ -86,20 +86,16 @@ app.post("/token", async (req, res) => {
   }
 });
 
-app.post("/uploadDetails", async (req, res) => {
-  let revisionId, destinationFolderId, currentInstanceKey, salesforceUrl;
-  ({ revisionId, destinationFolderId, currentInstanceKey, salesforceUrl } = req.body); 
+app.post("/uploadDetails/:instanceKey", async (req, res) => {
+  const instanceKey = req.params.instanceKey;
+  let revisionId, destinationFolderId, salesforceUrl;
+  ({ revisionId, destinationFolderId, salesforceUrl } = req.body); 
 
-  const instanceKey = InstanceManager.start();
-  InstanceManager.updateKey(currentInstanceKey, instanceKey);
-  MessageEmitter.init(instanceKey);
   MessageEmitter.setAttribute(instanceKey, "target-window", salesforceUrl);
-  
   const instanceDetails = { revisionId, destinationFolderId };
   InstanceManager.add(instanceKey, instanceDetails);
-  MessageEmitter.postTrigger(instanceKey, "uploadTrigger", 'please work please this is the trigger');
-  logSuccessResponse({ instanceKey, revisionId }, "[ENDPOINT.UPLOAD_DETAILS]");
-  res.status(200).send({ revisionId, instanceKey });
+  logSuccessResponse({ instanceKey }, "[ENDPOINT.UPLOAD_DETAILS]");
+  res.status(200).send({ instanceKey });
 });
 
 app.post("/upload/:instanceKey", async (req, res) => {

@@ -1,6 +1,6 @@
 "use strict"
-const _ = require("lodash");
-const uuid = require("uuid");
+const { cloneDeep } = require("lodash");
+
 /**
  * Time of access and the sessionId will be used to demultiplex different iframe sessions
  * SessionID: allows different users to use the this app at the same time
@@ -12,15 +12,13 @@ const uuid = require("uuid");
 const instanceMap = {}
 
 module.exports = {
-    start: () => {
-        const instanceKey = uuid.v1();
+    register: (instanceKey) => {
         instanceMap[instanceKey] = {};
-        return instanceKey;
     },
 
     add: (instanceKey, keyValuePairs) => {
         Object.entries(keyValuePairs).forEach(([key, value]) => {
-            instanceMap[instanceKey][key] = _.cloneDeep(value);
+            instanceMap[instanceKey][key] = cloneDeep(value);
         })
     },
 
@@ -33,7 +31,7 @@ module.exports = {
     },
 
     updateKey: (oldKey, newKey) => {
-        instanceMap[newKey] = _.cloneDeep(instanceMap[oldKey]);
+        instanceMap[newKey] = cloneDeep(instanceMap[oldKey]);
         //delete old key ?
     }
 }
