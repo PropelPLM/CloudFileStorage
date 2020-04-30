@@ -3,15 +3,15 @@ const fs = jest.genMockFromModule("fs");
 const FAKE_FILE_SIZE = 1024;
 const FAKE_STREAM = Object.create(null);
 
-statSync = jest.fn(stats => {
+statSync = jest.fn((stats) => {
   return {
-    size: FAKE_FILE_SIZE
+    size: FAKE_FILE_SIZE,
   };
 });
 
-pipe = jest.fn(FAKE_STREAM => {
+pipe = jest.fn((FAKE_STREAM) => {
   return {
-    pipe: pipe
+    pipe: pipe,
   };
 });
 

@@ -1,36 +1,48 @@
 const { google } = require("googleapis");
+const { Transform } = require("stream");
 const fs = require("fs");
 const progress = require("progress-stream");
-const { Transform } = require("stream");
-const { create, sendTokens } = require("./JsForce.js");
-const server = require("../main.js");
-const io = require('socket.io')(server);
+
+const { logSuccessResponse, logErrorResponse } = require("../Logger.js");
+const MessageEmitter = require("../MessageEmitter.js");
+const InstanceManager = require("../InstanceManager.js");
+const JsForce = require("./JsForce.js");
 
 const redirect_uris = ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"];
 const actions = {
-  driveFiles: "https://www.googleapis.com/auth/drive.file"
-}
+  driveFiles: "https://www.googleapis.com/auth/drive.file",
+};
 
-var oAuth2Client;
-var clientId;
-var clientSecret;
-var destinationFolderId;
+function createAuthUrl(credentials, instanceKey) {
+  let clientId, clientSecret, redirect_uri;
+  ({ clientId, clientSecret, redirect_uri } = credentials);
 
-function createAuthUrl(credentials) {
-  ({clientId, clientSecret, redirect_uri} = credentials)
-  oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri)
+  const oAuth2Client = new google.auth.OAuth2(
+    clientId,
+    clientSecret,
+    redirect_uri
+  );
+  InstanceManager.add(instanceKey, { oAuth2Client });
   return oAuth2Client.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
-    scope: actions.driveFiles
-  })
+    scope: actions.driveFiles,
+    state: Buffer.from(instanceKey).toString("base64"),
+  });
 }
 
-async function getTokens(code) {
+async function getTokens(code, instanceKey) {
+  let clientId, clientSecret, oAuth2Client;
+  ({ clientId, clientSecret, oAuth2Client } = InstanceManager.get(instanceKey, [
+    "clientId",
+    "clientSecret",
+    "oAuth2Client",
+  ]));
   oAuth2Client.getToken(code, (err, token) => {
-    sendTokens({...token, clientId, clientSecret});
-  })
-  io.emit('authComplete', {});
+    JsForce.sendTokens({ ...token, clientId, clientSecret }, instanceKey);
+  });
+  logSuccessResponse({}, "[GOOGLE_DRIVE.GET_TOKENS]");
+  MessageEmitter.postTrigger(instanceKey, "authComplete", {});
 }
 
 /**
@@ -53,10 +65,6 @@ async function authorize(clientId, clientSecret, tokens, options, callback) {
   return await callback(oAuth2Client, options);
 }
 
-function updateDestinationFolderId(folderId) {
-  destinationFolderId = folderId;
-}
-
 /**
  * Uploads file with an OAuth2 client and then execute communicate the metadata of
  * the record in the external file storage back to salesforce APEX.
@@ -64,64 +72,62 @@ function updateDestinationFolderId(folderId) {
  * @param {Object} options Specifies how the file should be created in the external file storage
  */
 async function uploadFile(auth, options) {
+  const instanceKey = options.instanceKey;
+  let destinationFolderId, salesforceUrl, isNew;
+  ({
+    destinationFolderId,
+    salesforceUrl,
+    isNew,
+  } = InstanceManager.get(instanceKey, [
+    "destinationFolderId",
+    "salesforceUrl",
+    "isNew",
+  ]));
   var fileMetadata = {
     name: options.fileName,
-    driveId: destinationFolderId, //hard coded drive
-    parents: [destinationFolderId] // and folder for demo
+    driveId: destinationFolderId,
+    parents: [destinationFolderId],
   };
   try {
     const drive = google.drive({ version: "v3", auth });
     var stat = fs.statSync(`./${options.fileName}`);
     var str = progress({ length: stat.size, time: 20 });
-    str.on("progress", p => {
-      console.log(`[UPLOAD-PROGRESS] percentage completion: ${p.percentage}`);
-      io.emit('progress', p);
+    str.on("progress", (p) => {
+      MessageEmitter.postProgress(instanceKey, p);
     });
     let fileStream = new Transform({
       transform(chunk, encoding, callback) {
         this.push(chunk);
         callback();
-      }
+      },
     });
-    fs.createReadStream(`./${options.fileName}`)
-      .pipe(str)
-      .pipe(fileStream);
+    fs.createReadStream(`./${options.fileName}`).pipe(str).pipe(fileStream);
     var media = {
       mimeType: options.mimeType,
-      body: fileStream
+      body: fileStream,
     };
     const file = await drive.files.create({
       resource: fileMetadata,
       media,
       supportsAllDrives: true,
-      fields: "id, name, webViewLink, mimeType, fileExtension, webContentLink"
+      fields: "id, name, webViewLink, mimeType, fileExtension, webContentLink",
     });
-    const sfObject = await create(file.data);
+    const sfObject = await JsForce.create(file.data, instanceKey);
     const response = {
       status: parseInt(file.status),
       data: {
         ...file.data,
         sfId: sfObject.id,
-      }
+        revisionId: sfObject.revisionId,
+        salesforceUrl,
+        isNew,
+      },
     };
-    return sendSuccessResponse(response, "uploadFile");
+    logSuccessResponse(response, "[GOOGLE_DRIVE.UPLOAD_FILE]");
+    return response;
   } catch (err) {
-    return sendErrorResponse(err, "uploadFile");
+    return logErrorResponse(err, "[GOOGLE_DRIVE.UPLOAD_FILE]");
   }
-}
-
-function sendSuccessResponse(response, functionName) {
-  console.log(
-    `${functionName} has succeeded with response: ${JSON.stringify(response)}.`
-  );
-  return response;
-}
-
-function sendErrorResponse(error, functionName) {
-  console.log(
-    `${functionName} has failed due to error: ${JSON.stringify(error)}.`
-  );
-  return error;
 }
 
 module.exports = {
@@ -129,6 +135,5 @@ module.exports = {
   authorize,
   createAuthUrl,
   getTokens,
-  updateDestinationFolderId,
-  uploadFile
+  uploadFile,
 };
