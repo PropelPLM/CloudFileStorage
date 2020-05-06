@@ -87,7 +87,7 @@ $(() => {
       onUploadProgress: progress => {
         percentCompleted = Math.round((progress.loaded*100) / progress.total)
         $("#debug").text(percentCompleted)
-        $("#debug").text(progress.total)
+        $("#debug1").text(progress.total)
       }
     }
     axios.post(`/upload/${instanceKey}`, data, config)
