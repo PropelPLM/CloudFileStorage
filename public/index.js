@@ -83,8 +83,14 @@ $(() => {
     await trackProgress();
     const instanceKey = form.data(`instance-key`);
     const targetWindow = form.data(`target-window`);
-    console.time('local');
-    axios.post(`/upload/${instanceKey}`, data, { onUploadProgress: progress => {$("#debug").text(progress.loaded); if(parseInt(progress.loaded) == 100) console.timeEnd('local')} })
+    const config = {
+      onUploadProgress: progress => {
+        percentCompleted = Math.round((progress.loaded*100) / progress.total)
+        $("#debug").text(percentCompleted)
+        $("#debug").text(progress.total)
+      }
+    }
+    axios.post(`/upload/${instanceKey}`, data, config)
       .then((res) => {
         socket.off("progress");
         spinner.css("visibility", "hidden");
