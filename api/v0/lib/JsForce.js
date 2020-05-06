@@ -8,11 +8,11 @@ async function connect(sessionId, salesforceUrl, instanceKey) {
   try {
     const connection = new jsConnect.Connection({
       instanceUrl: salesforceUrl,
-      sessionId,
+      sessionId
     });
     await Promise.all([
       InstanceManager.add(instanceKey, { connection }),
-      setupNamespace(instanceKey),
+      setupNamespace(instanceKey)
     ]);
     logSuccessResponse({}, "[JSFORCE.CONNECT]");
   } catch (err) {
@@ -26,21 +26,15 @@ async function sendTokens(tokens, instanceKey) {
     Refresh_Token__c: tokens.refresh_token,
     Expiry_Date__c: tokens.expiry_date,
     Client_Id__c: tokens.clientId,
-    Client_Secret__c: tokens.clientSecret,
+    Client_Secret__c: tokens.clientSecret
   };
 
   let connection, orgNamespace;
-  ({ connection, orgNamespace } = InstanceManager.get(instanceKey, [
-    "connection",
-    "orgNamespace",
-  ]));
+  ({ connection, orgNamespace } = InstanceManager.get(instanceKey, ["connection", "orgNamespace"]));
   logSuccessResponse({}, "[JSFORCE.SEND_TOKENS]");
-  return connection.sobject(`${orgNamespace}__Cloud_Storage__c`).upsert(
-    {
-      ...(await addNamespace(newSetting, instanceKey)),
-    },
-    `${orgNamespace}__Client_Id__c`
-  );
+  return connection
+    .sobject(`${orgNamespace}__Cloud_Storage__c`)
+    .upsert({ ...(await addNamespace(newSetting, instanceKey)) },`${orgNamespace}__Client_Id__c`);
 }
 
 async function setupNamespace(instanceKey) {
@@ -56,42 +50,27 @@ async function setupNamespace(instanceKey) {
 
 async function create(file, instanceKey) {
   try {
-    let connection,
-      orgNamespace,
-      revisionId,
-      isNew,
-      name,
-      webViewLink,
-      id,
-      fileExtension,
-      webContentLink;
-    ({
-      connection,
-      orgNamespace,
-      revisionId,
-      isNew,
-    } = InstanceManager.get(instanceKey, [
-      "connection",
-      "orgNamespace",
-      "revisionId",
-      "isNew",
-    ]));
+    let connection, orgNamespace, revisionId, isNew, name, webViewLink, id, fileExtension, webContentLink;
+    ({ connection, orgNamespace, revisionId, isNew } = InstanceManager.get(instanceKey, ["connection", "orgNamespace", "revisionId", "isNew"]));
+
     ({ name, webViewLink, id, fileExtension, webContentLink } = file);
     const newAttachment = {
       External_Attachment_URL__c: webViewLink,
       File_Extension__c: fileExtension,
       Google_File_Id__c: id,
       External_Attachment_Download_URL__c: webContentLink,
-      Content_Location__c: "E",
+      Content_Location__c: "E"
     };
+
     if (!isNew) {
       newAttachment["Item_Revision__c"] = revisionId;
     }
+
     const sObject = await connection
       .sobject(`${orgNamespace}__Document__c`)
       .create({
         Name: name,
-        ...(await addNamespace(newAttachment, instanceKey)),
+        ...(await addNamespace(newAttachment, instanceKey))
       });
     logSuccessResponse({ sObject }, "[JSFORCE.CREATE]");
     return { ...sObject, revisionId };
@@ -117,5 +96,5 @@ async function addNamespace(customObject, instanceKey) {
 module.exports = {
   connect,
   create,
-  sendTokens,
+  sendTokens
 };

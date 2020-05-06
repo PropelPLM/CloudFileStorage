@@ -45,27 +45,19 @@ app.post("/auth/:instanceKey", async (req, res) => {
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   await Promise.all([
     InstanceManager.add(instanceKey, instanceDetails),
-    JsForce.connect(sessionId, salesforceUrl, instanceKey),
+    JsForce.connect(sessionId, salesforceUrl, instanceKey)
   ]);
 
   if (clientId && clientSecret) {
-    const credentials = {
-      clientId,
-      clientSecret,
-      redirect_uri: `https://${req.hostname}/auth/callback/google`,
-    }; //google can be swapped out
-
+    const credentials = { clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google` }; //google can be swapped out
     const url = GoogleDrive.createAuthUrl(credentials, instanceKey);
+
     MessageEmitter.setAttribute(instanceKey, "target-window", salesforceUrl);
     logSuccessResponse(instanceKey, "[END_POINT.AUTH_REDIRECT]");
     res.status(200).send({ url });
   } else {
     logErrorResponse({ clientId, clientSecret }, "[END_POINT.AUTH_REDIRECT]");
-    res
-      .status(400)
-      .send(
-        "Authorization failed, please ensure client credentials are populated."
-      );
+    res.status(400).send("Authorization failed, please ensure client credentials are populated.");
   }
 });
 
@@ -79,30 +71,15 @@ app.get("/auth/callback/google", async (req, res) => {
 app.post("/token/:instanceKey", async (req, res) => {
   const instanceKey = req.params.instanceKey;
   try {
-    let client_secret,
-      client_id,
-      access_token,
-      refresh_token,
-      expiry_date,
-      sessionId,
-      salesforceUrl,
-      tokensFromCredentials;
-    ({
-      client_secret,
-      client_id,
-      access_token,
-      refresh_token,
-      expiry_date,
-      sessionId,
-      salesforceUrl,
-    } = req.body);
+    let client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl, tokensFromCredentials;
+    ({ client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl } = req.body);
 
     tokensFromCredentials = {
       access_token,
       refresh_token,
       scope: GoogleDrive.actions.driveFiles,
       token_type: "Bearer",
-      expiry_date,
+      expiry_date
     };
 
     InstanceManager.register(instanceKey);
@@ -111,7 +88,7 @@ app.post("/token/:instanceKey", async (req, res) => {
       salesforceUrl,
       clientId: client_id,
       clientSecret: client_secret,
-      tokensFromCredentials,
+      tokensFromCredentials
     };
     InstanceManager.add(instanceKey, instanceDetails);
 
@@ -146,7 +123,7 @@ app.post("/upload/:instanceKey", async (req, res) => {
       fileName = file.originalname || file.name;
       mimeType = file.mimetype;
       cb(null, fileName);
-    },
+    }
   });
   var upload = util.promisify(multer({ storage: storage }).single("file"));
   try {
@@ -156,24 +133,11 @@ app.post("/upload/:instanceKey", async (req, res) => {
   }
   try {
     let clientId, clientSecret, tokensFromCredentials;
-    ({
-      clientId,
-      clientSecret,
-      tokensFromCredentials,
-    } = InstanceManager.get(instanceKey, [
-      "clientId",
-      "clientSecret",
-      "tokensFromCredentials",
-    ]));
+    ({ clientId, clientSecret, tokensFromCredentials } = InstanceManager.get(instanceKey, [ "clientId", "clientSecret", "tokensFromCredentials"]));
 
     const options = { fileName, mimeType, instanceKey };
-    const response = await GoogleDrive.authorize(
-      clientId,
-      clientSecret,
-      tokensFromCredentials,
-      options,
-      GoogleDrive.uploadFile
-    );
+    const response = await GoogleDrive.authorize(clientId, clientSecret, tokensFromCredentials, options, GoogleDrive.uploadFile);
+
     res.status(response.status).send(response.data);
     logSuccessResponse(response, "[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]");
   } catch (err) {
