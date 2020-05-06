@@ -83,12 +83,14 @@ $(() => {
     await trackProgress();
     const instanceKey = form.data(`instance-key`);
     const targetWindow = form.data(`target-window`);
-    axios.post(`/upload/${instanceKey}`, data).then((res) => {
-      socket.off("progress");
-      spinner.css("visibility", "hidden");
-      check.css("visibility", "visible");
-      const type = res.data.isNew ? "uploadNew" : "uploadExisting";
-      window.parent.postMessage({ type, ...res.data }, targetWindow);
-    });
+    console.time('local');
+    axios.post(`/upload/${instanceKey}`, data, { onUploadProgress: progress => {$("#debug").text(progress.loaded); if(parseInt(progress.loaded) == 100) console.timeEnd('local')} })
+      .then((res) => {
+        socket.off("progress");
+        spinner.css("visibility", "hidden");
+        check.css("visibility", "visible");
+        const type = res.data.isNew ? "uploadNew" : "uploadExisting";
+        window.parent.postMessage({ type, ...res.data }, targetWindow);
+      });
   };
 });

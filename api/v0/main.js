@@ -133,7 +133,7 @@ app.post("/upload/:instanceKey", async (req, res) => {
   }
   try {
     let clientId, clientSecret, tokensFromCredentials;
-    ({ clientId, clientSecret, tokensFromCredentials } = InstanceManager.get(instanceKey, [ "clientId", "clientSecret", "tokensFromCredentials"]));
+    ({ clientId, clientSecret, tokensFromCredentials } = InstanceManager.get(instanceKey, [ "clientId", "clientSecret", "tokensFromCredentials"])); // can be moved towards token endpt
 
     const options = { fileName, mimeType, instanceKey };
     const response = await GoogleDrive.authorize(clientId, clientSecret, tokensFromCredentials, options, GoogleDrive.uploadFile);
