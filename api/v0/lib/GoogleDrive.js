@@ -151,6 +151,7 @@ async function initUpload(instanceKey) {
 
 async function uploadFile(instanceKey, payload) {
   const uploadStream = InstanceManager.get(instanceKey, ['uploadStream']);
+  console.log('uploadStream', uploadStream)
   payload.pipe(uploadStream);
   InstanceManager.update(instanceKey, 'uploadStream', uploadStream);
 }
@@ -164,6 +165,7 @@ module.exports = {
   actions,
   authorize,
   createAuthUrl,
+  endUpload,
   getTokens,
   initUpload,
   uploadFile
