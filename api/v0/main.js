@@ -119,13 +119,13 @@ app.post('/upload/:instanceKey', async (req, res) => {
   // ({ destinationFolderId, salesforceUrl, isNew } = InstanceManager.get(instanceKey, ['destinationFolderId', 'salesforceUrl', 'isNew']));
   form
     .on('progress', (bytesReceived, bytesExpected) => {
-      console.log('[FRONTEND_UPLOAD]', parseInt( 100 * bytesReceived / totalBytes ), '%');
+      console.log('[FRONTEND_UPLOAD]', parseInt( 100 * bytesReceived / bytesExpected ), '%');
     })
     .on('end', async() => {
       //CALL GOOGLEDRIVE TO SIGNIFY THIS ISDONE
       file = await GoogleDrive.endUpload(file);
       console.log('file', file);
-      console.log('[FRONTEND_UPLOAD_COMPLETE]', parseInt( 100 * bytesReceived / bytesExpected ), '%');
+      console.log('[FRONTEND_UPLOAD_COMPLETE]');
     })
     .on('error', err => {
       console.log('[FRONTEND_UPLOAD_ERROR]', err)
