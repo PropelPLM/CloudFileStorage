@@ -1,6 +1,6 @@
 'use strict';
 const { google } = require('googleapis');
-const { Transform } = require('stream');
+const { PassThrough } = require('stream');
 const cors = require('cors');
 const express = require('express');
 const formidable = require('formidable');
@@ -141,12 +141,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
       driveId: destinationFolderId,
       parents: [destinationFolderId]
     };
-    let fileStream = new Transform({
-      transform(chunk, encoding, callback) {
-        this.push(chunk);
-        callback();
-      }
-    });
+    let fileStream = new PassThrough();
     var media = {
       mimeType: part.mime,
       body: fileStream
@@ -164,7 +159,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
         }
       }
     );
-    part.pipe(media())
+    part.pipe(fileStream);
   }
   form.parse(req, (err, fields, files)=> {
     console.log(5)
