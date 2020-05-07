@@ -194,7 +194,8 @@ app.post('/upload/:instanceKey', async (req, res) => {
     // console.log(9);
 
     // res.status(response.status).send(response.data);
-    res.send('OK')
+    res.writeHead(200);
+    res.write('received upload: \n\n');
     logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
   } catch (err) {
     logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
