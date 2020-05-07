@@ -137,7 +137,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
     console.log(4);
     console.log('part', part);
     var fileMetadata = {
-      name: part.name,
+      name: part.filename,
       driveId: destinationFolderId,
       parents: [destinationFolderId]
     };
