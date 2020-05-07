@@ -141,7 +141,8 @@ async function initUpload(instanceKey) {
     },
     {
       onUploadProgress: evt => {
-        console.log('g progress', (evt.bytesRead/totalBytes) * 100)
+        console.log('g progress')
+        // console.log('g progress', (evt.bytesRead/totalBytes) * 100)
       }
     }
   )
