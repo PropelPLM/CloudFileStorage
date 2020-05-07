@@ -30,6 +30,10 @@ module.exports = {
     return requestedDetails;
   },
 
+  memRef: (instanceKey, key, value) => {
+    instanceMap[instanceKey][key] = value 
+  },
+
   update: (instanceKey, field, value) => {
     instanceMap[instanceKey][field] = value //uses same object in memory
   },

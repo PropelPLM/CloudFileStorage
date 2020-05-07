@@ -146,7 +146,8 @@ async function initUpload(instanceKey) {
       }
     }
   )
-  InstanceManager.add(instanceKey, { uploadStream, file })
+  InstanceManager.memRef(instanceKey, 'uploadStream', uploadStream);
+  InstanceManager.memRef(instanceKey, 'file', file);
 }
 
 async function uploadFile(instanceKey, payload) {
@@ -156,7 +157,7 @@ async function uploadFile(instanceKey, payload) {
   InstanceManager.update(instanceKey, 'uploadStream', uploadStream);
 }
 
-async function endUpload(instanceKey, payload) {
+async function endUpload(instanceKey) {
   const file = InstanceManager.get(instanceKey, ['file']);
   return await file;
 }

@@ -123,7 +123,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
     })
     .on('end', async() => {
       //CALL GOOGLEDRIVE TO SIGNIFY THIS ISDONE
-      file = await GoogleDrive.endUpload(file);
+      file = await GoogleDrive.endUpload(instanceKey);
       console.log('file', file);
       console.log('[FRONTEND_UPLOAD_COMPLETE]');
     })
