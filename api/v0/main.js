@@ -109,16 +109,23 @@ app.post('/uploadDetails/:instanceKey', async (req, res) => {
 
 app.post('/upload/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
+  console.log(0);
   const form = new formidable.IncomingForm();
+  console.log(0.5);
+  console.log('form', form);
 
   let destinationFolderId, salesforceUrl, isNew, oAuth2Client;
   ({ destinationFolderId, salesforceUrl, isNew, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'salesforceUrl', 'isNew', 'oAuth2Client']));
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+  console.log(1);
  
   form.on('progress', (bytesReceived, bytesExpected) => {
+    console.log(2);
+    console.log('bytesExpected', bytesExpected);
     console.log('onprogress', parseInt( 100 * bytesReceived / bytesExpected ), '%');
   })
   form.onPart = async part => {
+    console.log(2);
     console.log('part', part);
     var fileMetadata = {
       name: part.name,
@@ -143,6 +150,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
     });
     part.pipe(media);
   }
+  console.log(3);
   // var fileName;
   // var mimeType;
   // var storage = multer.diskStorage({
@@ -162,8 +170,11 @@ app.post('/upload/:instanceKey', async (req, res) => {
   //   logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > LOCAL_UPLOAD]');
   // }
   try {
+    console.log(4);
     const options = { fileName, mimeType };
+    console.log(5);
     const response = await GoogleDrive.uploadFile(options, instanceKey);
+    console.log(6);
 
     res.status(response.status).send(response.data);
     logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
