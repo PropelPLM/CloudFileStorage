@@ -112,16 +112,20 @@ app.post('/upload/:instanceKey', async (req, res) => {
   console.log(0);
   const form = new formidable.IncomingForm();
   console.log(1);
-  console.log('form', form);
 
   let destinationFolderId, salesforceUrl, isNew, oAuth2Client;
   ({ destinationFolderId, salesforceUrl, isNew, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'salesforceUrl', 'isNew', 'oAuth2Client']));
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
   console.log(2);
- 
+  var totalBytes;
   form.on('progress', (bytesReceived, bytesExpected) => {
     console.log(3);
+    totalBytes = bytesExpected*2;
     console.log('bytesExpected', bytesExpected);
+    console.log('onprogress', parseInt( 100 * bytesReceived / bytesExpected ), '%');
+  })
+  form.on('end', () => {
+    console.log(done);
     console.log('onprogress', parseInt( 100 * bytesReceived / bytesExpected ), '%');
   })
   form.onPart = part => {
@@ -142,12 +146,19 @@ app.post('/upload/:instanceKey', async (req, res) => {
       mimeType: part.mime,
       body: fileStream
     };
-    const file = drive.files.create({
-      resource: fileMetadata,
-      media,
-      supportsAllDrives: true,
-      fields: 'id, name, webViewLink, mimeType, fileExtension, webContentLink'
-    });
+    const file = drive.files.create(
+      {
+        resource: fileMetadata,
+        media,
+        supportsAllDrives: true,
+        fields: 'id, name, webViewLink, mimeType, fileExtension, webContentLink'
+      },
+      {
+        onUploadProgress: evt => {
+          console.log('g progress', (evt.bytesRead/totalBytes) * 100)
+        }
+      }
+    );
     part.pipe(media);
   }
   form.parse(req, (err, fields, files)=> {
@@ -156,7 +167,6 @@ app.post('/upload/:instanceKey', async (req, res) => {
     console.log('files', files);
     console.log(err);
   })
-  console.log(6);
   // var fileName;
   // var mimeType;
   // var storage = multer.diskStorage({
@@ -176,8 +186,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
   //   logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > LOCAL_UPLOAD]');
   // }
   try {
-    console.log(7);
-    const options = { fileName, mimeType };
+    // const options = { fileName, mimeType };
     console.log(8);
     const response = await GoogleDrive.uploadFile(options, instanceKey);
     console.log(9);
