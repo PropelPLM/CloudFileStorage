@@ -1,5 +1,5 @@
 const { google } = require('googleapis');
-const { Transform } = require('stream');
+const { PassThrough } = require('stream');
 const fs = require('fs');
 const progress = require('progress-stream');
 
