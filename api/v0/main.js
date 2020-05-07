@@ -159,7 +159,9 @@ app.post('/upload/:instanceKey', async (req, res) => {
         }
       }
     );
-    part.pipe(media);
+    part.on('data', data => {
+      data.pipe(media);
+    })
   }
   form.parse(req, (err, fields, files)=> {
     console.log(5)
