@@ -52,6 +52,7 @@ async function getTokens(code, instanceKey) {
  */
 async function authorize(clientId, clientSecret, tokens) {//}, options, callback) {
   try {
+    console.log('tokens', tokens)
     const oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uris[0]);
     oAuth2Client.setCredentials(tokens);
     InstanceManager.add(instanceKey, { oAuth2Client });
