@@ -111,7 +111,8 @@ app.post('/upload/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
   const form = new formidable.IncomingForm();
   form.onPart = part => {
-    console.log(part);
+    part.on('data', data =>
+    console.log(data))
   }
   var fileName;
   var mimeType;
