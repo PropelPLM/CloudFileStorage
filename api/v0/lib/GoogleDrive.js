@@ -65,8 +65,8 @@ async function authorize(instanceKey, clientId, clientSecret, tokens) {//}, opti
 /**
  * Uploads file with an OAuth2 client and then execute communicate the metadata of
  * the record in the external file storage back to salesforce APEX.
- * @param {Object} auth OAuth2 client generated from authorizing the client credentials.
  * @param {Object} options Specifies how the file should be created in the external file storage
+ * @param {String} instanceKey Specifies the session metadata details should be extracted from
  */
 async function uploadFile(options, instanceKey) {
   let destinationFolderId, salesforceUrl, isNew, oAuth2Client;
@@ -77,7 +77,7 @@ async function uploadFile(options, instanceKey) {
     parents: [destinationFolderId]
   };
   try {
-    const drive = google.drive({ version: "v3", oAuth2Client });
+    const drive = google.drive({ version: "v3", auth: oAuth2Client });
     var stat = fs.statSync(`./${options.fileName}`);
     var str = progress({ length: stat.size, time: 20 });
     str.on("progress", (p) => {
