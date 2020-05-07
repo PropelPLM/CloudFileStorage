@@ -41,7 +41,7 @@ app.post("/auth/:instanceKey", async (req, res) => {
   let sessionId, salesforceUrl, clientId, clientSecret;
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
 
-  await InstanceManager.register(instanceKey);
+  InstanceManager.register(instanceKey);
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   await Promise.all([
     InstanceManager.add(instanceKey, instanceDetails),
@@ -82,8 +82,8 @@ app.post("/token/:instanceKey", async (req, res) => {
       expiry_date
     };
 
-    await InstanceManager.register(instanceKey);
-    GoogleDrive.authorize(client_id, client_secret, tokensFromCredentials); //getAdapter().authorize(...)
+    InstanceManager.register(instanceKey);
+    GoogleDrive.authorize(instanceKey, client_id, client_secret, tokensFromCredentials); //getAdapter().authorize(...)
     const instanceDetails = { sessionId, salesforceUrl };
     InstanceManager.add(instanceKey, instanceDetails);
 

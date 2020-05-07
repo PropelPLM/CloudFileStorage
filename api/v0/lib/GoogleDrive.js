@@ -50,19 +50,13 @@ async function getTokens(code, instanceKey) {
  *                 executed in the external file storage
  * @param {function} callback The callback to call with the authorized client.
  */
-async function authorize(clientId, clientSecret, tokens) {//}, options, callback) {
+async function authorize(instanceKey, clientId, clientSecret, tokens) {//}, options, callback) {
   try {
-    console.log('tokens', tokens);
     const oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uris[0]);
-    console.log(1);
     oAuth2Client.setCredentials(tokens);
-    console.log(2);
     InstanceManager.add(instanceKey, { oAuth2Client });
-    console.log(3);
     logSuccessResponse({}, "[GOOGLE_DRIVE.AUTHORIZE]");
-    console.log(4);
   } catch (err) {
-    console.log(5);
     logErrorResponse(err, "[GOOGLE_DRIVE.AUTHORIZE]");
   }
   // return await callback(oAuth2Client, options);

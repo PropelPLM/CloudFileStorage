@@ -12,7 +12,7 @@ const { cloneDeep } = require("lodash");
 const instanceMap = {};
 
 module.exports = {
-  register: async (instanceKey) => {
+  register: (instanceKey) => {
     instanceMap[instanceKey] = {};
   },
 
