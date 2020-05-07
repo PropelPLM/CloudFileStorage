@@ -149,13 +149,13 @@ async function initUpload(instanceKey) {
 }
 
 async function uploadFile(instanceKey, payload) {
-  const uploadStream = InstanceManager.get(instanceKey, ["uploadStream"]);
+  const uploadStream = InstanceManager.get(instanceKey, ['uploadStream']);
   payload.pipe(uploadStream);
-  InstanceManager.add(instanceKey, { uploadStream });
+  InstanceManager.update(instanceKey, 'uploadStream', uploadStream);
 }
 
 async function endUpload(instanceKey, payload) {
-  const file = InstanceManager.get(instanceKey, ["file"]);
+  const file = InstanceManager.get(instanceKey, ['file']);
   return await file;
 }
 

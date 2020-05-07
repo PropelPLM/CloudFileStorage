@@ -30,7 +30,7 @@ module.exports = {
     return requestedDetails;
   },
 
-  updateKey: (oldKey, newKey) => {
-    instanceMap[newKey] = cloneDeep(instanceMap[oldKey]);
+  update: (instanceKey, field, value) => {
+    instanceMap[instanceKey][field] = value //uses same object in memory
   },
 };
