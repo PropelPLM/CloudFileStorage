@@ -124,7 +124,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
     console.log('bytesExpected', bytesExpected);
     console.log('onprogress', parseInt( 100 * bytesReceived / bytesExpected ), '%');
   })
-  form.onPart = async part => {
+  form.onPart = part => {
     console.log(4);
     console.log('part', part);
     var fileMetadata = {
@@ -142,7 +142,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
       mimeType: part.mime,
       body: fileStream
     };
-    const file = await drive.files.create({
+    const file = drive.files.create({
       resource: fileMetadata,
       media,
       supportsAllDrives: true,
