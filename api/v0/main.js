@@ -110,57 +110,51 @@ app.post('/uploadDetails/:instanceKey', async (req, res) => {
 
 app.post('/upload/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
-  console.log(0);
   const form = new formidable.IncomingForm();
-  console.log(1);
 
   let destinationFolderId, salesforceUrl, isNew, oAuth2Client;
   ({ destinationFolderId, salesforceUrl, isNew, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'salesforceUrl', 'isNew', 'oAuth2Client']));
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
   console.log(2);
   var totalBytes;
-  form.on('error', err => {
-    console.log(11)
-    console.log('err', err)
-  })
-  form.on('progress', (bytesReceived, bytesExpected) => {
-    console.log(3);
-    totalBytes = bytesExpected*2;
-    console.log('bytesExpected', bytesExpected);
-    console.log('onprogress', parseInt( 100 * bytesReceived / bytesExpected ), '%');
-  })
-  form.on('end', () => {
-    console.log(done);
-    console.log('onprogress', parseInt( 100 * bytesReceived / bytesExpected ), '%');
-  })
+  form
+    .on('progress', (bytesReceived, bytesExpected) => {
+      console.log('bytesExpected', bytesExpected);
+      console.log('onprogress', parseInt( 100 * bytesReceived / bytesExpected ), '%');
+    })
+    .on('end', async() => {
+      console.log('done');
+      console.log('onprogress', parseInt( 100 * bytesReceived / bytesExpected ), '%');
+    })
+    .on('error', err => {
+      console.log('err', err)
+    })
   form.onPart = part => {
-    console.log(4);
-    console.log('part', part);
-    var fileMetadata = {
-      name: part.filename,
-      driveId: destinationFolderId,
-      parents: [destinationFolderId]
-    };
-    let fileStream = new PassThrough();
-    var media = {
-      mimeType: part.mime,
-      body: fileStream
-    };
-    const file = drive.files.create(
-      {
-        resource: fileMetadata,
-        media,
-        supportsAllDrives: true,
-        fields: 'id, name, webViewLink, mimeType, fileExtension, webContentLink'
-      },
-      {
-        onUploadProgress: evt => {
-          console.log('g progress', (evt.bytesRead/totalBytes) * 100)
+      var fileMetadata = {
+        name: part.filename,
+        driveId: destinationFolderId,
+        parents: [destinationFolderId]
+      };
+      let fileStream = new PassThrough();
+      var media = {
+        mimeType: part.mime,
+        body: fileStream
+      };
+      const file = drive.files.create(
+        {
+          resource: fileMetadata,
+          media,
+          supportsAllDrives: true,
+          fields: 'id, name, webViewLink, mimeType, fileExtension, webContentLink'
+        },
+        {
+          onUploadProgress: evt => {
+            console.log('g progress', (evt.bytesRead/totalBytes) * 100)
+          }
         }
-      }
-    );
-    part.pipe(fileStream);
-  }
+      );
+      part.pipe(fileStream);
+    }
   form.parse(req, (err, fields, files)=> {
     console.log(5)
     console.log('fields', fields);
