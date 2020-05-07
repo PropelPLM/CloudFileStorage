@@ -68,54 +68,94 @@ async function authorize(instanceKey, clientId, clientSecret, tokens) {//}, opti
  * @param {Object} options Specifies how the file should be created in the external file storage
  * @param {String} instanceKey Specifies the session metadata details should be extracted from
  */
-async function uploadFile(options, instanceKey) {
-  let destinationFolderId, salesforceUrl, isNew, oAuth2Client;
-  ({ destinationFolderId, salesforceUrl, isNew, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'salesforceUrl', 'isNew', 'oAuth2Client']));
-  var fileMetadata = {
-    name: options.fileName,
+// async function uploadFile(options, instanceKey) {
+//   let destinationFolderId, salesforceUrl, isNew, oAuth2Client;
+//   ({ destinationFolderId, salesforceUrl, isNew, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'salesforceUrl', 'isNew', 'oAuth2Client']));
+//   var fileMetadata = {
+//     name: options.fileName,
+//     driveId: destinationFolderId,
+//     parents: [destinationFolderId]
+//   };
+//   try {
+//     const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+//     var stat = fs.statSync(`./${options.fileName}`);
+//     var str = progress({ length: stat.size, time: 20 });
+//     str.on('progress', (p) => {
+//       MessageEmitter.postProgress(instanceKey, p);
+//     });
+//     let fileStream = new Transform({
+//       transform(chunk, encoding, callback) {
+//         this.push(chunk);
+//         callback();
+//       }
+//     });
+//     fs.createReadStream(`./${options.fileName}`).pipe(str).pipe(fileStream);
+//     var media = {
+//       mimeType: options.mimeType,
+//       body: fileStream
+//     };
+//     const file = await drive.files.create({
+//       resource: fileMetadata,
+//       media,
+//       supportsAllDrives: true,
+//       fields: 'id, name, webViewLink, mimeType, fileExtension, webContentLink'
+//     });
+//     const sfObject = await JsForce.create(file.data, instanceKey);
+//     const response = {
+//       status: parseInt(file.status),
+//       data: {
+//         ...file.data,
+//         sfId: sfObject.id,
+//         revisionId: sfObject.revisionId,
+//         salesforceUrl,
+//         isNew
+//       }
+//     };
+//     logSuccessResponse(response, '[GOOGLE_DRIVE.UPLOAD_FILE]');
+//     return response;
+//   } catch (err) {
+//     return logErrorResponse(err, '[GOOGLE_DRIVE.UPLOAD_FILE]');
+//   }
+// }
+
+async function initUpload(instanceKey) {
+  let destinationFolderId, oAuth2Client;
+  ({ destinationFolderId, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'oAuth2Client']));
+  const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+  const uploadStream = new PassThrough();
+  const fileMetadata = {
+    name: 'a',
     driveId: destinationFolderId,
     parents: [destinationFolderId]
   };
-  try {
-    const drive = google.drive({ version: 'v3', auth: oAuth2Client });
-    var stat = fs.statSync(`./${options.fileName}`);
-    var str = progress({ length: stat.size, time: 20 });
-    str.on('progress', (p) => {
-      MessageEmitter.postProgress(instanceKey, p);
-    });
-    let fileStream = new Transform({
-      transform(chunk, encoding, callback) {
-        this.push(chunk);
-        callback();
-      }
-    });
-    fs.createReadStream(`./${options.fileName}`).pipe(str).pipe(fileStream);
-    var media = {
-      mimeType: options.mimeType,
-      body: fileStream
-    };
-    const file = await drive.files.create({
+  var media = {
+    mimeType: 'image/jpg',
+    body: uploadStream
+  };
+  const file = drive.files.create(
+    {
       resource: fileMetadata,
       media,
       supportsAllDrives: true,
       fields: 'id, name, webViewLink, mimeType, fileExtension, webContentLink'
-    });
-    const sfObject = await JsForce.create(file.data, instanceKey);
-    const response = {
-      status: parseInt(file.status),
-      data: {
-        ...file.data,
-        sfId: sfObject.id,
-        revisionId: sfObject.revisionId,
-        salesforceUrl,
-        isNew
+    },
+    {
+      onUploadProgress: evt => {
+        console.log('g progress', (evt.bytesRead/totalBytes) * 100)
       }
-    };
-    logSuccessResponse(response, '[GOOGLE_DRIVE.UPLOAD_FILE]');
-    return response;
-  } catch (err) {
-    return logErrorResponse(err, '[GOOGLE_DRIVE.UPLOAD_FILE]');
-  }
+    }
+  )
+  InstanceManager.add(instanceKey, { uploadStream, file })
+}
+
+async function uploadFile(instanceKey, payload) {
+  const uploadStream = InstanceManager.get(instanceKey, ["uploadStream"]);
+  payload.pipe(uploadStream);
+}
+
+async function endUpload(instanceKey, payload) {
+  const file = InstanceManager.get(instanceKey, ["file"]);
+  return await file;
 }
 
 module.exports = {
@@ -123,5 +163,6 @@ module.exports = {
   authorize,
   createAuthUrl,
   getTokens,
+  initUpload,
   uploadFile
 };

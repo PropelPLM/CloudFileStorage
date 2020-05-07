@@ -63,6 +63,7 @@ app.post('/auth/:instanceKey', async (req, res) => {
   }
 });
 
+//migrate this over
 app.get('/auth/callback/google', async (req, res) => {
   const instanceKey = Buffer.from(req.query.state, 'base64').toString();
   const code = req.query.code;
@@ -110,57 +111,42 @@ app.post('/uploadDetails/:instanceKey', async (req, res) => {
 
 app.post('/upload/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
+  const uploadStream = GoogleDrive.initUpload(instanceKey);
   const form = new formidable.IncomingForm();
+  let file;
 
-  let destinationFolderId, salesforceUrl, isNew, oAuth2Client;
-  ({ destinationFolderId, salesforceUrl, isNew, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'salesforceUrl', 'isNew', 'oAuth2Client']));
-  const drive = google.drive({ version: 'v3', auth: oAuth2Client });
-  console.log(2);
-  var totalBytes;
+  // let destinationFolderId, salesforceUrl, isNew;
+  // ({ destinationFolderId, salesforceUrl, isNew } = InstanceManager.get(instanceKey, ['destinationFolderId', 'salesforceUrl', 'isNew']));
   form
     .on('progress', (bytesReceived, bytesExpected) => {
-      console.log('bytesExpected', bytesExpected);
-      console.log('onprogress', parseInt( 100 * bytesReceived / bytesExpected ), '%');
+      console.log('[FRONTEND_UPLOAD]', parseInt( 100 * bytesReceived / totalBytes ), '%');
     })
     .on('end', async() => {
-      console.log('done');
-      console.log('onprogress', parseInt( 100 * bytesReceived / bytesExpected ), '%');
+      //CALL GOOGLEDRIVE TO SIGNIFY THIS ISDONE
+      file = await GoogleDrive.endUpload(file);
+      console.log('file', file);
+      console.log('[FRONTEND_UPLOAD_COMPLETE]', parseInt( 100 * bytesReceived / bytesExpected ), '%');
     })
     .on('error', err => {
-      console.log('err', err)
+      console.log('[FRONTEND_UPLOAD_ERROR]', err)
     })
+  await uploadStream;
   form.onPart = part => {
-      var fileMetadata = {
-        name: part.filename,
-        driveId: destinationFolderId,
-        parents: [destinationFolderId]
-      };
-      let fileStream = new PassThrough();
-      var media = {
-        mimeType: part.mime,
-        body: fileStream
-      };
-      const file = drive.files.create(
-        {
-          resource: fileMetadata,
-          media,
-          supportsAllDrives: true,
-          fields: 'id, name, webViewLink, mimeType, fileExtension, webContentLink'
-        },
-        {
-          onUploadProgress: evt => {
-            console.log('g progress', (evt.bytesRead/totalBytes) * 100)
-          }
-        }
-      );
-      part.pipe(fileStream);
-    }
+    InstanceManager.add(instanceKey, 
+      {
+        fileName: part.filename,
+        mimeType: part.minme 
+      }
+    );
+    GoogleDrive.uploadFile(instanceKey, part);
+  }
   form.parse(req, (err, fields, files)=> {
     console.log(5)
     console.log('fields', fields);
     console.log('files', files);
     console.log(err);
   })
+  console.log(1801248);
   // var fileName;
   // var mimeType;
   // var storage = multer.diskStorage({
