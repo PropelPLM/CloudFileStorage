@@ -1,9 +1,9 @@
-const google = require("../api/v0/lib/GoogleDrive");
-const data = require("./googleTestData");
+const google = require('../api/v0/lib/GoogleDrive');
+const data = require('./googleTestData');
 
-jest.mock("googleapis").mock("fs");
+jest.mock('googleapis').mock('fs');
 
-it("authorize with correct credentials", async () => {
+it('authorize with correct credentials', async () => {
   const setCredentialsCallback = jest.fn((...args) => {
     return {
       status: data.success_status,
@@ -31,7 +31,7 @@ it("authorize with correct credentials", async () => {
   );
 });
 
-it("successful upload to drive", async () => {
+it('successful upload to drive', async () => {
   const uploadResponse = await google.uploadFile(
     {},
     data.file_name,
@@ -45,7 +45,7 @@ it("successful upload to drive", async () => {
   );
 });
 
-it("failed upload to drive", async () => {
+it('failed upload to drive', async () => {
   const uploadResponse = await google.uploadFile({}, null, null);
   expect(uploadResponse).toEqual(
     expect.objectContaining({

@@ -1,42 +1,43 @@
-"use strict";
+'use strict';
 
-const cors = require("cors");
-const express = require("express");
-const multer = require("multer");
-const path = require("path");
-const util = require("util");
+const cors = require('cors');
+const express = require('express');
+const formidable = require('formidable');
+const multer = require('multer');
+const path = require('path');
+const util = require('util');
 
 const app = express();
-const server = require("http").createServer(app);
+const server = require('http').createServer(app);
 module.exports = server;
 const port = process.env.PORT || 5000;
 
-const { logSuccessResponse, logErrorResponse } = require("./Logger.js");
-const InstanceManager = require("./InstanceManager.js");
-const MessageEmitter = require("./MessageEmitter.js");
-const GoogleDrive = require("./lib/GoogleDrive.js");
-const JsForce = require("./lib/JsForce.js");
+const { logSuccessResponse, logErrorResponse } = require('./Logger.js');
+const InstanceManager = require('./InstanceManager.js');
+const MessageEmitter = require('./MessageEmitter.js');
+const GoogleDrive = require('./lib/GoogleDrive.js');
+const JsForce = require('./lib/JsForce.js');
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname, "../../public")));
+app.use(express.static(path.join(__dirname, '../../public')));
 
-app.get("/:instanceKey", (req, res) => {
+app.get('/:instanceKey', (req, res) => {
   const instanceKey = req.params.instanceKey;
-  logSuccessResponse(instanceKey, "[END_POINT.INSTANCE_KEY]");
-  res.sendFile("index.html", { root: path.join(__dirname, "../../public/") });
+  logSuccessResponse(instanceKey, '[END_POINT.INSTANCE_KEY]');
+  res.sendFile('index.html', { root: path.join(__dirname, '../../public/') });
 });
 
-app.get("/setAttribute/:instanceKey", (req, res) => {
+app.get('/setAttribute/:instanceKey', (req, res) => {
   const instanceKey = req.params.instanceKey;
-  logSuccessResponse(instanceKey, "[END_POINT.SET_ATTRIBUTE]");
-  res.send("OK");
+  logSuccessResponse(instanceKey, '[END_POINT.SET_ATTRIBUTE]');
+  res.send('OK');
   let salesforceUrl;
-  ({ salesforceUrl } = InstanceManager.get(instanceKey, ["salesforceUrl"]));
-  MessageEmitter.setAttribute(instanceKey, "target-window", salesforceUrl);
+  ({ salesforceUrl } = InstanceManager.get(instanceKey, ['salesforceUrl']));
+  MessageEmitter.setAttribute(instanceKey, 'target-window', salesforceUrl);
 });
 
-app.post("/auth/:instanceKey", async (req, res) => {
+app.post('/auth/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
   let sessionId, salesforceUrl, clientId, clientSecret;
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
@@ -52,23 +53,23 @@ app.post("/auth/:instanceKey", async (req, res) => {
     const credentials = { clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google` }; //google can be swapped out
     const url = GoogleDrive.createAuthUrl(credentials, instanceKey);
 
-    MessageEmitter.setAttribute(instanceKey, "target-window", salesforceUrl);
-    logSuccessResponse(instanceKey, "[END_POINT.AUTH_REDIRECT]");
+    MessageEmitter.setAttribute(instanceKey, 'target-window', salesforceUrl);
+    logSuccessResponse(instanceKey, '[END_POINT.AUTH_REDIRECT]');
     res.status(200).send({ url });
   } else {
-    logErrorResponse({ clientId, clientSecret }, "[END_POINT.AUTH_REDIRECT]");
-    res.status(400).send("Authorization failed, please ensure client credentials are populated.");
+    logErrorResponse({ clientId, clientSecret }, '[END_POINT.AUTH_REDIRECT]');
+    res.status(400).send('Authorization failed, please ensure client credentials are populated.');
   }
 });
 
-app.get("/auth/callback/google", async (req, res) => {
-  const instanceKey = Buffer.from(req.query.state, "base64").toString();
+app.get('/auth/callback/google', async (req, res) => {
+  const instanceKey = Buffer.from(req.query.state, 'base64').toString();
   const code = req.query.code;
   await GoogleDrive.getTokens(code, instanceKey);
-  res.send("<script>window.close()</script>");
+  res.send('<script>window.close()</script>');
 });
 
-app.post("/token/:instanceKey", async (req, res) => {
+app.post('/token/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
   try {
     let client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl, tokensFromCredentials;
@@ -78,7 +79,7 @@ app.post("/token/:instanceKey", async (req, res) => {
       access_token,
       refresh_token,
       scope: GoogleDrive.actions.driveFiles,
-      token_type: "Bearer",
+      token_type: 'Bearer',
       expiry_date
     };
 
@@ -88,31 +89,35 @@ app.post("/token/:instanceKey", async (req, res) => {
     InstanceManager.add(instanceKey, instanceDetails);
 
     await JsForce.connect(sessionId, salesforceUrl, instanceKey);
-    logSuccessResponse(tokensFromCredentials, "[END_POINT.TOKEN]");
+    logSuccessResponse(tokensFromCredentials, '[END_POINT.TOKEN]');
     res.status(200).send({ ...tokensFromCredentials, instanceKey });
   } catch (err) {
-    logErrorResponse(err, "[END_POINT.TOKEN]");
+    logErrorResponse(err, '[END_POINT.TOKEN]');
     res.send(`Failed to receive tokens: ${err}`);
   }
 });
 
-app.post("/uploadDetails/:instanceKey", async (req, res) => {
+app.post('/uploadDetails/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
   let revisionId, destinationFolderId, isNew;
   ({ revisionId, destinationFolderId, isNew } = req.body);
   const instanceDetails = { revisionId, destinationFolderId, isNew };
   InstanceManager.add(instanceKey, instanceDetails);
-  logSuccessResponse({ instanceKey }, "[END_POINT.UPLOAD_DETAILS]");
+  logSuccessResponse({ instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
   res.status(200).send({ instanceKey });
 });
 
-app.post("/upload/:instanceKey", async (req, res) => {
+app.post('/upload/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
+  const form = new formidable.IncomingForm();
+  form.onPart = part => {
+    console.log(part);
+  }
   var fileName;
   var mimeType;
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, "./");
+      cb(null, './');
     },
     filename: function (req, file, cb) {
       fileName = file.originalname || file.name;
@@ -120,24 +125,24 @@ app.post("/upload/:instanceKey", async (req, res) => {
       cb(null, fileName);
     }
   });
-  var upload = util.promisify(multer({ storage: storage }).single("file"));
+  var upload = util.promisify(multer({ storage: storage }).single('file'));
   try {
     await upload(req, res);
   } catch (err) {
-    logErrorResponse(err, "[END_POINT.UPLOAD_INSTANCE_KEY > LOCAL_UPLOAD]");
+    logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > LOCAL_UPLOAD]');
   }
   try {
     const options = { fileName, mimeType };
     const response = await GoogleDrive.uploadFile(options, instanceKey);
 
     res.status(response.status).send(response.data);
-    logSuccessResponse(response, "[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]");
+    logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
   } catch (err) {
-    logErrorResponse(err, "[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]");
+    logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
     res.status(503).send(`Drive upload failed: ${err}`);
   }
 });
 
 server.listen(port, () => {
-  logSuccessResponse("SUCCESS", "[SERVER_RUNNING]");
+  logSuccessResponse('SUCCESS', '[SERVER_RUNNING]');
 });

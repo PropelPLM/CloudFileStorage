@@ -1,5 +1,5 @@
-"use strict";
-const { cloneDeep } = require("lodash");
+'use strict';
+const { cloneDeep } = require('lodash');
 
 /**
  * Time of access and the sessionId will be used to demultiplex different iframe sessions

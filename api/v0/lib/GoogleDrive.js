@@ -1,16 +1,16 @@
-const { google } = require("googleapis");
-const { Transform } = require("stream");
-const fs = require("fs");
-const progress = require("progress-stream");
+const { google } = require('googleapis');
+const { Transform } = require('stream');
+const fs = require('fs');
+const progress = require('progress-stream');
 
-const { logSuccessResponse, logErrorResponse } = require("../Logger.js");
-const MessageEmitter = require("../MessageEmitter.js");
-const InstanceManager = require("../InstanceManager.js");
-const JsForce = require("./JsForce.js");
+const { logSuccessResponse, logErrorResponse } = require('../Logger.js');
+const MessageEmitter = require('../MessageEmitter.js');
+const InstanceManager = require('../InstanceManager.js');
+const JsForce = require('./JsForce.js');
 
-const redirect_uris = ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"];
+const redirect_uris = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];
 const actions = {
-  driveFiles: "https://www.googleapis.com/auth/drive.file"
+  driveFiles: 'https://www.googleapis.com/auth/drive.file'
 };
 
 //TOKEN FLOW - INSTANCE MANAGER VARIABLES HERE DO NOT PERSIST TO UPLOAD FLOW
@@ -21,22 +21,22 @@ function createAuthUrl(credentials, instanceKey) {
   const oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
   InstanceManager.add(instanceKey, { oAuth2Client });
   return oAuth2Client.generateAuthUrl({
-    access_type: "offline",
-    prompt: "consent",
+    access_type: 'offline',
+    prompt: 'consent',
     scope: actions.driveFiles,
-    state: Buffer.from(instanceKey).toString("base64")
+    state: Buffer.from(instanceKey).toString('base64')
   });
 }
 
 async function getTokens(code, instanceKey) {
   let clientId, clientSecret, oAuth2Client;
-  ({ clientId, clientSecret, oAuth2Client } = InstanceManager.get(instanceKey, ["clientId", "clientSecret", "oAuth2Client"]));
+  ({ clientId, clientSecret, oAuth2Client } = InstanceManager.get(instanceKey, ['clientId', 'clientSecret', 'oAuth2Client']));
 
   oAuth2Client.getToken(code, (err, token) => {
     JsForce.sendTokens({ ...token, clientId, clientSecret }, instanceKey);
   });
-  logSuccessResponse({}, "[GOOGLE_DRIVE.GET_TOKENS]");
-  MessageEmitter.postTrigger(instanceKey, "authComplete", {});
+  logSuccessResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
+  MessageEmitter.postTrigger(instanceKey, 'authComplete', {});
 }
 
 //UPLOAD FLOW- INSTANCE MANAGER VARIABLES HERE DFO NOT PERSIST FROM TOKEN FLOW
@@ -55,9 +55,9 @@ async function authorize(instanceKey, clientId, clientSecret, tokens) {//}, opti
     const oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uris[0]);
     oAuth2Client.setCredentials(tokens);
     InstanceManager.add(instanceKey, { oAuth2Client });
-    logSuccessResponse({}, "[GOOGLE_DRIVE.AUTHORIZE]");
+    logSuccessResponse({}, '[GOOGLE_DRIVE.AUTHORIZE]');
   } catch (err) {
-    logErrorResponse(err, "[GOOGLE_DRIVE.AUTHORIZE]");
+    logErrorResponse(err, '[GOOGLE_DRIVE.AUTHORIZE]');
   }
   // return await callback(oAuth2Client, options);
 }
@@ -70,17 +70,17 @@ async function authorize(instanceKey, clientId, clientSecret, tokens) {//}, opti
  */
 async function uploadFile(options, instanceKey) {
   let destinationFolderId, salesforceUrl, isNew, oAuth2Client;
-  ({ destinationFolderId, salesforceUrl, isNew, oAuth2Client } = InstanceManager.get(instanceKey, ["destinationFolderId", "salesforceUrl", "isNew", "oAuth2Client"]));
+  ({ destinationFolderId, salesforceUrl, isNew, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'salesforceUrl', 'isNew', 'oAuth2Client']));
   var fileMetadata = {
     name: options.fileName,
     driveId: destinationFolderId,
     parents: [destinationFolderId]
   };
   try {
-    const drive = google.drive({ version: "v3", auth: oAuth2Client });
+    const drive = google.drive({ version: 'v3', auth: oAuth2Client });
     var stat = fs.statSync(`./${options.fileName}`);
     var str = progress({ length: stat.size, time: 20 });
-    str.on("progress", (p) => {
+    str.on('progress', (p) => {
       MessageEmitter.postProgress(instanceKey, p);
     });
     let fileStream = new Transform({
@@ -98,7 +98,7 @@ async function uploadFile(options, instanceKey) {
       resource: fileMetadata,
       media,
       supportsAllDrives: true,
-      fields: "id, name, webViewLink, mimeType, fileExtension, webContentLink"
+      fields: 'id, name, webViewLink, mimeType, fileExtension, webContentLink'
     });
     const sfObject = await JsForce.create(file.data, instanceKey);
     const response = {
@@ -111,10 +111,10 @@ async function uploadFile(options, instanceKey) {
         isNew
       }
     };
-    logSuccessResponse(response, "[GOOGLE_DRIVE.UPLOAD_FILE]");
+    logSuccessResponse(response, '[GOOGLE_DRIVE.UPLOAD_FILE]');
     return response;
   } catch (err) {
-    return logErrorResponse(err, "[GOOGLE_DRIVE.UPLOAD_FILE]");
+    return logErrorResponse(err, '[GOOGLE_DRIVE.UPLOAD_FILE]');
   }
 }
 
