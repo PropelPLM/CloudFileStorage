@@ -1,11 +1,11 @@
 'use strict';
-
+const { google } = require('googleapis');
 const cors = require('cors');
 const express = require('express');
 const formidable = require('formidable');
-const multer = require('multer');
+// const multer = require('multer');
 const path = require('path');
-const util = require('util');
+// const util = require('util');
 
 const app = express();
 const server = require('http').createServer(app);
@@ -110,29 +110,57 @@ app.post('/uploadDetails/:instanceKey', async (req, res) => {
 app.post('/upload/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
   const form = new formidable.IncomingForm();
-  form.onPart = part => {
-    console.log(part)
-    part.on('data', data =>
-    console.log(data))
+
+  let destinationFolderId, salesforceUrl, isNew, oAuth2Client;
+  ({ destinationFolderId, salesforceUrl, isNew, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'salesforceUrl', 'isNew', 'oAuth2Client']));
+  const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+ 
+  form.on('progress', (bytesReceived, bytesExpected) => {
+    console.log('onprogress', parseInt( 100 * bytesReceived / bytesExpected ), '%');
+  })
+  form.onPart = async part => {
+    console.log('part', part);
+    var fileMetadata = {
+      name: part.name,
+      driveId: destinationFolderId,
+      parents: [destinationFolderId]
+    };
+    let fileStream = new Transform({
+      transform(chunk, encoding, callback) {
+        this.push(chunk);
+        callback();
+      }
+    });
+    var media = {
+      mimeType: part.mime,
+      body: fileStream
+    };
+    const file = await drive.files.create({
+      resource: fileMetadata,
+      media,
+      supportsAllDrives: true,
+      fields: 'id, name, webViewLink, mimeType, fileExtension, webContentLink'
+    });
+    part.pipe(media);
   }
-  var fileName;
-  var mimeType;
-  var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, './');
-    },
-    filename: function (req, file, cb) {
-      fileName = file.originalname || file.name;
-      mimeType = file.mimetype;
-      cb(null, fileName);
-    }
-  });
-  var upload = util.promisify(multer({ storage: storage }).single('file'));
-  try {
-    await upload(req, res);
-  } catch (err) {
-    logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > LOCAL_UPLOAD]');
-  }
+  // var fileName;
+  // var mimeType;
+  // var storage = multer.diskStorage({
+  //   destination: function (req, file, cb) {
+  //     cb(null, './');
+  //   },
+  //   filename: function (req, file, cb) {
+  //     fileName = file.originalname || file.name;
+  //     mimeType = file.mimetype;
+  //     cb(null, fileName);
+  //   }
+  // });
+  // var upload = util.promisify(multer({ storage: storage }).single('file'));
+  // try {
+  //   await upload(req, res);
+  // } catch (err) {
+  //   logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > LOCAL_UPLOAD]');
+  // }
   try {
     const options = { fileName, mimeType };
     const response = await GoogleDrive.uploadFile(options, instanceKey);
