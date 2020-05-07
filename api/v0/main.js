@@ -119,6 +119,10 @@ app.post('/upload/:instanceKey', async (req, res) => {
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
   console.log(2);
   var totalBytes;
+  form.on('error', err => {
+    console.log(11)
+    console.log('err', err)
+  })
   form.on('progress', (bytesReceived, bytesExpected) => {
     console.log(3);
     totalBytes = bytesExpected*2;
@@ -198,7 +202,8 @@ app.post('/upload/:instanceKey', async (req, res) => {
     logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
   } catch (err) {
     logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
-    res.status(503).send(`Drive upload failed: ${err}`);
+    res.writeHead(503);
+    res.write(`Drive upload failed: ${err}`);
   }
 });
 
