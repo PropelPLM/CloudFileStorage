@@ -83,13 +83,8 @@ app.post("/token/:instanceKey", async (req, res) => {
     };
 
     InstanceManager.register(instanceKey);
-    const instanceDetails = {
-      sessionId,
-      salesforceUrl,
-      clientId: client_id,
-      clientSecret: client_secret,
-      tokensFromCredentials
-    };
+    GoogleDrive.authorize(client_id, client_secret, tokensFromCredentials); //getAdapter().authorize(...)
+    const instanceDetails = { sessionId, salesforceUrl };
     InstanceManager.add(instanceKey, instanceDetails);
 
     await JsForce.connect(sessionId, salesforceUrl, instanceKey);
@@ -132,11 +127,8 @@ app.post("/upload/:instanceKey", async (req, res) => {
     logErrorResponse(err, "[END_POINT.UPLOAD_INSTANCE_KEY > LOCAL_UPLOAD]");
   }
   try {
-    let clientId, clientSecret, tokensFromCredentials;
-    ({ clientId, clientSecret, tokensFromCredentials } = InstanceManager.get(instanceKey, [ "clientId", "clientSecret", "tokensFromCredentials"])); // can be moved towards token endpt
-
-    const options = { fileName, mimeType, instanceKey };
-    const response = await GoogleDrive.authorize(clientId, clientSecret, tokensFromCredentials, options, GoogleDrive.uploadFile);
+    const options = { fileName, mimeType };
+    const response = await GoogleDrive.uploadFile(options, instanceKey);
 
     res.status(response.status).send(response.data);
     logSuccessResponse(response, "[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]");

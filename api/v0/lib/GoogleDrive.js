@@ -13,6 +13,7 @@ const actions = {
   driveFiles: "https://www.googleapis.com/auth/drive.file"
 };
 
+//TOKEN FLOW - INSTANCE MANAGER VARIABLES HERE DO NOT PERSIST TO UPLOAD FLOW
 function createAuthUrl(credentials, instanceKey) {
   let clientId, clientSecret, redirect_uri;
   ({ clientId, clientSecret, redirect_uri } = credentials);
@@ -38,6 +39,7 @@ async function getTokens(code, instanceKey) {
   MessageEmitter.postTrigger(instanceKey, "authComplete", {});
 }
 
+//UPLOAD FLOW- INSTANCE MANAGER VARIABLES HERE DFO NOT PERSIST FROM TOKEN FLOW
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
  * given callback function.
@@ -48,10 +50,11 @@ async function getTokens(code, instanceKey) {
  *                 executed in the external file storage
  * @param {function} callback The callback to call with the authorized client.
  */
-async function authorize(clientId, clientSecret, tokens, options, callback) {
+async function authorize(clientId, clientSecret, tokens) {//}, options, callback) {
   const oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uris[0]);
   oAuth2Client.setCredentials(tokens);
-  return await callback(oAuth2Client, options);
+  InstanceManager.add(instanceKey, { oAuth2Client });
+  // return await callback(oAuth2Client, options);
 }
 
 /**
@@ -60,17 +63,16 @@ async function authorize(clientId, clientSecret, tokens, options, callback) {
  * @param {Object} auth OAuth2 client generated from authorizing the client credentials.
  * @param {Object} options Specifies how the file should be created in the external file storage
  */
-async function uploadFile(auth, options) {
-  const instanceKey = options.instanceKey;
-  let destinationFolderId, salesforceUrl, isNew;
-  ({ destinationFolderId, salesforceUrl, isNew } = InstanceManager.get(instanceKey, ["destinationFolderId", "salesforceUrl", "isNew"]));
+async function uploadFile(options, instanceKey) {
+  let destinationFolderId, salesforceUrl, isNew, oAuth2Client;
+  ({ destinationFolderId, salesforceUrl, isNew, oAuth2Client } = InstanceManager.get(instanceKey, ["destinationFolderId", "salesforceUrl", "isNew", "oAuth2Client"]));
   var fileMetadata = {
     name: options.fileName,
     driveId: destinationFolderId,
     parents: [destinationFolderId]
   };
   try {
-    const drive = google.drive({ version: "v3", auth });
+    const drive = google.drive({ version: "v3", oAuth2Client });
     var stat = fs.statSync(`./${options.fileName}`);
     var str = progress({ length: stat.size, time: 20 });
     str.on("progress", (p) => {

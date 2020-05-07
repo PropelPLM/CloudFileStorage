@@ -84,9 +84,6 @@ $(() => {
     const instanceKey = form.data(`instance-key`);
     const targetWindow = form.data(`target-window`);
     const config = {
-      headers: {
-        'content-type': 'multipart/form-data'
-      },
       onUploadProgress: progress => {
         percentCompleted = Math.round((progress.loaded*100) / progress.total)
         $("#debug").text(percentCompleted)
