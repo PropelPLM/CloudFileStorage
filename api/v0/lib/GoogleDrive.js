@@ -146,6 +146,8 @@ async function initUpload(instanceKey, { fileName, mimeType, fileSize }) {
         MessageEmitter.postProgress(instanceKey, 'Google Drive');
         if (bytesRead == fileSize) {
           uploadStream.emit('done');
+          uploadStream.emit('finish');
+          uploadStream.emit('end');
         }
       }
     }
