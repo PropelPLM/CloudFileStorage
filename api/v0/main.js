@@ -159,22 +159,39 @@ app.post('/upload/:instanceKey', async (req, res) => {
     //       GoogleDrive.uploadFile(instanceKey, part);
     //     })
     //   }
-    const initConf = {}
+    let fileSize;
     form
       .on('field', (fieldName, value) => {
-        initConf[fieldName] = value;
+        fileSize = fieldName == 'fileSize' ? value : 0;
       })
       .on('file', async function(_1, file, fileName, _2, mimeType ) {
-        await Promise.all([
-          GoogleDrive.initUpload(instanceKey, { fileName, mimeType, ...initConf}),
-          InstanceManager.add(instanceKey, {...initConf, progress: 0})
-        ])
+        await GoogleDrive.initUpload(instanceKey, { fileName, mimeType, fileSize });
         let progress = 0;
-        file.on('data', data => {
-          progress = progress + data.length
-          MessageEmitter.postProgress(instanceKey, 'FRONT_END', progress, initConf[size]);
-          GoogleDrive.uploadFile(instanceKey, data);
-        })
+        file
+          .on('data', data => {
+            progress = progress + data.length
+            MessageEmitter.postProgress(instanceKey, 'FRONT_END', progress, fileSize);
+            GoogleDrive.uploadFile(instanceKey, data);
+          })
+          .on('end', () => {
+            console.log(10);
+            const file = await GoogleDrive.endUpload(instanceKey);
+            console.log(11);
+            const sfObject = await JsForce.create(file.data, instanceKey);
+            console.log(12);
+            const response = {
+              status: parseInt(file.status),
+              data: {
+                ...file.data,
+                sfId: sfObject.id,
+                revisionId: sfObject.revisionId,
+                salesforceUrl,
+                isNew
+              }
+            }
+            console.log(13);
+            res.status(response.status).send(response.data);
+          })
       })
     req.pipe(form);
     console.log(9);
