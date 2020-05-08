@@ -169,7 +169,7 @@ async function uploadFile(instanceKey, payload) {
 async function endUpload(instanceKey) {
   let file;
   { file = InstanceManager.getRef(instanceKey, 'file')};
-  return await file;
+  return await file.resolve();
 }
 
 module.exports = {
