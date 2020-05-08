@@ -26,9 +26,9 @@ module.exports = {
   },
 
   postProgress: (instanceKey, src) => {
-    let frontendBytes, externalBytes, totalBytes;
-    ({ frontendBytes, externalBytes, totalBytes } = InstanceManager.get(instanceKey, ['frontendBytes', 'externalBytes', 'totalBytes']));
-    const percentCompletion = parseInt((100 * (frontendBytes + externalBytes)) / (totalBytes * 2))
+    let frontendBytes, externalBytes, fileSize;
+    ({ frontendBytes, externalBytes, fileSize } = InstanceManager.get(instanceKey, ['frontendBytes', 'externalBytes', 'fileSize']));
+    const percentCompletion = parseInt((100 * (frontendBytes + externalBytes)) / (fileSize * 2))
     console.log(`${src} ${src == 'frontend' ? frontendBytes : externalBytes}`);
     io.to(instanceKey).emit('progress', percentCompletion);
   },
