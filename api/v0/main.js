@@ -181,9 +181,28 @@ app.post('/upload/:instanceKey', async (req, res) => {
             MessageEmitter.postProgress(instanceKey, 'FRONT_END', progress, fileSize);
             GoogleDrive.uploadFile(instanceKey, data);
           })
-        })
-      .on('finish', async () => {
-        console.log(10);
+          .on('end', async () => {
+            console.log(10);
+            const file = await GoogleDrive.endUpload(instanceKey);
+            console.log(11);
+            const sfObject = await JsForce.create(file.data, instanceKey);
+            console.log(12);
+            const response = {
+              status: parseInt(file.status),
+              data: {
+                ...file.data,
+                sfId: sfObject.id,
+                revisionId: sfObject.revisionId,
+                salesforceUrl,
+                isNew
+              }
+            }
+            console.log(13);
+            res.status(response.status).send(response.data);
+          })
+      })
+      .on('finish', () => {
+        console.log('finish');
         const file = await GoogleDrive.endUpload(instanceKey);
         console.log(11);
         const sfObject = await JsForce.create(file.data, instanceKey);
@@ -201,6 +220,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
         console.log(13);
         res.status(response.status).send(response.data);
       })
+
     req.pipe(form);
     console.log(9);
     // form.parse(req, async (err, fields, files)=> {
