@@ -163,17 +163,11 @@ app.post('/upload/:instanceKey', async (req, res) => {
       .on('field', (fieldName, value, fieldNameTrunc, valueTrunc, transfEnc, mimeType) => {
         console.log('field fieldName', fieldName)
         console.log('field value', value)
-        console.log('field fieldNameTrunc', fieldNameTrunc)
-        console.log('field valueTrunc', valueTrunc)
-        console.log('field transfEnc', transfEnc)
         console.log('field mimeType', mimeType)
       })
       form.on('file', async function(fieldname, file, filename, encoding, mimetype ) {
         console.log('file fieldName', fieldname)
-        console.log('file value', value)
-        console.log('file fieldNameTrunc', fieldNameTrunc)
-        console.log('file valueTrunc', valueTrunc)
-        console.log('file transfEnc', encoding)
+        console.log('file', file)
         console.log('file mimeType', mimeType)
         await GoogleDrive.initUpload(instanceKey, filename, mimetype);
         file.on('data', data => {
