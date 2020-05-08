@@ -118,13 +118,13 @@ async function authorize(instanceKey, clientId, clientSecret, tokens) {//}, opti
 //   }
 // }
 // var stack = {};
-async function initUpload(instanceKey, name, mimeType) {
+async function initUpload(instanceKey, fileName, mimeType, size) {
   let destinationFolderId, oAuth2Client;
   ({ destinationFolderId, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'oAuth2Client']));
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
   const uploadStream = new PassThrough();
   const fileMetadata = {
-    name: name,
+    name: fileName,
     driveId: destinationFolderId,
     parents: [destinationFolderId]
   };
@@ -141,7 +141,7 @@ async function initUpload(instanceKey, name, mimeType) {
     },
     {
       onUploadProgress: evt => {
-        MessageEmitter.postProgress(instanceKey, 'GOOGLE_DRIVE', evt.bytesReceived, '');
+        MessageEmitter.postProgress(instanceKey, 'GOOGLE_DRIVE', evt.bytesReceived, size);
       }
     }
   )

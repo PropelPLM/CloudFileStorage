@@ -159,19 +159,20 @@ app.post('/upload/:instanceKey', async (req, res) => {
     //       GoogleDrive.uploadFile(instanceKey, part);
     //     })
     //   }
+    const initConf = {}
     form
-      .on('field', (fieldName, value, fieldNameTrunc, valueTrunc, transfEnc, mimeType) => {
-        console.log('field fieldName', fieldName)
-        console.log('field value', value)
-        console.log('field mimeType', mimeType)
+      .on('field', (fieldName, value, _, _, _, _) => {
+        initConf[fieldName] = value;
       })
-      form.on('file', async function(fieldname, file, filename, encoding, mimetype ) {
-        console.log('file fieldName', fieldname)
-        console.log('file', file)
-        console.log('file mimeType', mimetype)
-        await GoogleDrive.initUpload(instanceKey, filename, mimetype);
+      .on('file', async function(_, file, fileName, _, mimeType ) {
+        await Promise.all([
+          GoogleDrive.initUpload(instanceKey, { fileName, mimeType, ...initConf}),
+          InstanceManager.add(instanceKey, {...initConf, progress: 0})
+        ])
+        const progress = 0;
         file.on('data', data => {
-          console.log('data', data)
+          progress = progress + data.length
+          MessageEmitter.postProgress(instanceKey, 'FRONT_END', progress, initConf[size]);
           GoogleDrive.uploadFile(instanceKey, data);
         })
       })
