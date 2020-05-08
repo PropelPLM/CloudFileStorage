@@ -169,7 +169,6 @@ app.post('/upload/:instanceKey', async (req, res) => {
         file
           .on('data', data => {
             progress = progress + data.length
-
             MessageEmitter.postProgress(instanceKey, 'FRONT_END', progress, fileSize);
             GoogleDrive.uploadFile(instanceKey, data);
           })
