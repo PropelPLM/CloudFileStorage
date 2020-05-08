@@ -119,32 +119,39 @@ app.post('/upload/:instanceKey', async (req, res) => {
   ({ salesforceUrl, isNew } = InstanceManager.get(instanceKey, ['salesforceUrl', 'isNew']));
   console.log(3);
   try {
-    form
-      .on('progress', (bytesReceived, bytesExpected) => {
-        MessageEmitter.postProgress(instanceKey, 'FRONT_END', bytesReceived, bytesExpected);
-      })
-      .on('end', async() => {
-        console.log('[FRONTEND_UPLOAD_COMPLETE]');
-      })
-      .on('error', err => {
-        console.log('[FRONTEND_UPLOAD_ERROR]', err)
-      })
-    console.log(4);
+    // form
+    //   .on('progress', (bytesReceived, bytesExpected) => {
+    //     MessageEmitter.postProgress(instanceKey, 'FRONT_END', bytesReceived, bytesExpected);
+    //   })
+    //   .on('end', async() => {
+    //     console.log('[FRONTEND_UPLOAD_COMPLETE]');
+    //   })
+    //   .on('error', err => {
+    //     console.log('[FRONTEND_UPLOAD_ERROR]', err)
+    //   })
     form.onPart = async part => {
       part
-        .on('fileBegin', (name, file) => {
+      .on('fileBegin', (name, file) => {
+          console.log(4);
           console.log('fileBegin name', name)
           console.log('fileBegin file', file)
         })
         .on('field', (name, file) => {
+          console.log(5);
           console.log('field name', name)
           console.log('field file', file)
         })
         .on('file', (name, file) => {
+          console.log(6);
           console.log('file name', name)
           console.log('file file', file)
         })
+        .on('progress', (bytesReceived, bytesExpected) => {
+          console.log(7);
+          MessageEmitter.postProgress(instanceKey, 'FRONT_END', bytesReceived, bytesExpected);
+        })
         .on('data', async part => {
+          console.log(8);
           console.log('part', part)
           await GoogleDrive.initUpload(instanceKey, part.filename, part.mime);
           console.log(5.3);
@@ -152,12 +159,13 @@ app.post('/upload/:instanceKey', async (req, res) => {
         })
     }
 
-    console.log(6);
+    console.log(9);
     form.parse(req, async (err, fields, files)=> {
+      console.log(10);
       const file = await GoogleDrive.endUpload(instanceKey);
-      console.log(7);
+      console.log(11);
       const sfObject = await JsForce.create(file.data, instanceKey);
-      console.log(8);
+      console.log(12);
       const response = {
         status: parseInt(file.status),
         data: {
@@ -168,7 +176,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
           isNew
         }
       }
-      console.log(9);
+      console.log(13);
       res.status(response.status).send(response.data);
     })
     // const options = { fileName, mimeType };
