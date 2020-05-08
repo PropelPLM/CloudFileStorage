@@ -146,7 +146,8 @@ app.post('/upload/:instanceKey', async (req, res) => {
       GoogleDrive.uploadFile(instanceKey, part);
     }
     form.parse(req, async (err, fields, files)=> {
-      console.logs('fields', fields);
+      console.log('req', req);
+      console.log('fields', fields);
       file = await GoogleDrive.endUpload(instanceKey);
       const sfObject = await JsForce.create(file.data, instanceKey);
       const response = {
