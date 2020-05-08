@@ -167,7 +167,8 @@ async function uploadFile(instanceKey, payload) {
 }
 
 async function endUpload(instanceKey) {
-  const file = InstanceManager.getRef(instanceKey, 'file');
+  let file;
+  { file = InstanceManager.getRef(instanceKey, 'file')};
   return await file;
 }
 
