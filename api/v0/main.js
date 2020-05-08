@@ -164,10 +164,19 @@ app.post('/upload/:instanceKey', async (req, res) => {
         fileSize = fieldName == 'fileSize' ? value : 0;
       })
       .on('file', async function(_1, file, fileName, _2, mimeType ) {
-        await GoogleDrive.initUpload(instanceKey, { fileName, mimeType, fileSize });
+        await Promise.all([
+          GoogleDrive.initUpload(instanceKey, { fileName, mimeType }),
+          InstanceManager.add(instanceKey, {frontendBytes: 0, externalBytes, totalBytes: fileSize })
+        ]);
         let progress = 0;
         file
           .on('data', data => {
+            progress = progress + data.length
+            InstanceManager.update(instanceKey, 'frontendBytes', progress)
+            MessageEmitter.postProgress(instanceKey, 'frontend');
+            GoogleDrive.uploadFile(instanceKey, data);
+          })
+          .on('error', error => {
             progress = progress + data.length
             MessageEmitter.postProgress(instanceKey, 'FRONT_END', progress, fileSize);
             GoogleDrive.uploadFile(instanceKey, data);

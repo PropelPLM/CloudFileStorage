@@ -141,8 +141,8 @@ async function initUpload(instanceKey, { fileName, mimeType, fileSize }) {
     },
     {
       onUploadProgress: evt => {
-        console.log('evt', evt);
-        MessageEmitter.postProgress(instanceKey, 'GOOGLE_DRIVE', evt.bytesReceived, fileSize);
+        InstanceManager.update(instanceKey, 'externalBytes', evt.bytesRead)
+        MessageEmitter.postProgress(instanceKey, '');
       }
     }
   )
