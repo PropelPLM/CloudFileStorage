@@ -117,7 +117,7 @@ async function authorize(instanceKey, clientId, clientSecret, tokens) {//}, opti
 //     return logErrorResponse(err, '[GOOGLE_DRIVE.UPLOAD_FILE]');
 //   }
 // }
-
+var stack;
 async function initUpload(instanceKey) {
   let destinationFolderId, oAuth2Client;
   ({ destinationFolderId, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'oAuth2Client']));
@@ -148,13 +148,15 @@ async function initUpload(instanceKey) {
   )
   // console.log('uploadStream', uploadStream);
   // console.log('uploadStream.on', uploadStream.on);
-  InstanceManager.add(instanceKey, { uploadStream, file });
+  // InstanceManager.add(instanceKey, { uploadStream, file });
+  stack[instanceKey] = uploadStream;
   // InstanceManager.memRef(instanceKey, 'uploadStream', uploadStream);
   // InstanceManager.memRef(instanceKey, 'file', file);
 }
 
 async function uploadFile(instanceKey, payload) {
-  const uploadStream = InstanceManager.get(instanceKey, ['uploadStream']);
+  // const uploadStream = InstanceManager.get(instanceKey, ['uploadStream']);
+  const uploadStream = stack[instanceKey];
   // console.log('payload', payload);
   // console.log('payload.on', payload.on);
   console.log('uploadStream', uploadStream);
