@@ -1,6 +1,5 @@
 'use strict';
-const { google } = require('googleapis');
-const { PassThrough } = require('stream');
+
 const cors = require('cors');
 const express = require('express');
 const Busboy = require('busboy');
@@ -167,13 +166,11 @@ app.post('/upload/:instanceKey', async (req, res) => {
       .on('file', async function(_1, file, fileName, _2, mimeType ) {
         await GoogleDrive.initUpload(instanceKey, { fileName, mimeType, fileSize });
         let progress = 0;
-        const stream = new PassThrough();
         file
           .on('data', data => {
             progress = progress + data.length
             MessageEmitter.postProgress(instanceKey, 'FRONT_END', progress, fileSize);
-            stream.push(data)
-            GoogleDrive.uploadFile(instanceKey, stream);
+            GoogleDrive.uploadFile(instanceKey, data);
           })
           .on('end', async () => {
             console.log(10);
