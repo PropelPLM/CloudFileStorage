@@ -119,7 +119,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
 
   try {
     form
-      .on('file', (name, file) => {
+      .on('fileBegin', (name, file) => {
         console.log('name', name);
         console.log('file', file);
       })
