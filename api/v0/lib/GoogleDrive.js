@@ -118,7 +118,7 @@ async function authorize(instanceKey, clientId, clientSecret, tokens) {//}, opti
 //   }
 // }
 // var stack = {};
-async function initUpload(instanceKey, fileName, mimeType, size) {
+async function initUpload(instanceKey, { fileName, mimeType, fileSize }) {
   let destinationFolderId, oAuth2Client;
   ({ destinationFolderId, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'oAuth2Client']));
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
@@ -141,7 +141,7 @@ async function initUpload(instanceKey, fileName, mimeType, size) {
     },
     {
       onUploadProgress: evt => {
-        MessageEmitter.postProgress(instanceKey, 'GOOGLE_DRIVE', evt.bytesReceived, size);
+        MessageEmitter.postProgress(instanceKey, 'GOOGLE_DRIVE', evt.bytesReceived, fileSize);
       }
     }
   )
@@ -153,13 +153,14 @@ async function uploadFile(instanceKey, payload) {
   let uploadStream;
   ({ uploadStream } = InstanceManager.getRef(instanceKey, 'uploadStream'));
   uploadStream.write(payload)
-  // payload.pipe(uploadStream);
   InstanceManager.update(instanceKey, 'uploadStream', uploadStream);
 }
 
 async function endUpload(instanceKey) {
   let file;
   ({ file } = InstanceManager.getRef(instanceKey, 'file'));
+  console.log('file', file)
+  console.log('awaited file', await file)
   return await file;
 }
 
