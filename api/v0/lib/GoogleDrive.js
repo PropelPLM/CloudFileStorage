@@ -59,7 +59,6 @@ async function authorize(instanceKey, clientId, clientSecret, tokens) {//}, opti
   } catch (err) {
     logErrorResponse(err, '[GOOGLE_DRIVE.AUTHORIZE]');
   }
-  // return await callback(oAuth2Client, options);
 }
 
 /**
@@ -96,14 +95,12 @@ async function initUpload(instanceKey, { fileName, mimeType, fileSize }) {
         InstanceManager.update(instanceKey, 'externalBytes', bytesRead)
         MessageEmitter.postProgress(instanceKey, 'Google Drive');
         if (bytesRead == fileSize) {
-          console.log('pls terminate');
-          // uploadStream.emit('finish');
+          //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
           uploadStream.emit('end');
         }
       }
     }
   )
-  console.log('file', file);
   InstanceManager.addRef(instanceKey, 'uploadStream', uploadStream);
   InstanceManager.addRef(instanceKey, 'file', file);
 }
@@ -118,8 +115,6 @@ async function uploadFile(instanceKey, payload) {
 async function endUpload(instanceKey) {
   let file;
   ({ file } = InstanceManager.getRef(instanceKey, 'file'));
-  console.log('file', file)
-  console.log('awaited file', await file)
   return await file;
 }
 

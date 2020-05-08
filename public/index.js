@@ -83,13 +83,7 @@ $(() => {
     await trackProgress();
     const instanceKey = form.data(`instance-key`);
     const targetWindow = form.data(`target-window`);
-    const config = {
-      onUploadProgress: progress => {
-        percentCompleted = Math.round((progress.loaded*100) / progress.total)
-        $('#debug').text(percentCompleted)
-      }
-    }
-    axios.post(`/upload/${instanceKey}`, data, config)
+    axios.post(`/upload/${instanceKey}`, data)
       .then((res) => {
         socket.off('progress');
         spinner.css('visibility', 'hidden');
