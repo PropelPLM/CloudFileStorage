@@ -140,7 +140,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
     );
     GoogleDrive.uploadFile(instanceKey, part);
   }
-  form.parse(req, (err, fields, files)=> {
+  form.parse(req, async (err, fields, files)=> {
     console.log(5)
     file = await GoogleDrive.endUpload(instanceKey);
     console.log(file, 'file');
