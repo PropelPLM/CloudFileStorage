@@ -12,6 +12,8 @@ io.on('connection', (socket) => {
   });
 });
 
+const progressMap = {}
+
 module.exports = {
   setAttribute: (instanceKey, attribute, value) => {
     const keyedAttribute = {};
@@ -24,7 +26,15 @@ module.exports = {
     io.to(instanceKey).emit('trigger', { topic, payload });
   },
 
-  postProgress: (instanceKey, payload) => {
-    io.to(instanceKey).emit('progress', payload);
+  postProgress: (instanceKey, bytesReceived, totalBytes) => {
+    if (!progressMap[instanceKey]) {
+      progressMap[instanceKey] = {}
+      progressMap[instanceKey]['totalBytes'] = totalBytes * 2;
+      progressMap[instanceKey]['bytes'] = 0;
+    }
+    const currentProgress = progressMap[instanceKey]['bytes'] + bytesReceived;
+    progressMap[instanceKey]['bytes'] =  currentProgress;
+    const percentCompletion = parseInt(currentProgress / progressMap[instanceKey]['totalBytes']);
+    io.to(instanceKey).emit('progress', percentCompletion);
   },
 };

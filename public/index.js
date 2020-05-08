@@ -44,11 +44,10 @@ $(() => {
   });
 
   const trackProgress = async () => {
-    await socket.on('progress', (progress) => {
-      const percentageCompletion = parseInt(progress.percentage);
-      progressBar.css('width', `${parseInt(percentageCompletion)}%`);
-      progressBarText.text(`${percentageCompletion}%`);
-      if (percentageCompletion === 100) {
+    await socket.on('progress', percent => {
+      progressBar.css('width', `${percent}%`);
+      progressBarText.text(`${percent}%`);
+      if (percent === 100) {
         spinner.css('visibility', 'visible');
       }
     });

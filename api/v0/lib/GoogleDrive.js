@@ -124,12 +124,12 @@ async function initUpload(instanceKey, name, mimeType) {
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
   const uploadStream = new PassThrough();
   const fileMetadata = {
-    name: 'a',
+    name: name,
     driveId: destinationFolderId,
     parents: [destinationFolderId]
   };
   var media = {
-    mimeType: 'image/jpg',
+    mimeType: mimeType,
     body: uploadStream
   };
   const file = drive.files.create(
@@ -141,8 +141,8 @@ async function initUpload(instanceKey, name, mimeType) {
     },
     {
       onUploadProgress: evt => {
-        console.log('g progress')
-        // console.log('g progress', (evt.bytesRead/totalBytes) * 100)
+        MessageEmitter.postProgress(instanceKey, evt.bytesReceived);
+        console.log('[GOOGLE_UPLOAD]', parseInt( 100 * bytesReceived / (bytesExpected * 2) ), '%');
       }
     }
   )
