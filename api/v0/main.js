@@ -172,7 +172,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
         await GoogleDrive.initUpload(instanceKey, filename, mimetype);
         file.on('data', data => {
           console.log('data', data)
-          GoogleDrive.uploadFile(instanceKey, part);
+          GoogleDrive.uploadFile(instanceKey, data);
         })
       })
     req.pipe(form);
