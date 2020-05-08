@@ -164,6 +164,7 @@ async function uploadFile(instanceKey, payload) {
 async function endUpload(instanceKey) {
   let file;
   { file = InstanceManager.getRef(instanceKey, 'file')};
+  console.log('gdrive endupload', file)
   return await file;
 }
 

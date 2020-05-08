@@ -123,8 +123,8 @@ app.post('/upload/:instanceKey', async (req, res) => {
     })
     .on('end', async() => {
       //CALL GOOGLEDRIVE TO SIGNIFY THIS ISDONE
-      file = await GoogleDrive.endUpload(instanceKey);
-      console.log('file', await file);
+      // file = await GoogleDrive.endUpload(instanceKey);
+      // console.log('file', await file);
       console.log('[FRONTEND_UPLOAD_COMPLETE]');
     })
     .on('error', err => {
@@ -142,9 +142,8 @@ app.post('/upload/:instanceKey', async (req, res) => {
   }
   form.parse(req, (err, fields, files)=> {
     console.log(5)
-    console.log('fields', fields);
-    console.log('files', files);
-    console.log(err);
+    file = await GoogleDrive.endUpload(instanceKey);
+    console.log(file, 'file');
   })
   console.log(1801248);
   // var fileName;
