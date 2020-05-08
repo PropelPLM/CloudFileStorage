@@ -25,7 +25,7 @@ module.exports = {
   get: (instanceKey, detailKeys) => {
     const requestedDetails = {};
     detailKeys.forEach((key) => {
-      requestedDetails[key] = instanceMap[instanceKey][key];
+      requestedDetails[key] = cloneDeep(instanceMap[instanceKey][key]);
     });
     return requestedDetails;
   },
