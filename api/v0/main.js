@@ -131,9 +131,25 @@ app.post('/upload/:instanceKey', async (req, res) => {
       })
     console.log(4);
     form.onPart = async part => {
-      await GoogleDrive.initUpload(instanceKey, part.filename, part.mime);
-      console.log(5);
-      GoogleDrive.uploadFile(instanceKey, part);
+      part
+        .on('fileBegin', (name, file) => {
+          console.log('fileBegin name', name)
+          console.log('fileBegin file', file)
+        })
+        .on('field', (name, file) => {
+          console.log('field name', name)
+          console.log('field file', file)
+        })
+        .on('file', (name, file) => {
+          console.log('file name', name)
+          console.log('file file', file)
+        })
+        .on('data', async part => {
+          console.log('part', part)
+          await GoogleDrive.initUpload(instanceKey, part.filename, part.mime);
+          console.log(5.3);
+          GoogleDrive.uploadFile(instanceKey, part);
+        })
     }
 
     console.log(6);
