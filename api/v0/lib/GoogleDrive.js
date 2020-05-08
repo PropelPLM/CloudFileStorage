@@ -146,18 +146,19 @@ async function initUpload(instanceKey) {
       }
     }
   )
-  console.log('uploadStream', uploadStream);
-  console.log('uploadStream.on', uploadStream.on);
-  InstanceManager.memRef(instanceKey, 'uploadStream', uploadStream);
-  InstanceManager.memRef(instanceKey, 'file', file);
+  // console.log('uploadStream', uploadStream);
+  // console.log('uploadStream.on', uploadStream.on);
+  InstanceManager.add(instanceKey, { uploadStream, file });
+  // InstanceManager.memRef(instanceKey, 'uploadStream', uploadStream);
+  // InstanceManager.memRef(instanceKey, 'file', file);
 }
 
 async function uploadFile(instanceKey, payload) {
   const uploadStream = InstanceManager.get(instanceKey, ['uploadStream']);
   // console.log('payload', payload);
   // console.log('payload.on', payload.on);
-  // console.log('uploadStream', uploadStream);
-  // console.log('uploadStream.on', uploadStream.on);
+  console.log('uploadStream', uploadStream);
+  console.log('uploadStream.on', uploadStream.on);
   payload.pipe(uploadStream);
   InstanceManager.update(instanceKey, 'uploadStream', uploadStream);
 }
