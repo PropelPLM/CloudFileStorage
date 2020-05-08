@@ -201,7 +201,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
             res.status(response.status).send(response.data);
           })
       })
-      .on('finish', () => {
+      .on('finish', async () => {
         console.log('finish');
         const file = await GoogleDrive.endUpload(instanceKey);
         console.log(11);
