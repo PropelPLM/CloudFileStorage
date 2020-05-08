@@ -119,6 +119,10 @@ app.post('/upload/:instanceKey', async (req, res) => {
 
   try {
     form
+      .on('file', (name, file) => {
+        console.log('name', name);
+        console.log('file', file);
+      })
       .on('progress', (bytesReceived, bytesExpected) => {
         console.log('[FRONTEND_UPLOAD]', parseInt( 100 * bytesReceived / bytesExpected ), '%');
       })
