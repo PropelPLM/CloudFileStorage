@@ -111,11 +111,12 @@ app.post('/uploadDetails/:instanceKey', async (req, res) => {
 
 app.post('/upload/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
+  console.log(1);
   const form = new formidable.IncomingForm();
-  
-  let file, salesforceUrl, isNew;
+  console.log(2);
+  let salesforceUrl, isNew;
   ({ salesforceUrl, isNew } = InstanceManager.get(instanceKey, ['salesforceUrl', 'isNew']));
-
+  console.log(3);
   try {
     form
       .on('progress', (bytesReceived, bytesExpected) => {
@@ -127,19 +128,19 @@ app.post('/upload/:instanceKey', async (req, res) => {
       .on('error', err => {
         console.log('[FRONTEND_UPLOAD_ERROR]', err)
       })
+    console.log(4);
     form.onPart = async part => {
-      InstanceManager.add(instanceKey, 
-        {
-          fileName: part.filename,
-          mimeType: part.mime ,
-        }
-      );
-      await GoogleDrive.initUpload(instanceKey);
+      await GoogleDrive.initUpload(instanceKey, part.filename, part.mime);
+      console.log(5);
       GoogleDrive.uploadFile(instanceKey, part);
     }
+
+    console.log(6);
     form.parse(req, async (err, fields, files)=> {
-      file = await GoogleDrive.endUpload(instanceKey);
+      const file = await GoogleDrive.endUpload(instanceKey);
+      console.log(7);
       const sfObject = await JsForce.create(file.data, instanceKey);
+      console.log(8);
       const response = {
         status: parseInt(file.status),
         data: {
@@ -150,6 +151,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
           isNew
         }
       }
+      console.log(9);
       res.status(response.status).send(response.data);
     })
     // const options = { fileName, mimeType };
