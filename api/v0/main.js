@@ -176,12 +176,10 @@ app.post('/upload/:instanceKey', async (req, res) => {
         console.log('file transfEnc', transfEnc)
         console.log('file mimeType', mimeType)
         await GoogleDrive.initUpload(instanceKey, filename, mimetype);
-        file
-          .on('data', data => {
-            console.log('data', data)
-            GoogleDrive.uploadFile(instanceKey, part);
-          })
-          .
+        file.on('data', data => {
+          console.log('data', data)
+          GoogleDrive.uploadFile(instanceKey, part);
+        })
       })
 
     console.log(9);
