@@ -155,7 +155,8 @@ async function initUpload(instanceKey) {
 }
 
 async function uploadFile(instanceKey, payload) {
-  const uploadStream = InstanceManager.getRef(instanceKey, 'uploadStream');
+  let uploadStream;
+  { uploadStream } = InstanceManager.getRef(instanceKey, 'uploadStream');
   // const uploadStream = stack[instanceKey];
   // console.log('payload', payload);
   // console.log('payload.on', payload.on);
