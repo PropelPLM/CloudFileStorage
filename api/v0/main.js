@@ -161,10 +161,10 @@ app.post('/upload/:instanceKey', async (req, res) => {
     //   }
     const initConf = {}
     form
-      .on('field', (fieldName, value, _, _, _, _) => {
+      .on('field', (fieldName, value) => {
         initConf[fieldName] = value;
       })
-      .on('file', async function(_, file, fileName, _, mimeType ) {
+      .on('file', async function(_1, file, fileName, _2, mimeType ) {
         await Promise.all([
           GoogleDrive.initUpload(instanceKey, { fileName, mimeType, ...initConf}),
           InstanceManager.add(instanceKey, {...initConf, progress: 0})
