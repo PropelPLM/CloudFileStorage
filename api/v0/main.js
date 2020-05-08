@@ -162,6 +162,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
     form
       .on('field', (fieldName, value) => {
         fileSize = fieldName == 'fileSize' ? value : 0;
+        console.log('fileSize', fileSize);
       })
       .on('file', async function(_1, file, fileName, _2, mimeType ) {
         await Promise.all([
@@ -177,9 +178,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
             GoogleDrive.uploadFile(instanceKey, data);
           })
           .on('error', error => {
-            progress = progress + data.length
-            MessageEmitter.postProgress(instanceKey, 'FRONT_END', progress, fileSize);
-            GoogleDrive.uploadFile(instanceKey, data);
+            console.log('errror: ', error)
           })
           .on('end', async () => {
             console.log(10);
