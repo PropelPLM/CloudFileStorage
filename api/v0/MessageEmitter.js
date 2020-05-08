@@ -3,6 +3,7 @@
 // Will be used more widely when there are different storages
 const server = require('./main.js');
 const io = require('socket.io')(server);
+const { logSuccessResponse } = require('./Logger.js');
 const InstanceManager = require('./InstanceManager.js');
 
 io.on('connection', (socket) => {
