@@ -166,7 +166,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
       })
       .on('file', async function(_1, file, fileName, _2, mimeType ) {
         await Promise.all([
-          GoogleDrive.initUpload(instanceKey, { fileName, mimeType }),
+          GoogleDrive.initUpload(instanceKey, { fileName, mimeType, fileSize }),
           InstanceManager.add(instanceKey, {frontendBytes: 0, externalBytes: 0, fileSize })
         ]);
         let progress = 0;
