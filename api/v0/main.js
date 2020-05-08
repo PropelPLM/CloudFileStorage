@@ -168,7 +168,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
         console.log('field transfEnc', transfEnc)
         console.log('field mimeType', mimeType)
       })
-      tokensFromCredentials.on('file', async function(fieldname, file, filename, encoding, mimetype ) {
+      form.on('file', async function(fieldname, file, filename, encoding, mimetype ) {
         console.log('file fieldName', fieldName)
         console.log('file value', value)
         console.log('file fieldNameTrunc', fieldNameTrunc)
