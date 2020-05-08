@@ -117,7 +117,7 @@ async function authorize(instanceKey, clientId, clientSecret, tokens) {//}, opti
 //     return logErrorResponse(err, '[GOOGLE_DRIVE.UPLOAD_FILE]');
 //   }
 // }
-var stack;
+var stack = {};
 async function initUpload(instanceKey) {
   let destinationFolderId, oAuth2Client;
   ({ destinationFolderId, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'oAuth2Client']));
