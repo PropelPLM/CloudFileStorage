@@ -88,9 +88,10 @@ app.post('/token/:instanceKey', async (req, res) => {
     InstanceManager.register(instanceKey);
     GoogleDrive.authorize(instanceKey, client_id, client_secret, tokensFromCredentials); //getAdapter().authorize(...)
     const instanceDetails = { sessionId, salesforceUrl };
-    InstanceManager.add(instanceKey, instanceDetails);
-
-    await JsForce.connect(sessionId, salesforceUrl, instanceKey);
+    await Promise.all([
+      InstanceManager.add(instanceKey, instanceDetails),
+      JsForce.connect(sessionId, salesforceUrl, instanceKey)
+    ]);
     logSuccessResponse({...tokensFromCredentials, instanceKey}, '[END_POINT.TOKEN]');
     res.status(200).send({ ...tokensFromCredentials, instanceKey });
   } catch (err) {
