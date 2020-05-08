@@ -119,9 +119,9 @@ app.post('/upload/:instanceKey', async (req, res) => {
 
   try {
     form
-      .on('fileBegin', (name, file) => {
+      .on('field', (name, value) => {
         console.log('name', name);
-        console.log('file', file);
+        console.log('value', value);
       })
       .on('progress', (bytesReceived, bytesExpected) => {
         console.log('[FRONTEND_UPLOAD]', parseInt( 100 * bytesReceived / bytesExpected ), '%');
@@ -140,12 +140,13 @@ app.post('/upload/:instanceKey', async (req, res) => {
       InstanceManager.add(instanceKey, 
         {
           fileName: part.filename,
-          mimeType: part.minme 
+          mimeType: part.mime 
         }
       );
       GoogleDrive.uploadFile(instanceKey, part);
     }
     form.parse(req, async (err, fields, files)=> {
+      console.logs('fields', fields);
       file = await GoogleDrive.endUpload(instanceKey);
       const sfObject = await JsForce.create(file.data, instanceKey);
       const response = {

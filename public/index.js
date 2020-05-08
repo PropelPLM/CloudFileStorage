@@ -79,6 +79,9 @@ $(() => {
 
   const uploadFile = async (fileData) => {
     var data = new FormData();
+    data.append('fileData.name', fileData.name);
+    data.append('fileData.size', fileData.size);
+    data.append('fileData.type', fileData.type);
     data.append('file', fileData);
     await trackProgress();
     const instanceKey = form.data(`instance-key`);
