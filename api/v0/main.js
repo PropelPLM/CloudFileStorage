@@ -133,7 +133,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
       .on('error', err => {
         console.log('[FRONTEND_UPLOAD_ERROR]', err)
       })
-    form.onPart = part => {
+    form.onPart = async part => {
       console.log('part', part)
       InstanceManager.add(instanceKey, 
         {
