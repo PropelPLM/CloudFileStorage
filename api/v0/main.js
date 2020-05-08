@@ -168,7 +168,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
         console.log('field transfEnc', transfEnc)
         console.log('field mimeType', mimeType)
       })
-      .on('file', async function(fieldname, file, filename, encoding, mimetype ) {
+      tokensFromCredentials.on('file', async function(fieldname, file, filename, encoding, mimetype ) {
         console.log('file fieldName', fieldName)
         console.log('file value', value)
         console.log('file fieldNameTrunc', fieldNameTrunc)
@@ -181,27 +181,27 @@ app.post('/upload/:instanceKey', async (req, res) => {
           GoogleDrive.uploadFile(instanceKey, part);
         })
       })
-
+    req.pipe(form);
     console.log(9);
-    form.parse(req, async (err, fields, files)=> {
-      console.log(10);
-      const file = await GoogleDrive.endUpload(instanceKey);
-      console.log(11);
-      const sfObject = await JsForce.create(file.data, instanceKey);
-      console.log(12);
-      const response = {
-        status: parseInt(file.status),
-        data: {
-          ...file.data,
-          sfId: sfObject.id,
-          revisionId: sfObject.revisionId,
-          salesforceUrl,
-          isNew
-        }
-      }
-      console.log(13);
-      res.status(response.status).send(response.data);
-    })
+    // form.parse(req, async (err, fields, files)=> {
+    //   console.log(10);
+    //   const file = await GoogleDrive.endUpload(instanceKey);
+    //   console.log(11);
+    //   const sfObject = await JsForce.create(file.data, instanceKey);
+    //   console.log(12);
+    //   const response = {
+    //     status: parseInt(file.status),
+    //     data: {
+    //       ...file.data,
+    //       sfId: sfObject.id,
+    //       revisionId: sfObject.revisionId,
+    //       salesforceUrl,
+    //       isNew
+    //     }
+    //   }
+    //   console.log(13);
+    //   res.status(response.status).send(response.data);
+    // })
     // const options = { fileName, mimeType };
     // console.log(8);
     // const response = await GoogleDrive.uploadFile(options, instanceKey);
