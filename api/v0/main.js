@@ -118,12 +118,8 @@ app.post('/upload/:instanceKey', async (req, res) => {
 
   try {
     form
-      .on('field', (name, value) => {
-        console.log('name', name);
-        console.log('value', value);
-      })
       .on('progress', (bytesReceived, bytesExpected) => {
-        MessageEmitter.postProgress(instanceKey, bytesReceived, bytesExpected);
+        MessageEmitter.postProgress(instanceKey, 'FRONT_END', bytesReceived, bytesExpected);
       })
       .on('end', async() => {
         console.log('[FRONTEND_UPLOAD_COMPLETE]');
@@ -132,7 +128,6 @@ app.post('/upload/:instanceKey', async (req, res) => {
         console.log('[FRONTEND_UPLOAD_ERROR]', err)
       })
     form.onPart = async part => {
-      console.log('part', part)
       InstanceManager.add(instanceKey, 
         {
           fileName: part.filename,

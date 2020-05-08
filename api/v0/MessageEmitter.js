@@ -26,16 +26,18 @@ module.exports = {
     io.to(instanceKey).emit('trigger', { topic, payload });
   },
 
-  postProgress: (instanceKey, bytesReceived, totalBytes) => {
+  postProgress: (instanceKey, src, bytesReceived, totalBytes) => {
     if (!progressMap[instanceKey]) {
       progressMap[instanceKey] = {}
       progressMap[instanceKey]['totalBytes'] = totalBytes * 2;
       progressMap[instanceKey]['bytes'] = 0;
+      console.log(`totalBytes: ${totalBytes}`);
     }
     const currentProgress = progressMap[instanceKey]['bytes'] + bytesReceived;
+    console.log(`${src} ${percentCompletion}%`);
     progressMap[instanceKey]['bytes'] =  currentProgress;
     const percentCompletion = parseInt(100 * currentProgress / progressMap[instanceKey]['totalBytes']);
-    console.log('[FILE_UPLOAD_PROGRESS]', `${percentCompletion}%`);
+    console.log(`[${src}_UPLOAD_PROGRESS]`, `${percentCompletion}%`);
     io.to(instanceKey).emit('progress', percentCompletion);
   },
 };
