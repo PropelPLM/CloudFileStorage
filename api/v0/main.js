@@ -113,58 +113,50 @@ app.post('/upload/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
   const uploadStream = GoogleDrive.initUpload(instanceKey);
   const form = new formidable.IncomingForm();
-  let file;
+  console.log('form', form);
+  
+  let file, salesforceUrl, isNew;
+  ({ salesforceUrl, isNew } = InstanceManager.get(instanceKey, ['salesforceUrl', 'isNew']));
 
-  // let destinationFolderId, salesforceUrl, isNew;
-  // ({ destinationFolderId, salesforceUrl, isNew } = InstanceManager.get(instanceKey, ['destinationFolderId', 'salesforceUrl', 'isNew']));
-  form
-    .on('progress', (bytesReceived, bytesExpected) => {
-      console.log('[FRONTEND_UPLOAD]', parseInt( 100 * bytesReceived / bytesExpected ), '%');
-    })
-    .on('end', async() => {
-      //CALL GOOGLEDRIVE TO SIGNIFY THIS ISDONE
-      // file = await GoogleDrive.endUpload(instanceKey);
-      // console.log('file', await file);
-      console.log('[FRONTEND_UPLOAD_COMPLETE]');
-    })
-    .on('error', err => {
-      console.log('[FRONTEND_UPLOAD_ERROR]', err)
-    })
-  await uploadStream;
-  form.onPart = part => {
-    InstanceManager.add(instanceKey, 
-      {
-        fileName: part.filename,
-        mimeType: part.minme 
-      }
-    );
-    GoogleDrive.uploadFile(instanceKey, part);
-  }
-  form.parse(req, async (err, fields, files)=> {
-    console.log(5)
-    file = await GoogleDrive.endUpload(instanceKey);
-    console.log(file, 'file');
-  })
-  console.log(1801248);
-  // var fileName;
-  // var mimeType;
-  // var storage = multer.diskStorage({
-  //   destination: function (req, file, cb) {
-  //     cb(null, './');
-  //   },
-  //   filename: function (req, file, cb) {
-  //     fileName = file.originalname || file.name;
-  //     mimeType = file.mimetype;
-  //     cb(null, fileName);
-  //   }
-  // });
-  // var upload = util.promisify(multer({ storage: storage }).single('file'));
-  // try {
-  //   await upload(req, res);
-  // } catch (err) {
-  //   logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > LOCAL_UPLOAD]');
-  // }
   try {
+    form
+      .on('progress', (bytesReceived, bytesExpected) => {
+        console.log('[FRONTEND_UPLOAD]', parseInt( 100 * bytesReceived / bytesExpected ), '%');
+      })
+      .on('end', async() => {
+        //CALL GOOGLEDRIVE TO SIGNIFY THIS ISDONE
+        // file = await GoogleDrive.endUpload(instanceKey);
+        // console.log('file', await file);
+        console.log('[FRONTEND_UPLOAD_COMPLETE]');
+      })
+      .on('error', err => {
+        console.log('[FRONTEND_UPLOAD_ERROR]', err)
+      })
+    await uploadStream;
+    form.onPart = part => {
+      InstanceManager.add(instanceKey, 
+        {
+          fileName: part.filename,
+          mimeType: part.minme 
+        }
+      );
+      GoogleDrive.uploadFile(instanceKey, part);
+    }
+    form.parse(req, async (err, fields, files)=> {
+      file = await GoogleDrive.endUpload(instanceKey);
+      const sfObject = await JsForce.create(file.data, instanceKey);
+      const response = {
+        status: parseInt(file.status),
+        data: {
+          ...file.data,
+          sfId: sfObject.id,
+          revisionId: sfObject.revisionId,
+          salesforceUrl,
+          isNew
+        }
+      }
+      console.log('response', response)
+    })
     // const options = { fileName, mimeType };
     // console.log(8);
     // const response = await GoogleDrive.uploadFile(options, instanceKey);
