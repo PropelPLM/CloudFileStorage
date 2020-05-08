@@ -22,6 +22,10 @@ module.exports = {
     });
   },
 
+  addRef: (instanceKey, key, value) => {
+    instanceMap[instanceKey][key] = value 
+  },
+
   get: (instanceKey, detailKeys) => {
     const requestedDetails = {};
     detailKeys.forEach((key) => {
@@ -30,8 +34,10 @@ module.exports = {
     return requestedDetails;
   },
 
-  memRef: (instanceKey, key, value) => {
-    instanceMap[instanceKey][key] = value 
+  getRef: (instanceKey, key) => {
+    const requestedDetails = {};
+    requestedDetails[key] = instanceMap[instanceKey][key];
+    return requestedDetails;
   },
 
   update: (instanceKey, field, value) => {
