@@ -142,7 +142,6 @@ async function initUpload(instanceKey, name, mimeType) {
     {
       onUploadProgress: evt => {
         MessageEmitter.postProgress(instanceKey, evt.bytesReceived);
-        console.log('[GOOGLE_UPLOAD]', parseInt( 100 * bytesReceived / (bytesExpected * 2) ), '%');
       }
     }
   )

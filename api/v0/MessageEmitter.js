@@ -34,7 +34,8 @@ module.exports = {
     }
     const currentProgress = progressMap[instanceKey]['bytes'] + bytesReceived;
     progressMap[instanceKey]['bytes'] =  currentProgress;
-    const percentCompletion = parseInt(currentProgress / progressMap[instanceKey]['totalBytes']);
+    const percentCompletion = parseInt(100 * currentProgress / progressMap[instanceKey]['totalBytes']);
+    console.log('[FILE_UPLOAD_PROGRESS]', `${percentCompletion}%`);
     io.to(instanceKey).emit('progress', percentCompletion);
   },
 };
