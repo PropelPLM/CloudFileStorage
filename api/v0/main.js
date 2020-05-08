@@ -91,7 +91,7 @@ app.post('/token/:instanceKey', async (req, res) => {
     InstanceManager.add(instanceKey, instanceDetails);
 
     await JsForce.connect(sessionId, salesforceUrl, instanceKey);
-    logSuccessResponse(tokensFromCredentials, '[END_POINT.TOKEN]');
+    logSuccessResponse({...tokensFromCredentials, instanceKey}, '[END_POINT.TOKEN]');
     res.status(200).send({ ...tokensFromCredentials, instanceKey });
   } catch (err) {
     logErrorResponse(err, '[END_POINT.TOKEN]');
@@ -113,7 +113,6 @@ app.post('/upload/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
   const uploadStream = GoogleDrive.initUpload(instanceKey);
   const form = new formidable.IncomingForm();
-  console.log('form', form);
   
   let file, salesforceUrl, isNew;
   ({ salesforceUrl, isNew } = InstanceManager.get(instanceKey, ['salesforceUrl', 'isNew']));
@@ -155,14 +154,14 @@ app.post('/upload/:instanceKey', async (req, res) => {
           isNew
         }
       }
-      console.log('response', response)
+      res.status(response.status).send(response.data);
     })
     // const options = { fileName, mimeType };
     // console.log(8);
     // const response = await GoogleDrive.uploadFile(options, instanceKey);
     // console.log(9);
 
-    // res.status(response.status).send(response.data);
+    
     // res.writeHead(200);
     // res.write('received upload: \n\n');
     logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
