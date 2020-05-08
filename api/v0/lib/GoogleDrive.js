@@ -157,11 +157,6 @@ async function initUpload(instanceKey) {
 async function uploadFile(instanceKey, payload) {
   let uploadStream;
   ({ uploadStream } = InstanceManager.getRef(instanceKey, 'uploadStream'));
-  // const uploadStream = stack[instanceKey];
-  // console.log('payload', payload);
-  // console.log('payload.on', payload.on);
-  console.log('uploadStream', uploadStream);
-  console.log('uploadStream.on', uploadStream.on);
   payload.pipe(uploadStream);
   InstanceManager.update(instanceKey, 'uploadStream', uploadStream);
 }
@@ -169,7 +164,7 @@ async function uploadFile(instanceKey, payload) {
 async function endUpload(instanceKey) {
   let file;
   { file = InstanceManager.getRef(instanceKey, 'file')};
-  return await file.resolve();
+  return await file;
 }
 
 module.exports = {
