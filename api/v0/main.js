@@ -3,7 +3,7 @@ const { google } = require('googleapis');
 const { PassThrough } = require('stream');
 const cors = require('cors');
 const express = require('express');
-const formidable = require('formidable');
+const Busboy = require('busboy');
 // const multer = require('multer');
 const path = require('path');
 // const util = require('util');
@@ -113,7 +113,8 @@ app.post('/uploadDetails/:instanceKey', async (req, res) => {
 app.post('/upload/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
   console.log(1);
-  const form = new formidable.IncomingForm();
+  // const form = new formidable.IncomingForm();
+  const form = new Busboy({ headers: req.headers });
   console.log(2);
   let salesforceUrl, isNew;
   ({ salesforceUrl, isNew } = InstanceManager.get(instanceKey, ['salesforceUrl', 'isNew']));
@@ -129,35 +130,59 @@ app.post('/upload/:instanceKey', async (req, res) => {
     //   .on('error', err => {
     //     console.log('[FRONTEND_UPLOAD_ERROR]', err)
     //   })
-    form.onPart = async part => {
-      part
-      .on('fileBegin', (name, file) => {
-          console.log(4);
-          console.log('fileBegin name', name)
-          console.log('fileBegin file', file)
-        })
-        .on('field', (name, file) => {
-          console.log(5);
-          console.log('field name', name)
-          console.log('field file', file)
-        })
-        .on('file', (name, file) => {
-          console.log(6);
-          console.log('file name', name)
-          console.log('file file', file)
-        })
-        .on('progress', (bytesReceived, bytesExpected) => {
-          console.log(7);
-          MessageEmitter.postProgress(instanceKey, 'FRONT_END', bytesReceived, bytesExpected);
-        })
-        .on('data', async part => {
-          console.log(8);
-          console.log('part', part)
-          await GoogleDrive.initUpload(instanceKey, part.filename, part.mime);
-          console.log(5.3);
-          GoogleDrive.uploadFile(instanceKey, part);
-        })
-    }
+    // form.onPart = async part => {
+    //   part
+    //   .on('fileBegin', (name, file) => {
+    //       console.log(4);
+    //       console.log('fileBegin name', name)
+    //       console.log('fileBegin file', file)
+    //     })
+    //     .on('field', (name, file) => {
+    //       console.log(5);
+    //       console.log('field name', name)
+    //       console.log('field file', file)
+    //     })
+    //     .on('file', (name, file) => {
+    //       console.log(6);
+    //       console.log('file name', name)
+    //       console.log('file file', file)
+    //     })
+    //     .on('progress', (bytesReceived, bytesExpected) => {
+    //       console.log(7);
+    //       MessageEmitter.postProgress(instanceKey, 'FRONT_END', bytesReceived, bytesExpected);
+    //     })
+    //     .on('data', async part => {
+    //       console.log(8);
+    //       console.log('part', part)
+    //       await GoogleDrive.initUpload(instanceKey, part.filename, part.mime);
+    //       console.log(5.3);
+    //       GoogleDrive.uploadFile(instanceKey, part);
+    //     })
+    //   }
+    form
+      .on('field', (fieldName, value, fieldNameTrunc, valueTrunc, transfEnc, mimeType) => {
+        console.log('field fieldName', fieldName)
+        console.log('field value', value)
+        console.log('field fieldNameTrunc', fieldNameTrunc)
+        console.log('field valueTrunc', valueTrunc)
+        console.log('field transfEnc', transfEnc)
+        console.log('field mimeType', mimeType)
+      })
+      .on('file', function(fieldname, file, filename, encoding, mimetype ) {
+        console.log('file fieldName', fieldName)
+        console.log('file value', value)
+        console.log('file fieldNameTrunc', fieldNameTrunc)
+        console.log('file valueTrunc', valueTrunc)
+        console.log('file transfEnc', transfEnc)
+        console.log('file mimeType', mimeType)
+        await GoogleDrive.initUpload(instanceKey, filename, mimetype);
+        file
+          .on('data', data => {
+            console.log('data', data)
+            GoogleDrive.uploadFile(instanceKey, part);
+          })
+          .
+      })
 
     console.log(9);
     form.parse(req, async (err, fields, files)=> {

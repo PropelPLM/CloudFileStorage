@@ -11,6 +11,7 @@
   "author": "clinton",
   "license": "ISC",
   "dependencies": {
+    "busboy": "^0.3.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "formidable": "^1.2.2",
