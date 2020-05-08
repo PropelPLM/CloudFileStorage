@@ -98,8 +98,8 @@ async function initUpload(instanceKey, { fileName, mimeType, fileSize }) {
         if (bytesRead == fileSize) {
           console.log('pls terminate');
           uploadStream.emit('done');
-          uploadStream.emit('finish');
-          uploadStream.emit('end');
+          // uploadStream.emit('finish');
+          // uploadStream.emit('end');
         }
       }
     }
