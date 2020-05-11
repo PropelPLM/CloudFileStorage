@@ -16,14 +16,14 @@ io.on('connection', (socket) => {
   });
 });
 
-module.exports = {
-  setAttribute: (instanceKey, attribute, value) => {
-    const keyedAttribute = {};
-    keyedAttribute[`instance-key`] = instanceKey;
-    keyedAttribute[`${attribute}`] = value;
-    io.to(instanceKey).emit('setAttribute', keyedAttribute);
-  },
+const setAttribute = (instanceKey, attribute, value) => {
+  const keyedAttribute = {};
+  keyedAttribute[`instance-key`] = instanceKey;
+  keyedAttribute[`${attribute}`] = value;
+  io.to(instanceKey).emit('setAttribute', keyedAttribute);
+}
 
+module.exports = {
   postTrigger: (instanceKey, topic, payload) => {
     io.to(instanceKey).emit('trigger', { topic, payload });
   },
@@ -35,4 +35,5 @@ module.exports = {
     console.log(`[${src}_UPLOAD]: ${src == 'frontend' ? frontendBytes/fileSize : externalBytes/fileSize}`);
     io.to(instanceKey).emit('progress', percentCompletion);
   },
+  setAttribute,
 };
