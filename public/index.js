@@ -24,7 +24,6 @@ $(() => {
     return url.substr(url.slice(0, -1).lastIndexOf('/') + 1);
   };
   socket.emit('start', instanceKeyFinder());
-  axios.get(`/setAttribute/${instanceKeyFinder()}`);
   
   //SOCKET IO HELPERS
   socket.on('setAttribute', (object) => {

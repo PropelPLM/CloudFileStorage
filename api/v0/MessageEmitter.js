@@ -10,6 +10,9 @@ io.on('connection', (socket) => {
   socket.on('start', (instanceKey) => {
     socket.join(instanceKey);
     logSuccessResponse({ instanceKey }, '[MESSAGE_EMITTER.JOIN_ROOM]');
+    let salesforceUrl;
+    ({ salesforceUrl } = InstanceManager.get(instanceKey, ['salesforceUrl']));
+    MessageEmitter.setAttribute(instanceKey, 'target-window', salesforceUrl);
   });
 });
 

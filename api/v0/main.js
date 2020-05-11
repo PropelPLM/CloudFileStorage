@@ -28,14 +28,14 @@ app.get('/:instanceKey', (req, res) => {
   res.sendFile('index.html', { root: path.join(__dirname, '../../public/') });
 });
 
-app.get('/setAttribute/:instanceKey', (req, res) => {
-  const instanceKey = req.params.instanceKey;
-  logSuccessResponse(instanceKey, '[END_POINT.SET_ATTRIBUTE]');
-  res.send('OK');
-  let salesforceUrl;
-  ({ salesforceUrl } = InstanceManager.get(instanceKey, ['salesforceUrl']));
-  MessageEmitter.setAttribute(instanceKey, 'target-window', salesforceUrl);
-});
+// app.get('/setAttribute/:instanceKey', (req, res) => {
+//   const instanceKey = req.params.instanceKey;
+//   logSuccessResponse(instanceKey, '[END_POINT.SET_ATTRIBUTE]');
+//   res.send('OK');
+//   let salesforceUrl;
+//   ({ salesforceUrl } = InstanceManager.get(instanceKey, ['salesforceUrl']));
+//   MessageEmitter.setAttribute(instanceKey, 'target-window', salesforceUrl);
+// });
 
 app.post('/auth/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
