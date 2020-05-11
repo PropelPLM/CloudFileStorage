@@ -9,6 +9,7 @@ $(() => {
   const progressBarText = $('#progress-bar-text');
   const spinner = $('#spinner');
   const check = $('#check');
+  const socket = io();
 
   // INIT
   const resetIcons = () => {
@@ -22,11 +23,10 @@ $(() => {
     const url = $(location).attr('href').slice(0, -1);
     return url.substr(url.slice(0, -1).lastIndexOf('/') + 1);
   };
-
-  //SOCKET IO HELPERS
-  const socket = io();
   socket.emit('start', instanceKeyFinder());
-
+  axios.get(`/setAttribute/${instanceKeyFinder()}`);
+  
+  //SOCKET IO HELPERS
   socket.on('setAttribute', (object) => {
     Object.entries(object).forEach(([key, value]) => {
       form.attr(`data-${key}`, value);
@@ -54,11 +54,11 @@ $(() => {
   };
 
   //DOM MANIPULATION JQUERY
-  fileSelect.on('click', function (e) {
-    if (!form.data(`instance-key`) && !form.data(`target-window`)) {
-      axios.get(`/setAttribute/${instanceKeyFinder()}`);
-    }
-  });
+  // fileSelect.on('click', function (e) {
+  //   if (!form.data(`instance-key`) && !form.data(`target-window`)) {
+  //     axios.get(`/setAttribute/${instanceKeyFinder()}`);
+  //   }
+  // });
 
   fileSelect.on('change', function (e) {
     e.preventDefault();
