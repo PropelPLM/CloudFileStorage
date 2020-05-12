@@ -9,9 +9,7 @@ const InstanceManager = require('../InstanceManager.js');
 const JsForce = require('./JsForce.js');
 
 const redirect_uris = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];
-const actions = {
-  driveFiles: 'https://www.googleapis.com/auth/drive.file'
-};
+const actions = { driveFiles: 'https://www.googleapis.com/auth/drive.file' };
 
 //TOKEN FLOW - INSTANCE MANAGER VARIABLES HERE DO NOT PERSIST TO UPLOAD FLOW
 function createAuthUrl(credentials, instanceKey) {
@@ -40,16 +38,6 @@ async function getTokens(code, instanceKey) {
 }
 
 //UPLOAD FLOW- INSTANCE MANAGER VARIABLES HERE DFO NOT PERSIST FROM TOKEN FLOW
-/**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- * @param {String} clientId Client ID from Google API console
- * @param {String} clientSecret Client Secret from Google API console
- * @param {Object} tokens Acces and Refresh tokens and their expiry
- * @param {Object} options Specifies how the operation in the callback should be
- *                 executed in the external file storage
- * @param {function} callback The callback to call with the authorized client.
- */
 async function authorize(instanceKey, clientId, clientSecret, tokens) {//}, options, callback) {
   try {
     const oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uris[0]);
@@ -61,12 +49,6 @@ async function authorize(instanceKey, clientId, clientSecret, tokens) {//}, opti
   }
 }
 
-/**
- * Uploads file with an OAuth2 client and then execute communicate the metadata of
- * the record in the external file storage back to salesforce APEX.
- * @param {Object} options Specifies how the file should be created in the external file storage
- * @param {String} instanceKey Specifies the session metadata details should be extracted from
- */
 async function initUpload(instanceKey, { fileName, mimeType, fileSize }) {
   let destinationFolderId, oAuth2Client;
   ({ destinationFolderId, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'oAuth2Client']));
