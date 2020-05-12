@@ -1,11 +1,13 @@
+'use strict';
+
 const express = require('express');
 const router = express.Router();
 
-const { logSuccessResponse, logErrorResponse } = require('./Logger');
-const InstanceManager = require('./InstanceManager');
-const MessageEmitter = require('./MessageEmitter');
-const GoogleDrive = require('./lib/GoogleDrive');
-const JsForce = require('./lib/JsForce');
+const { logSuccessResponse, logErrorResponse } = require('../lib/Logger.js');
+const InstanceManager = require('../lib/InstanceManager.js');
+const MessageEmitter = require('../lib/MessageEmitter.js');
+const GoogleDrive = require('../lib/GoogleDrive.js');
+const JsForce = require('../lib/JsForce.js');
 
 router.post('/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
