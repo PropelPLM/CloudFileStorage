@@ -1,7 +1,7 @@
+'use strict';
+
 const { google } = require('googleapis');
 const { PassThrough } = require('stream');
-const fs = require('fs');
-const progress = require('progress-stream');
 
 const { logSuccessResponse, logErrorResponse } = require('../Logger.js');
 const MessageEmitter = require('../MessageEmitter.js');
@@ -91,7 +91,6 @@ async function initUpload(instanceKey, { fileName, mimeType, fileSize }) {
     {
       onUploadProgress: evt => {
         bytesRead = evt.bytesRead;
-        console.log(bytesRead, fileSize, bytesRead == fileSize);
         InstanceManager.update(instanceKey, 'externalBytes', bytesRead)
         MessageEmitter.postProgress(instanceKey, 'Google Drive');
         if (bytesRead == fileSize) {

@@ -3,9 +3,7 @@
 const cors = require('cors');
 const express = require('express');
 const Busboy = require('busboy');
-// const multer = require('multer');
 const path = require('path');
-// const util = require('util');
 
 const app = express();
 const server = require('http').createServer(app);
@@ -27,15 +25,6 @@ app.get('/:instanceKey', (req, res) => {
   logSuccessResponse(instanceKey, '[END_POINT.INSTANCE_KEY]');
   res.sendFile('index.html', { root: path.join(__dirname, '../../public/') });
 });
-
-// app.get('/setAttribute/:instanceKey', (req, res) => {
-//   const instanceKey = req.params.instanceKey;
-//   logSuccessResponse(instanceKey, '[END_POINT.SET_ATTRIBUTE]');
-//   res.send('OK');
-//   let salesforceUrl;
-//   ({ salesforceUrl } = InstanceManager.get(instanceKey, ['salesforceUrl']));
-//   MessageEmitter.setAttribute(instanceKey, 'target-window', salesforceUrl);
-// });
 
 app.post('/auth/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
@@ -62,7 +51,6 @@ app.post('/auth/:instanceKey', async (req, res) => {
   }
 });
 
-//migrate this over
 app.get('/auth/callback/google', async (req, res) => {
   const instanceKey = Buffer.from(req.query.state, 'base64').toString();
   const code = req.query.code;
@@ -111,53 +99,10 @@ app.post('/uploadDetails/:instanceKey', async (req, res) => {
 
 app.post('/upload/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
-  console.log(1);
-  // const form = new formidable.IncomingForm();
   const form = new Busboy({ headers: req.headers });
-  console.log(2);
   let salesforceUrl, isNew;
   ({ salesforceUrl, isNew } = InstanceManager.get(instanceKey, ['salesforceUrl', 'isNew']));
-  console.log(3);
   try {
-    // form
-    //   .on('progress', (bytesReceived, bytesExpected) => {
-    //     MessageEmitter.postProgress(instanceKey, 'FRONT_END', bytesReceived, bytesExpected);
-    //   })
-    //   .on('end', async() => {
-    //     console.log('[FRONTEND_UPLOAD_COMPLETE]');
-    //   })
-    //   .on('error', err => {
-    //     console.log('[FRONTEND_UPLOAD_ERROR]', err)
-    //   })
-    // form.onPart = async part => {
-    //   part
-    //   .on('fileBegin', (name, file) => {
-    //       console.log(4);
-    //       console.log('fileBegin name', name)
-    //       console.log('fileBegin file', file)
-    //     })
-    //     .on('field', (name, file) => {
-    //       console.log(5);
-    //       console.log('field name', name)
-    //       console.log('field file', file)
-    //     })
-    //     .on('file', (name, file) => {
-    //       console.log(6);
-    //       console.log('file name', name)
-    //       console.log('file file', file)
-    //     })
-    //     .on('progress', (bytesReceived, bytesExpected) => {
-    //       console.log(7);
-    //       MessageEmitter.postProgress(instanceKey, 'FRONT_END', bytesReceived, bytesExpected);
-    //     })
-    //     .on('data', async part => {
-    //       console.log(8);
-    //       console.log('part', part)
-    //       await GoogleDrive.initUpload(instanceKey, part.filename, part.mime);
-    //       console.log(5.3);
-    //       GoogleDrive.uploadFile(instanceKey, part);
-    //     })
-    //   }
     let fileSize;
     form
       .on('field', (fieldName, value) => {
@@ -178,7 +123,7 @@ app.post('/upload/:instanceKey', async (req, res) => {
             GoogleDrive.uploadFile(instanceKey, data);
           })
           .on('error', error => {
-            console.log('errror: ', error)
+            logErrorResponse(error, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
           })
       })
       .on('finish', async () => {

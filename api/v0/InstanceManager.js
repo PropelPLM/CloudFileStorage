@@ -23,7 +23,7 @@ module.exports = {
   },
 
   addRef: (instanceKey, key, value) => {
-    instanceMap[instanceKey][key] = value 
+    instanceMap[instanceKey][key] = value
   },
 
   get: (instanceKey, detailKeys) => {

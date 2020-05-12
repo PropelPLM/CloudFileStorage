@@ -24,7 +24,7 @@ $(() => {
     return url.substr(url.slice(0, -1).lastIndexOf('/') + 1);
   };
   socket.emit('start', instanceKeyFinder());
-  
+
   //SOCKET IO HELPERS
   socket.on('setAttribute', (object) => {
     Object.entries(object).forEach(([key, value]) => {
