@@ -7,7 +7,7 @@ const MessageEmitter = require('./MessageEmitter');
 const GoogleDrive = require('./lib/GoogleDrive');
 const JsForce = require('./lib/JsForce');
 
-router.post('/:instanceKey', (req, res) => {
+router.post('/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;
   let sessionId, salesforceUrl, clientId, clientSecret;
   ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
