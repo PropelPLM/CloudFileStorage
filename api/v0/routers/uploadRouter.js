@@ -4,11 +4,11 @@ const express = require('express');
 const router = express.Router();
 const Busboy = require('busboy');
 
-const { logSuccessResponse, logErrorResponse } = require('../lib/Logger.js');
-const InstanceManager = require('../lib/InstanceManager.js');
-const MessageEmitter = require('../lib/MessageEmitter.js');
-const GoogleDrive = require('../lib/GoogleDrive.js');
-const JsForce = require('../lib/JsForce.js');
+const { logSuccessResponse, logErrorResponse } = require('../lib/Logger');
+const InstanceManager = require('../lib/InstanceManager');
+const MessageEmitter = require('../lib/MessageEmitter');
+const GoogleDrive = require('../lib/GoogleDrive');
+const JsForce = require('../lib/JsForce');
 
 router.post('/token/:instanceKey', async (req, res) => {
   const instanceKey = req.params.instanceKey;

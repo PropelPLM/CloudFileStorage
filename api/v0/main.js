@@ -9,9 +9,9 @@ const server = require('http').createServer(app);
 module.exports = server;
 const port = process.env.PORT || 5000;
 
-const { logSuccessResponse, logErrorResponse } = require('./lib/Logger.js');
-const authRouter = require('./routers/authRouter.js');
-const uploadRouter = require('./routers/uploadRouter.js');
+const { logSuccessResponse, logErrorResponse } = require('./lib/Logger');
+const authRouter = require('./routers/authRouter');
+const uploadRouter = require('./routers/uploadRouter');
 
 app.use(express.json());
 app.use(cors());

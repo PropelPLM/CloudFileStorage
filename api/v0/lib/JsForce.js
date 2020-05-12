@@ -1,8 +1,9 @@
 'use strict';
 
 const jsConnect = require('jsforce');
-const { logSuccessResponse, logErrorResponse } = require('../Logger');
-const InstanceManager = require('../InstanceManager');
+
+const { logSuccessResponse, logErrorResponse } = require('./Logger');
+const InstanceManager = require('./InstanceManager');
 
 async function connect(sessionId, salesforceUrl, instanceKey) {
   try {
