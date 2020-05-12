@@ -1,10 +1,10 @@
 'use strict';
 
 // Will be used more widely when there are different storages
-const server = require('./main.js');
+const server = require('./main');
 const io = require('socket.io')(server);
-const { logSuccessResponse } = require('./Logger.js');
-const InstanceManager = require('./InstanceManager.js');
+const { logSuccessResponse } = require('./Logger');
+const InstanceManager = require('./InstanceManager');
 
 io.on('connection', (socket) => {
   socket.on('start', (instanceKey) => {

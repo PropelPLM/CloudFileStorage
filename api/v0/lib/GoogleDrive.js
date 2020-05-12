@@ -3,10 +3,10 @@
 const { google } = require('googleapis');
 const { PassThrough } = require('stream');
 
-const { logSuccessResponse, logErrorResponse } = require('../Logger.js');
-const MessageEmitter = require('../MessageEmitter.js');
-const InstanceManager = require('../InstanceManager.js');
-const JsForce = require('./JsForce.js');
+const { logSuccessResponse, logErrorResponse } = require('../Logger');
+const MessageEmitter = require('../MessageEmitter');
+const InstanceManager = require('../InstanceManager');
+const JsForce = require('./JsForce');
 
 const redirect_uris = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];
 const actions = { driveFiles: 'https://www.googleapis.com/auth/drive.file' };

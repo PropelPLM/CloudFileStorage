@@ -9,8 +9,9 @@ const server = require('http').createServer(app);
 module.exports = server;
 const port = process.env.PORT || 5000;
 
-const { logSuccessResponse, logErrorResponse } = require('./Logger.js');
+const { logSuccessResponse, logErrorResponse } = require('./Logger');
 const authRouter = require('./routers/authRouter');
+const uploadRouter = require('./routers/uploadRouter');
 
 app.use(express.json());
 app.use(cors());
@@ -25,7 +26,7 @@ server.listen(port, () => {
 });
 
 app.use('/auth', authRouter);
-app.use('/upload', authRouter);
+app.use('/upload', uploadRouter);
 
 app.get('/:instanceKey', (req, res) => {
   try {
