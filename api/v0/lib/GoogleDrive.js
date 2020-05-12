@@ -72,7 +72,7 @@ async function initUpload(instanceKey, { fileName, mimeType, fileSize }) {
     },
     {
       onUploadProgress: evt => {
-        bytesRead = evt.bytesRead;
+        const bytesRead = evt.bytesRead;
         InstanceManager.update(instanceKey, 'externalBytes', bytesRead)
         MessageEmitter.postProgress(instanceKey, 'Google Drive');
         if (bytesRead == fileSize) {
