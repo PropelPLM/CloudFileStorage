@@ -46,6 +46,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var express = require('express');
 var router = express.Router();
 var Busboy = require('busboy');
@@ -163,12 +164,12 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
                                     isNew: isNew })
                             };
                             res.status(response.status).send(response.data);
+                            logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
                             return [2];
                     }
                 });
             }); });
             req.pipe(form);
-            logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
         }
         catch (err) {
             logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');

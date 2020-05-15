@@ -32,3 +32,4 @@ app.get('/:instanceKey', function (req, res) {
         logErrorResponse(error, '[END_POINT.INSTANCE_KEY]');
     }
 });
+module.exports = {};

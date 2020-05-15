@@ -1,4 +1,5 @@
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 var server = require('../main');
 var io = require('socket.io')(server);
 var logSuccessResponse = require('./Logger').logSuccessResponse;
@@ -26,7 +27,7 @@ module.exports = {
         var _a;
         var frontendBytes, externalBytes, fileSize;
         (_a = InstanceManager.get(instanceKey, ['frontendBytes', 'externalBytes', 'fileSize']), frontendBytes = _a.frontendBytes, externalBytes = _a.externalBytes, fileSize = _a.fileSize);
-        var percentCompletion = parseInt((100 * (frontendBytes + externalBytes)) / (fileSize * 2));
+        var percentCompletion = Math.floor((100 * (frontendBytes + externalBytes)) / (fileSize * 2));
         console.log("[" + instanceKey + "][" + src + "_UPLOAD]: " + (src == 'frontend' ? frontendBytes / fileSize : externalBytes / fileSize));
         io.to(instanceKey).emit('progress', percentCompletion);
     },
