@@ -1,1 +1,1 @@
-web: node ./api/v0/main.js
+web: node ./build/main.js
