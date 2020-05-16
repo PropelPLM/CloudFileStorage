@@ -682,7 +682,7 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/routers/authrouter.ts": {
-        "version": "e222be35dcde839b331a5e4b0ac7a7619ff41fd1c726bf5721a06ce215be5e7c",
+        "version": "8f8ff00b7ade9f24c747faee8006fe2b4a7fd55ebe1285a719395fdd4867b5b6",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },

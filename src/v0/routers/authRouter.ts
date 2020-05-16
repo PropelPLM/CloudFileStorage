@@ -39,11 +39,11 @@ router.get('/callback/google', async (req: any, res: any) => {
   const instanceKey = Buffer.from(req.query.state, 'base64').toString();
   const code = req.query.code;
   const token: any = await GoogleDrive.getTokens(code, instanceKey);
-  console.log('token received: ', token);
+  console.log('token received: ', token.tokens);
 
   let clientId: string, clientSecret: string;
   ({ clientId, clientSecret } = InstanceManager.get(instanceKey, ['clientId', 'clientSecret']));
-  await JsForce.sendTokens({ ...token, clientId, clientSecret }, instanceKey);
+  await JsForce.sendTokens({ ...token.tokens, clientId, clientSecret }, instanceKey);
   
   res.send('<script>window.close()</script>');
 });
