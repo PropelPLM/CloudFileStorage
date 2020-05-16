@@ -6,7 +6,7 @@ var app = express();
 var server = require('http').createServer(app);
 module.exports = server;
 var port = process.env.PORT || 5000;
-var _a = require('./lib/Logger'), logSuccessResponse = _a.logSuccessResponse, logErrorResponse = _a.logErrorResponse;
+var _a = require('./utils/Logger'), logSuccessResponse = _a.logSuccessResponse, logErrorResponse = _a.logErrorResponse;
 var authRouter = require('./routers/authRouter');
 var uploadRouter = require('./routers/uploadRouter');
 app.use(express.json());

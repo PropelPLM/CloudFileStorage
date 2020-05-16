@@ -50,11 +50,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = require('express');
 var router = express.Router();
 var Busboy = require('busboy');
-var _a = require('../lib/Logger'), logSuccessResponse = _a.logSuccessResponse, logErrorResponse = _a.logErrorResponse;
-var InstanceManager = require('../lib/InstanceManager');
-var MessageEmitter = require('../lib/MessageEmitter');
-var GoogleDrive = require('../lib/GoogleDrive');
-var JsForce = require('../lib/JsForce');
+var _a = require('../utils/Logger'), logSuccessResponse = _a.logSuccessResponse, logErrorResponse = _a.logErrorResponse;
+var InstanceManager = require('../utils/InstanceManager');
+var MessageEmitter = require('../utils/MessageEmitter');
+var GoogleDrive = require('../platforms/GoogleDrive');
+var JsForce = require('../utils/JsForce');
 router.post('/token/:instanceKey', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var instanceKey, client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl, tokensFromCredentials, instanceDetails, err_1;
     var _a;

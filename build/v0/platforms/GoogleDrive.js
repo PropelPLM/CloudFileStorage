@@ -39,9 +39,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GoogleDrive = void 0;
 var google = require('googleapis').google;
 var PassThrough = require('stream').PassThrough;
-var _a = require('./Logger'), logSuccessResponse = _a.logSuccessResponse, logErrorResponse = _a.logErrorResponse;
-var MessageEmitter = require('./MessageEmitter');
-var InstanceManager = require('./InstanceManager');
+var _a = require('../utils/Logger'), logSuccessResponse = _a.logSuccessResponse, logErrorResponse = _a.logErrorResponse;
+var MessageEmitter = require('../utils/MessageEmitter');
+var InstanceManager = require('../utils/InstanceManager');
 var GoogleDrive = (function () {
     function GoogleDrive() {
         this.redirect_uris = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];

@@ -3,9 +3,9 @@
 const { google } = require('googleapis');
 const { PassThrough } = require('stream');
 
-const { logSuccessResponse, logErrorResponse } = require('./Logger');
-const MessageEmitter = require('./MessageEmitter');
-const InstanceManager = require('./InstanceManager');
+const { logSuccessResponse, logErrorResponse } = require('../utils/Logger');
+const MessageEmitter = require('../utils/MessageEmitter');
+const InstanceManager = require('../utils/InstanceManager');
 
 export class GoogleDrive implements IPlatform {
   redirect_uris: string[];

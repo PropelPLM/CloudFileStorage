@@ -7,7 +7,7 @@ const router = express.Router();
 const { logSuccessResponse, logErrorResponse } = require('../utils/Logger');
 const InstanceManager = require('../utils/InstanceManager');
 const MessageEmitter = require('../utils/MessageEmitter');
-const GoogleDrive = require('../utils/GoogleDrive');
+const GoogleDrive = require('../platforms/GoogleDrive');
 const JsForce = require('../utils/JsForce');
 
 router.post('/:instanceKey', async (req: any, res: any) => {
