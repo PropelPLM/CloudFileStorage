@@ -58,7 +58,8 @@ var InstanceManager_1 = __importDefault(require("../utils/InstanceManager"));
 var MessageEmitter_1 = __importDefault(require("../utils/MessageEmitter"));
 var GoogleDrive_1 = __importDefault(require("../platforms/GoogleDrive"));
 var JsForce_1 = __importDefault(require("../utils/JsForce"));
-router.get('/:instanceKey', function (_, res) {
+router.get('/:instanceKey', function (req, res) {
+    InstanceManager_1.default.register(req.params.instanceKey);
     res.sendFile('index.html', { root: path.join(__dirname, '../../../public/') });
 });
 router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {

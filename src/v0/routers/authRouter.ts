@@ -11,7 +11,8 @@ import MessageEmitter from '../utils/MessageEmitter';
 import GoogleDrive from '../platforms/GoogleDrive';
 import JsForce from '../utils/JsForce';
 
-router.get('/:instanceKey', (_, res)=> {
+router.get('/:instanceKey', (req, res)=> {
+  InstanceManager.register(req.params.instanceKey);
   res.sendFile('index.html', { root: path.join(__dirname, '../../../public/') });
 })
 
