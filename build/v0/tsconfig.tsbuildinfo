@@ -242,7 +242,7 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/platforms/googledrive.ts": {
-        "version": "7ddafe7d87cba12c8a17b11a58cb31fe908308bc6104dd17851c93c9276a9daa",
+        "version": "6596102ca45dcf589e7c1b4464dced7c18bd824636eac61aa53e5be543bf0785",
         "signature": "21419cd19993a76341a44fa0ca2493705b4277ed770f07c062e734a4bceb2c28",
         "affectsGlobalScope": false
       },
@@ -682,7 +682,7 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/routers/authrouter.ts": {
-        "version": "e7040a57190403c6212d9716d7407116df71fe5843904a73a9b3dec598d70140",
+        "version": "e222be35dcde839b331a5e4b0ac7a7619ff41fd1c726bf5721a06ce215be5e7c",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },

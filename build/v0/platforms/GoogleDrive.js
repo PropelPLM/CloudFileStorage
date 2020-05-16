@@ -79,12 +79,9 @@ var GoogleDrive = (function () {
                         return [2, token];
                     case 3:
                         err_1 = _a.sent();
-                        console.log('ERROR ');
                         console.log(err_1);
                         return [3, 4];
-                    case 4:
-                        console.log('ERRORed');
-                        return [2];
+                    case 4: return [2];
                 }
             });
         });

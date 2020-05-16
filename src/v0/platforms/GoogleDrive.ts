@@ -37,10 +37,8 @@ class GoogleDrive implements IPlatform {
       console.log(token);
       return token;
     } catch (err) {
-      console.log('ERROR ');
       console.log(err);
     }
-    console.log('ERRORed');
       // .then((token: Record<string, string>) => {
       //   logSuccessResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
       //   return token;
