@@ -63,19 +63,25 @@ var GoogleDrive = (function () {
     };
     GoogleDrive.prototype.getTokens = function (code, instanceKey) {
         return __awaiter(this, void 0, void 0, function () {
-            var oAuth2Client;
+            var oAuth2Client, token, err_1;
             return __generator(this, function (_a) {
-                (oAuth2Client = InstanceManager_1.default.get(instanceKey, ['oAuth2Client']).oAuth2Client);
-                oAuth2Client.getToken(code)
-                    .then(function (token) {
-                    Logger_1.logSuccessResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
-                    return token;
-                })
-                    .catch(function (err) {
-                    Logger_1.logErrorResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
-                    return err;
-                });
-                return [2];
+                switch (_a.label) {
+                    case 0:
+                        (oAuth2Client = InstanceManager_1.default.get(instanceKey, ['oAuth2Client']).oAuth2Client);
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4, oAuth2Client.getToken(code)];
+                    case 2:
+                        token = _a.sent();
+                        console.log(token);
+                        return [2, token];
+                    case 3:
+                        err_1 = _a.sent();
+                        console.log(err_1);
+                        return [3, 4];
+                    case 4: return [2];
+                }
             });
         });
     };
