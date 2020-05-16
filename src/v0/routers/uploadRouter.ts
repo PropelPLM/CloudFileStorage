@@ -7,11 +7,11 @@ const express = require('express');
 const router = express.Router();
 const Busboy = require('busboy');
 
-const { logSuccessResponse, logErrorResponse } = require('../lib/Logger');
-const InstanceManager = require('../lib/InstanceManager');
-const MessageEmitter = require('../lib/MessageEmitter');
-const GoogleDrive = require('../lib/GoogleDrive');
-const JsForce = require('../lib/JsForce');
+const { logSuccessResponse, logErrorResponse } = require('../utils/Logger');
+const InstanceManager = require('../utils/InstanceManager');
+const MessageEmitter = require('../utils/MessageEmitter');
+const GoogleDrive = require('../utils/GoogleDrive');
+const JsForce = require('../utils/JsForce');
 
 router.post('/token/:instanceKey', async (req: any, res: any) => {
   const instanceKey = req.params.instanceKey;

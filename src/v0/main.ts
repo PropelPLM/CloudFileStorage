@@ -10,7 +10,7 @@ const server = require('http').createServer(app);
 module.exports = server;
 const port = process.env.PORT || 5000;
 
-const { logSuccessResponse, logErrorResponse } = require('./lib/Logger');
+const { logSuccessResponse, logErrorResponse } = require('./utils/Logger');
 const authRouter = require('./routers/authRouter');
 const uploadRouter = require('./routers/uploadRouter');
 
