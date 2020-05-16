@@ -7,7 +7,6 @@ import InstanceManager from '../utils/InstanceManager';
 import MessageEmitter from '../utils/MessageEmitter';
 
 export class JsForce {
-  public constructor(){}
   
   public async connect(sessionId: string, salesforceUrl: string, instanceKey: string) {
     try {
