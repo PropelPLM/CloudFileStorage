@@ -6,7 +6,7 @@ const { logSuccessResponse, logErrorResponse } = require('./Logger');
 const InstanceManager = require('./InstanceManager');
 const MessageEmitter = require('./MessageEmitter');
 
-class JsForce {
+export class JsForce {
   constructor(){}
   
   public async connect(sessionId: string, salesforceUrl: string, instanceKey: string) {
