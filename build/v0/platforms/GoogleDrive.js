@@ -71,6 +71,7 @@ var GoogleDrive = (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
+                        console.log('WHAT IS GOING ON');
                         return [4, oAuth2Client.getToken(code)];
                     case 2:
                         token = _a.sent();
@@ -78,9 +79,12 @@ var GoogleDrive = (function () {
                         return [2, token];
                     case 3:
                         err_1 = _a.sent();
+                        console.log('ERROR ');
                         console.log(err_1);
                         return [3, 4];
-                    case 4: return [2];
+                    case 4:
+                        console.log('ERRORed');
+                        return [2];
                 }
             });
         });

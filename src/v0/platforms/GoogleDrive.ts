@@ -32,12 +32,15 @@ class GoogleDrive implements IPlatform {
     let oAuth2Client: any;
     ({ oAuth2Client } = InstanceManager.get(instanceKey, ['oAuth2Client']));
     try {
+      console.log('WHAT IS GOING ON');
       const token = await oAuth2Client.getToken(code);
       console.log(token);
       return token;
     } catch (err) {
+      console.log('ERROR ');
       console.log(err);
     }
+    console.log('ERRORed');
       // .then((token: Record<string, string>) => {
       //   logSuccessResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
       //   return token;
