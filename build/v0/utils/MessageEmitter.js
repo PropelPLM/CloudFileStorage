@@ -24,6 +24,7 @@ var setAttribute = function (instanceKey, attribute, value) {
 };
 exports.default = {
     postTrigger: function (instanceKey, topic, payload) {
+        console.log('posttrigger instanceKey: ', instanceKey);
         io.to(instanceKey).emit('trigger', { topic: topic, payload: payload });
     },
     postProgress: function (instanceKey, src) {

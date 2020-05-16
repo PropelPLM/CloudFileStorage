@@ -237,7 +237,7 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/utils/messageemitter.ts": {
-        "version": "70865dc7005d8cd22ac736329bc17c4193adea00b26a9637e33285fb9b4f695a",
+        "version": "c0293087c33ae3aa1ca0669e68e6f05c25c28e744b2fcd17cfebb677d3cd9d70",
         "signature": "d8efcccc8531bf9a70ce2a87de492200de162f9a45d0e5f5daa3fe13627497cb",
         "affectsGlobalScope": false
       },

@@ -26,6 +26,7 @@ const setAttribute = (instanceKey: string, attribute: string, value: string) => 
 
 export default {
   postTrigger: (instanceKey: string, topic: string, payload: any) => {
+    console.log('posttrigger instanceKey: ', instanceKey)
     io.to(instanceKey).emit('trigger', { topic, payload });
   },
 
