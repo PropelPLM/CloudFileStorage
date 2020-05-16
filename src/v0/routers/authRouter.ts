@@ -12,7 +12,7 @@ import GoogleDrive from '../platforms/GoogleDrive';
 import JsForce from '../utils/JsForce';
 
 router.get('/:instanceKey', (_, res)=> {
-  res.sendFile('index.html', { root: path.join(__dirname, '../../public/') });
+  res.sendFile('index.html', { root: path.join(__dirname, '../../../public/') });
 })
 
 router.post('/:instanceKey', async (req: any, res: any) => {
