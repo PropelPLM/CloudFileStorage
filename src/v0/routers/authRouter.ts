@@ -1,14 +1,14 @@
 'use strict';
 
 export {};
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
-const { logSuccessResponse, logErrorResponse } = require('../utils/Logger');
-const InstanceManager = require('../utils/InstanceManager');
-const MessageEmitter = require('../utils/MessageEmitter');
-const GoogleDrive = require('../platforms/GoogleDrive');
-const JsForce = require('../utils/JsForce');
+import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
+import InstanceManager from '../utils/InstanceManager';
+import MessageEmitter from '../utils/MessageEmitter';
+import GoogleDrive from '../platforms/GoogleDrive';
+import JsForce from '../utils/JsForce';
 
 router.post('/:instanceKey', async (req: any, res: any) => {
   const instanceKey: string = req.params.instanceKey;
@@ -38,7 +38,7 @@ router.post('/:instanceKey', async (req: any, res: any) => {
 router.get('/callback/google', async (req: any, res: any) => {
   const instanceKey = Buffer.from(req.query.state, 'base64').toString();
   const code = req.query.code;
-  const token: Record<string, string> = await GoogleDrive.getTokens(code, instanceKey);
+  const token: any = await GoogleDrive.getTokens(code, instanceKey);
 
   let clientId: string, clientSecret: string;
   ({ clientId, clientSecret } = InstanceManager.get(instanceKey, ['clientId', 'clientSecret']));

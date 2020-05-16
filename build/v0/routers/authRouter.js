@@ -46,14 +46,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var express = require('express');
-var router = express.Router();
-var _a = require('../utils/Logger'), logSuccessResponse = _a.logSuccessResponse, logErrorResponse = _a.logErrorResponse;
-var InstanceManager = require('../utils/InstanceManager');
-var MessageEmitter = require('../utils/MessageEmitter');
-var GoogleDrive = require('../platforms/GoogleDrive');
-var JsForce = require('../utils/JsForce');
+var express_1 = __importDefault(require("express"));
+var router = express_1.default.Router();
+var Logger_1 = require("../utils/Logger");
+var InstanceManager_1 = __importDefault(require("../utils/InstanceManager"));
+var MessageEmitter_1 = __importDefault(require("../utils/MessageEmitter"));
+var GoogleDrive_1 = __importDefault(require("../platforms/GoogleDrive"));
+var JsForce_1 = __importDefault(require("../utils/JsForce"));
 router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var instanceKey, sessionId, salesforceUrl, clientId, clientSecret, instanceDetails, credentials, url;
     var _a;
@@ -62,23 +65,23 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
             case 0:
                 instanceKey = req.params.instanceKey;
                 (_a = req.body, sessionId = _a.sessionId, salesforceUrl = _a.salesforceUrl, clientId = _a.clientId, clientSecret = _a.clientSecret);
-                InstanceManager.register(instanceKey);
+                InstanceManager_1.default.register(instanceKey);
                 instanceDetails = { salesforceUrl: salesforceUrl, clientId: clientId, clientSecret: clientSecret };
                 return [4, Promise.all([
-                        InstanceManager.add(instanceKey, instanceDetails),
-                        JsForce.connect(sessionId, salesforceUrl, instanceKey)
+                        InstanceManager_1.default.add(instanceKey, instanceDetails),
+                        JsForce_1.default.connect(sessionId, salesforceUrl, instanceKey)
                     ])];
             case 1:
                 _b.sent();
                 if (clientId && clientSecret) {
                     credentials = { clientId: clientId, clientSecret: clientSecret, redirect_uri: "https://" + req.hostname + "/auth/callback/google" };
-                    url = GoogleDrive.createAuthUrl(credentials, instanceKey);
-                    MessageEmitter.setAttribute(instanceKey, 'target-window', salesforceUrl);
-                    logSuccessResponse(instanceKey, '[END_POINT.AUTH_REDIRECT]');
+                    url = GoogleDrive_1.default.createAuthUrl(credentials, instanceKey);
+                    MessageEmitter_1.default.setAttribute(instanceKey, 'target-window', salesforceUrl);
+                    Logger_1.logSuccessResponse(instanceKey, '[END_POINT.AUTH_REDIRECT]');
                     res.status(200).send({ url: url });
                 }
                 else {
-                    logErrorResponse({ clientId: clientId, clientSecret: clientSecret }, '[END_POINT.AUTH_REDIRECT]');
+                    Logger_1.logErrorResponse({ clientId: clientId, clientSecret: clientSecret }, '[END_POINT.AUTH_REDIRECT]');
                     res.status(400).send('Authorization failed, please ensure client credentials are populated.');
                 }
                 return [2];
@@ -93,11 +96,11 @@ router.get('/callback/google', function (req, res) { return __awaiter(void 0, vo
             case 0:
                 instanceKey = Buffer.from(req.query.state, 'base64').toString();
                 code = req.query.code;
-                return [4, GoogleDrive.getTokens(code, instanceKey)];
+                return [4, GoogleDrive_1.default.getTokens(code, instanceKey)];
             case 1:
                 token = _b.sent();
-                (_a = InstanceManager.get(instanceKey, ['clientId', 'clientSecret']), clientId = _a.clientId, clientSecret = _a.clientSecret);
-                return [4, JsForce.sendTokens(__assign(__assign({}, token), { clientId: clientId, clientSecret: clientSecret }), instanceKey)];
+                (_a = InstanceManager_1.default.get(instanceKey, ['clientId', 'clientSecret']), clientId = _a.clientId, clientSecret = _a.clientSecret);
+                return [4, JsForce_1.default.sendTokens(__assign(__assign({}, token), { clientId: clientId, clientSecret: clientSecret }), instanceKey)];
             case 2:
                 _b.sent();
                 res.send('<script>window.close()</script>');

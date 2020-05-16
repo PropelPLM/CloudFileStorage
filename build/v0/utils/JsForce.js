@@ -46,12 +46,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JsForce = void 0;
-var jsConnect = require('jsforce');
-var _a = require('./Logger'), logSuccessResponse = _a.logSuccessResponse, logErrorResponse = _a.logErrorResponse;
-var InstanceManager = require('./InstanceManager');
-var MessageEmitter = require('./MessageEmitter');
+var jsforce_1 = __importDefault(require("jsforce"));
+var Logger_1 = require("../utils/Logger");
+var InstanceManager_1 = __importDefault(require("../utils/InstanceManager"));
+var MessageEmitter_1 = __importDefault(require("../utils/MessageEmitter"));
 var JsForce = (function () {
     function JsForce() {
     }
@@ -62,21 +65,21 @@ var JsForce = (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        connection = new jsConnect.Connection({
+                        connection = new jsforce_1.default.Connection({
                             instanceUrl: salesforceUrl,
                             sessionId: sessionId
                         });
                         return [4, Promise.all([
-                                InstanceManager.add(instanceKey, { connection: connection }),
+                                InstanceManager_1.default.add(instanceKey, { connection: connection }),
                                 this.setupNamespace(instanceKey)
                             ])];
                     case 1:
                         _a.sent();
-                        logSuccessResponse({}, '[JSFORCE.CONNECT]');
+                        Logger_1.logSuccessResponse({}, '[JSFORCE.CONNECT]');
                         return [3, 3];
                     case 2:
                         err_1 = _a.sent();
-                        logErrorResponse(err_1, '[JSFORCE.CONNECT]');
+                        Logger_1.logErrorResponse(err_1, '[JSFORCE.CONNECT]');
                         return [3, 3];
                     case 3: return [2];
                 }
@@ -97,7 +100,7 @@ var JsForce = (function () {
                             Client_Id__c: tokens.clientId,
                             Client_Secret__c: tokens.clientSecret
                         };
-                        (_d = InstanceManager.get(instanceKey, ['connection', 'orgNamespace']), connection = _d.connection, orgNamespace = _d.orgNamespace);
+                        (_d = InstanceManager_1.default.get(instanceKey, ['connection', 'orgNamespace']), connection = _d.connection, orgNamespace = _d.orgNamespace);
                         _e.label = 1;
                     case 1:
                         _e.trys.push([1, 4, , 5]);
@@ -108,12 +111,12 @@ var JsForce = (function () {
                     case 2: return [4, _b.apply(_a, [__assign.apply(void 0, _c.concat([(_e.sent())])), orgNamespace + "__Client_Id__c"])];
                     case 3:
                         upsertedTokens = _e.sent();
-                        logSuccessResponse(upsertedTokens, '[JSFORCE.SEND_TOKENS]');
-                        MessageEmitter.postTrigger(instanceKey, 'authComplete', {});
+                        Logger_1.logSuccessResponse(upsertedTokens, '[JSFORCE.SEND_TOKENS]');
+                        MessageEmitter_1.default.postTrigger(instanceKey, 'authComplete', {});
                         return [3, 5];
                     case 4:
                         err_2 = _e.sent();
-                        logSuccessResponse(err_2, '[JSFORCE.SEND_TOKENS]');
+                        Logger_1.logSuccessResponse(err_2, '[JSFORCE.SEND_TOKENS]');
                         return [3, 5];
                     case 5: return [2];
                 }
@@ -129,7 +132,7 @@ var JsForce = (function () {
                     case 0:
                         _e.trys.push([0, 3, , 4]);
                         connection = void 0, orgNamespace = void 0, revisionId = void 0, isNew = void 0, webViewLink = void 0, id = void 0, fileExtension = void 0, webContentLink = void 0;
-                        (_d = InstanceManager.get(instanceKey, ['connection', 'orgNamespace', 'revisionId', 'isNew']), connection = _d.connection, orgNamespace = _d.orgNamespace, revisionId = _d.revisionId, isNew = _d.isNew);
+                        (_d = InstanceManager_1.default.get(instanceKey, ['connection', 'orgNamespace', 'revisionId', 'isNew']), connection = _d.connection, orgNamespace = _d.orgNamespace, revisionId = _d.revisionId, isNew = _d.isNew);
                         (name_1 = file.name, webViewLink = file.webViewLink, id = file.id, fileExtension = file.fileExtension, webContentLink = file.webContentLink);
                         newAttachment = {
                             External_Attachment_URL__c: webViewLink,
@@ -148,11 +151,11 @@ var JsForce = (function () {
                     case 1: return [4, _b.apply(_a, [__assign.apply(void 0, _c.concat([(_e.sent())]))])];
                     case 2:
                         sObject = _e.sent();
-                        logSuccessResponse({ sObject: sObject }, '[JSFORCE.CREATE]');
+                        Logger_1.logSuccessResponse({ sObject: sObject }, '[JSFORCE.CREATE]');
                         return [2, __assign(__assign({}, sObject), { revisionId: revisionId })];
                     case 3:
                         err_3 = _e.sent();
-                        logErrorResponse({ err: err_3 }, '[JSFORCE.CREATE]');
+                        Logger_1.logErrorResponse({ err: err_3 }, '[JSFORCE.CREATE]');
                         return [3, 4];
                     case 4: return [2];
                 }
@@ -165,13 +168,13 @@ var JsForce = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        (connection = InstanceManager.get(instanceKey, ['connection']).connection);
+                        (connection = InstanceManager_1.default.get(instanceKey, ['connection']).connection);
                         return [4, connection.query('SELECT NamespacePrefix FROM ApexClass WHERE Name = \'CloudStorageService\' LIMIT 1')];
                     case 1:
                         jsForceRecords = _a.sent();
                         orgNamespace = jsForceRecords.records[0].NamespacePrefix;
-                        InstanceManager.add(instanceKey, { orgNamespace: orgNamespace });
-                        logSuccessResponse({ orgNamespace: orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
+                        InstanceManager_1.default.add(instanceKey, { orgNamespace: orgNamespace });
+                        Logger_1.logSuccessResponse({ orgNamespace: orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
                         return [2];
                 }
             });
@@ -181,7 +184,7 @@ var JsForce = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var orgNamespace, key;
             return __generator(this, function (_a) {
-                (orgNamespace = InstanceManager.get(instanceKey, ['orgNamespace']).orgNamespace);
+                (orgNamespace = InstanceManager_1.default.get(instanceKey, ['orgNamespace']).orgNamespace);
                 for (key in customObject) {
                     Object.defineProperty(customObject, orgNamespace + "__" + key, Object.getOwnPropertyDescriptor(customObject, key));
                     delete customObject[key];
@@ -193,3 +196,4 @@ var JsForce = (function () {
     return JsForce;
 }());
 exports.JsForce = JsForce;
+exports.default = new JsForce();

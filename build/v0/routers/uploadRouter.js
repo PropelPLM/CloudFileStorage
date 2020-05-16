@@ -46,15 +46,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require('express');
 var router = express.Router();
 var Busboy = require('busboy');
-var _a = require('../utils/Logger'), logSuccessResponse = _a.logSuccessResponse, logErrorResponse = _a.logErrorResponse;
-var InstanceManager = require('../utils/InstanceManager');
-var MessageEmitter = require('../utils/MessageEmitter');
-var GoogleDrive = require('../platforms/GoogleDrive');
-var JsForce = require('../utils/JsForce');
+var Logger_1 = require("../utils/Logger");
+var InstanceManager_1 = __importDefault(require("../utils/InstanceManager"));
+var MessageEmitter_1 = __importDefault(require("../utils/MessageEmitter"));
+var JsForce_1 = __importDefault(require("../utils/JsForce"));
+var GoogleDrive_1 = __importDefault(require("../platforms/GoogleDrive"));
 router.post('/token/:instanceKey', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var instanceKey, client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl, tokensFromCredentials, instanceDetails, err_1;
     var _a;
@@ -70,25 +73,25 @@ router.post('/token/:instanceKey', function (req, res) { return __awaiter(void 0
                 tokensFromCredentials = {
                     access_token: access_token,
                     refresh_token: refresh_token,
-                    scope: GoogleDrive.actions.driveFiles,
+                    scope: GoogleDrive_1.default.actions.driveFiles,
                     token_type: 'Bearer',
                     expiry_date: expiry_date
                 };
-                InstanceManager.register(instanceKey);
-                GoogleDrive.authorize(instanceKey, client_id, client_secret, tokensFromCredentials);
+                InstanceManager_1.default.register(instanceKey);
+                GoogleDrive_1.default.authorize(instanceKey, client_id, client_secret, tokensFromCredentials);
                 instanceDetails = { sessionId: sessionId, salesforceUrl: salesforceUrl };
                 return [4, Promise.all([
-                        InstanceManager.add(instanceKey, instanceDetails),
-                        JsForce.connect(sessionId, salesforceUrl, instanceKey)
+                        InstanceManager_1.default.add(instanceKey, instanceDetails),
+                        JsForce_1.default.connect(sessionId, salesforceUrl, instanceKey)
                     ])];
             case 2:
                 _b.sent();
-                logSuccessResponse(__assign(__assign({}, tokensFromCredentials), { instanceKey: instanceKey }), '[END_POINT.TOKEN]');
+                Logger_1.logSuccessResponse(__assign(__assign({}, tokensFromCredentials), { instanceKey: instanceKey }), '[END_POINT.TOKEN]');
                 res.status(200).send(__assign(__assign({}, tokensFromCredentials), { instanceKey: instanceKey }));
                 return [3, 4];
             case 3:
                 err_1 = _b.sent();
-                logErrorResponse(err_1, '[END_POINT.TOKEN]');
+                Logger_1.logErrorResponse(err_1, '[END_POINT.TOKEN]');
                 res.send("Failed to receive tokens: " + err_1);
                 return [3, 4];
             case 4: return [2];
@@ -102,8 +105,8 @@ router.post('/uploadDetails/:instanceKey', function (req, res) { return __awaite
         instanceKey = req.params.instanceKey;
         (_a = req.body, revisionId = _a.revisionId, destinationFolderId = _a.destinationFolderId, isNew = _a.isNew);
         instanceDetails = { revisionId: revisionId, destinationFolderId: destinationFolderId, isNew: isNew };
-        InstanceManager.add(instanceKey, instanceDetails);
-        logSuccessResponse({ instanceKey: instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
+        InstanceManager_1.default.add(instanceKey, instanceDetails);
+        Logger_1.logSuccessResponse({ instanceKey: instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
         res.status(200).send({ instanceKey: instanceKey });
         return [2];
     });
@@ -114,7 +117,7 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
     return __generator(this, function (_b) {
         instanceKey = req.params.instanceKey;
         form = new Busboy({ headers: req.headers });
-        (_a = InstanceManager.get(instanceKey, ['salesforceUrl', 'isNew']), salesforceUrl = _a.salesforceUrl, isNew = _a.isNew);
+        (_a = InstanceManager_1.default.get(instanceKey, ['salesforceUrl', 'isNew']), salesforceUrl = _a.salesforceUrl, isNew = _a.isNew);
         try {
             form
                 .on('field', function (fieldName, value) {
@@ -127,8 +130,8 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0: return [4, Promise.all([
-                                    GoogleDrive.initUpload(instanceKey, { fileName: fileName, mimeType: mimeType, fileSize: fileSize_1 }),
-                                    InstanceManager.add(instanceKey, { frontendBytes: 0, externalBytes: 0, fileSize: fileSize_1 })
+                                    GoogleDrive_1.default.initUpload(instanceKey, { fileName: fileName, mimeType: mimeType, fileSize: fileSize_1 }),
+                                    InstanceManager_1.default.add(instanceKey, { frontendBytes: 0, externalBytes: 0, fileSize: fileSize_1 })
                                 ])];
                             case 1:
                                 _a.sent();
@@ -136,12 +139,12 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
                                 file
                                     .on('data', function (data) {
                                     progress = progress + data.length;
-                                    InstanceManager.update(instanceKey, 'frontendBytes', progress);
-                                    MessageEmitter.postProgress(instanceKey, 'frontend');
-                                    GoogleDrive.uploadFile(instanceKey, data);
+                                    InstanceManager_1.default.update(instanceKey, 'frontendBytes', progress);
+                                    MessageEmitter_1.default.postProgress(instanceKey, 'frontend');
+                                    GoogleDrive_1.default.uploadFile(instanceKey, data);
                                 })
                                     .on('error', function (error) {
-                                    logErrorResponse(error, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
+                                    Logger_1.logErrorResponse(error, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
                                 });
                                 return [2];
                         }
@@ -152,10 +155,10 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
                 var file, sfObject, response;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4, GoogleDrive.endUpload(instanceKey)];
+                        case 0: return [4, GoogleDrive_1.default.endUpload(instanceKey)];
                         case 1:
                             file = _a.sent();
-                            return [4, JsForce.create(file.data, instanceKey)];
+                            return [4, JsForce_1.default.create(file.data, instanceKey)];
                         case 2:
                             sfObject = _a.sent();
                             response = {
@@ -164,7 +167,7 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
                                     isNew: isNew })
                             };
                             res.status(response.status).send(response.data);
-                            logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
+                            Logger_1.logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
                             return [2];
                     }
                 });
@@ -172,7 +175,7 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
             req.pipe(form);
         }
         catch (err) {
-            logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
+            Logger_1.logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
         }
         return [2];
     });

@@ -7,11 +7,11 @@ const express = require('express');
 const router = express.Router();
 const Busboy = require('busboy');
 
-const { logSuccessResponse, logErrorResponse } = require('../utils/Logger');
-const InstanceManager = require('../utils/InstanceManager');
-const MessageEmitter = require('../utils/MessageEmitter');
-const GoogleDrive = require('../platforms/GoogleDrive');
-const JsForce = require('../utils/JsForce');
+import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
+import InstanceManager from '../utils/InstanceManager';
+import MessageEmitter from '../utils/MessageEmitter';
+import JsForce from '../utils/JsForce';
+import GoogleDrive from '../platforms/GoogleDrive';
 
 router.post('/token/:instanceKey', async (req: any, res: any) => {
   const instanceKey = req.params.instanceKey;
@@ -82,7 +82,7 @@ router.post('/:instanceKey', async (req: any, res: any) => {
           })
       })
       .on('finish', async () => {
-        const file = await GoogleDrive.endUpload(instanceKey);
+        const file: any = await GoogleDrive.endUpload(instanceKey);
         const sfObject = await JsForce.create(file.data, instanceKey);
         const response = {
           status: parseInt(file.status),

@@ -1,6 +1,6 @@
 'use strict';
 
-const { cloneDeep } = require('lodash');
+import { cloneDeep } from 'lodash';
 
 /**
  * Time of access and the sessionId will be used to demultiplex different iframe sessions
@@ -12,7 +12,7 @@ const { cloneDeep } = require('lodash');
 
 const instanceMap: Record<string ,any> = {};
 
-module.exports = {
+export default {
   register: (instanceKey: string) => {
     instanceMap[instanceKey] = {};
   },

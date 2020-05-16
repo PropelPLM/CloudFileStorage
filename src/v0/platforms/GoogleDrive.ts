@@ -3,13 +3,15 @@
 const { google } = require('googleapis');
 const { PassThrough } = require('stream');
 
-const { logSuccessResponse, logErrorResponse } = require('../utils/Logger');
-const MessageEmitter = require('../utils/MessageEmitter');
-const InstanceManager = require('../utils/InstanceManager');
+import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
+import MessageEmitter from '../utils/MessageEmitter';
+import InstanceManager from '../utils/InstanceManager';
 
 class GoogleDrive implements IPlatform {
-  private redirect_uris: string[] = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];
-  private actions: Record<string, string> = { driveFiles: 'https://www.googleapis.com/auth/drive.file' };
+  public redirect_uris: string[] = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];
+  public actions: Record<string, string> = { driveFiles: 'https://www.googleapis.com/auth/drive.file' };
+
+  public constructor() {}
   
   //TOKEN FLOW - INSTANCE MANAGER VARIABLES HERE DO NOT PERSIST TO UPLOAD FLOW
   public createAuthUrl(credentials: Record<string, string> , instanceKey: string): string {

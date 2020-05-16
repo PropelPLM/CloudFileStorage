@@ -4,8 +4,8 @@ export {};
 // Will be used more widely when there are different storages
 const server = require('../main');
 const io = require('socket.io')(server);
-const { logSuccessResponse } = require('./Logger');
-const InstanceManager = require('./InstanceManager');
+import { logSuccessResponse } from '../utils/Logger';
+import InstanceManager from '../utils/InstanceManager';
 
 io.on('connection', (socket: any) => {
   socket.on('start', (instanceKey: string) => {
@@ -24,7 +24,7 @@ const setAttribute = (instanceKey: string, attribute: string, value: string) => 
   io.to(instanceKey).emit('setAttribute', keyedAttribute);
 }
 
-module.exports = {
+export default {
   postTrigger: (instanceKey: string, topic: string, payload: any) => {
     io.to(instanceKey).emit('trigger', { topic, payload });
   },

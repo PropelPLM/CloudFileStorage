@@ -1,13 +1,13 @@
 'use strict';
 
-const jsConnect = require('jsforce');
+import jsConnect from 'jsforce';
 
-const { logSuccessResponse, logErrorResponse } = require('./Logger');
-const InstanceManager = require('./InstanceManager');
-const MessageEmitter = require('./MessageEmitter');
+import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
+import InstanceManager from '../utils/InstanceManager';
+import MessageEmitter from '../utils/MessageEmitter';
 
 export class JsForce {
-  constructor(){}
+  public constructor(){}
   
   public async connect(sessionId: string, salesforceUrl: string, instanceKey: string) {
     try {

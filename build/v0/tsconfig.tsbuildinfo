@@ -161,45 +161,95 @@
         "signature": "839b2b6f12f70ada60664ff858eb63d4cc0ce80954ff3880b44f845b3fe37df2",
         "affectsGlobalScope": false
       },
+      "../../src/v0/utils/logger.ts": {
+        "version": "1a3b45ec2be13def2db92faaefeb9854a54994965650b979f974270160d4f22e",
+        "signature": "1fccb7eb097d8e7d46828555c55f83cf35824e937bae43433190fd2c01b13b11",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/ts3.1/common/common.d.ts": {
+        "version": "4025cf62742c5bb3d383c8a62342481622c87e3397ea5e7b7baab18b9efd5798",
+        "signature": "4025cf62742c5bb3d383c8a62342481622c87e3397ea5e7b7baab18b9efd5798",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/ts3.1/common/array.d.ts": {
+        "version": "c21830111d49a5cd7a9f384370db5b41c659d045fe920bcac1cc9f507c88125d",
+        "signature": "c21830111d49a5cd7a9f384370db5b41c659d045fe920bcac1cc9f507c88125d",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts": {
+        "version": "0c75b204aed9cf6ff1c7b4bed87a3ece0d9d6fc857a6350c0c95ed0c38c814e8",
+        "signature": "0c75b204aed9cf6ff1c7b4bed87a3ece0d9d6fc857a6350c0c95ed0c38c814e8",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/ts3.1/common/date.d.ts": {
+        "version": "187119ff4f9553676a884e296089e131e8cc01691c546273b1d0089c3533ce42",
+        "signature": "187119ff4f9553676a884e296089e131e8cc01691c546273b1d0089c3533ce42",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/ts3.1/common/function.d.ts": {
+        "version": "035b95793288bf4457a2b80bfe9b7500a29324ad62adcf9991277198e8833096",
+        "signature": "035b95793288bf4457a2b80bfe9b7500a29324ad62adcf9991277198e8833096",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts": {
+        "version": "c2d47e5668f89ed8768d306919c42bb88d50d4029d68f58343141360895cfcc0",
+        "signature": "c2d47e5668f89ed8768d306919c42bb88d50d4029d68f58343141360895cfcc0",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/ts3.1/common/math.d.ts": {
+        "version": "65648639567d214f62c1b21d200c852807e68bdb08311f95ab6f526ef5b98995",
+        "signature": "65648639567d214f62c1b21d200c852807e68bdb08311f95ab6f526ef5b98995",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/ts3.1/common/number.d.ts": {
+        "version": "00baffbe8a2f2e4875367479489b5d43b5fc1429ecb4a4cc98cfc3009095f52a",
+        "signature": "00baffbe8a2f2e4875367479489b5d43b5fc1429ecb4a4cc98cfc3009095f52a",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/ts3.1/common/object.d.ts": {
+        "version": "7fc5a3d7cff296cea5c225911726a56283b663328709088fcc912d61f73682fc",
+        "signature": "7fc5a3d7cff296cea5c225911726a56283b663328709088fcc912d61f73682fc",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts": {
+        "version": "3c92b6dfd43cc1c2485d9eba5ff0b74a19bb8725b692773ef1d66dac48cda4bd",
+        "signature": "3c92b6dfd43cc1c2485d9eba5ff0b74a19bb8725b692773ef1d66dac48cda4bd",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/ts3.1/common/string.d.ts": {
+        "version": "e34f3f6159b1e23de9bb5521382795aaa5aaed6f53b4702e70a2ec45bc76ddb5",
+        "signature": "e34f3f6159b1e23de9bb5521382795aaa5aaed6f53b4702e70a2ec45bc76ddb5",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/ts3.1/common/util.d.ts": {
+        "version": "2630a7cbb597e85d713b7ef47f2946d4280d3d4c02733282770741d40672b1a5",
+        "signature": "2630a7cbb597e85d713b7ef47f2946d4280d3d4c02733282770741d40672b1a5",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/ts3.1/index.d.ts": {
+        "version": "bbf144d4354e2aaa6439f32761f3ee798cc68d1600adab6e2a596f25269f106d",
+        "signature": "bbf144d4354e2aaa6439f32761f3ee798cc68d1600adab6e2a596f25269f106d",
+        "affectsGlobalScope": true
+      },
+      "../../src/v0/utils/instancemanager.ts": {
+        "version": "2ed17dbfce3ceba79187e07dfe2602685ded483be5f599eba381ae570ab64587",
+        "signature": "70f9d51aa83d5f2fe90c8b30f0c6232715b219f348c4f165c7a739ce1f23261b",
+        "affectsGlobalScope": false
+      },
+      "../../src/v0/utils/messageemitter.ts": {
+        "version": "70865dc7005d8cd22ac736329bc17c4193adea00b26a9637e33285fb9b4f695a",
+        "signature": "d8efcccc8531bf9a70ce2a87de492200de162f9a45d0e5f5daa3fe13627497cb",
+        "affectsGlobalScope": false
+      },
       "../../src/v0/platforms/googledrive.ts": {
-        "version": "12d01ebb03215cc7b42cc78e70ff3cae2c1c3c653673143225d3e91913389b15",
-        "signature": "5382e3fc4c89188129863366b59c55a619d315a47f24f5821277aba035940868",
+        "version": "874fe655a3ed58785903898403d11ab4639fc7c96011bd1fadf84440d13799b7",
+        "signature": "03209a71052c7c6d07681849c8d4e0be80e3cde96cb13c830793332dcdf0b9f9",
         "affectsGlobalScope": false
       },
       "../../src/v0/platforms/platform.ts": {
         "version": "946b702c1638bbe074af0e389b49f3aa2672d67d5ee8d021d3d0eff96b478140",
         "signature": "66d40de9b5f7e421d3506fd942b5f70577f63cde93ddafe3613c240ca3839fe1",
         "affectsGlobalScope": true
-      },
-      "../../src/v0/routers/authrouter.ts": {
-        "version": "d7002e089bd582ffc44057991148315edc62764d7fb9aee37478c36a686b4218",
-        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
-        "affectsGlobalScope": false
-      },
-      "../../src/v0/routers/uploadrouter.ts": {
-        "version": "7f64cbea5f17cc97227abecf1aa010f885ccc3230aba0d8dc4ec61b0372b8a69",
-        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
-        "affectsGlobalScope": false
-      },
-      "../../src/v0/utils/instancemanager.ts": {
-        "version": "233f734187122bb179f78352f0edf596f1926bf406161b4d7fee58d4fa279011",
-        "signature": "c040464e8b979f5e40e353d4f1e68839cce679ddf5e8f7e1520c2d5edcac969e",
-        "affectsGlobalScope": true
-      },
-      "../../src/v0/utils/jsforce.ts": {
-        "version": "a6f682a279395d504741e72cc11af2cad15dcebdc167c06c45cfd2d48e352139",
-        "signature": "5da98a71022f71c9181daafad512806dd32103c291f8c2a5406163c24a97a8d6",
-        "affectsGlobalScope": false
-      },
-      "../../src/v0/utils/logger.ts": {
-        "version": "6d5073e71df0b597d7b41f999f3ca571aedfc4cc21c407e19b13da31c8b528ed",
-        "signature": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "affectsGlobalScope": true
-      },
-      "../../src/v0/utils/messageemitter.ts": {
-        "version": "9060a41ff74784fd146858aa3aac47a14661ec5e32630b37ea0c220acef56391",
-        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
-        "affectsGlobalScope": false
       },
       "../../node_modules/@types/node/globals.d.ts": {
         "version": "53b53e40cdadf9d10ddd96151480c648bf2461cc7e43d305052459940a994c05",
@@ -450,6 +500,196 @@
         "version": "d522314e80ed71b57e3c2939d3c9594eaae63a4adf028559e6574f6b270b0fee",
         "signature": "d522314e80ed71b57e3c2939d3c9594eaae63a4adf028559e6574f6b270b0fee",
         "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/range-parser/index.d.ts": {
+        "version": "4e88b833be14c7f384e0dcd57bb30acd799e8e34d212635d693e41a75a71164b",
+        "signature": "4e88b833be14c7f384e0dcd57bb30acd799e8e34d212635d693e41a75a71164b",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/qs/index.d.ts": {
+        "version": "bf0b96be8a0a15a36f6ac04d1eee26242551636a8e14ac94f9c302073f4a3cbd",
+        "signature": "bf0b96be8a0a15a36f6ac04d1eee26242551636a8e14ac94f9c302073f4a3cbd",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/express-serve-static-core/index.d.ts": {
+        "version": "814f4d16f7e7c47feaba5979673dcc60b6d5f7e87b247ea5da1dbc83a6da9387",
+        "signature": "814f4d16f7e7c47feaba5979673dcc60b6d5f7e87b247ea5da1dbc83a6da9387",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/@types/mime/index.d.ts": {
+        "version": "be27a64e821a3e5af838650e4aa25805c60f057d0c37a9762c378d19d364b3e6",
+        "signature": "be27a64e821a3e5af838650e4aa25805c60f057d0c37a9762c378d19d364b3e6",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/serve-static/index.d.ts": {
+        "version": "cdbae5083ef8f786069519405ca1f1e2ce72b9efebdf5e1931584fba747f3bc0",
+        "signature": "cdbae5083ef8f786069519405ca1f1e2ce72b9efebdf5e1931584fba747f3bc0",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/connect/index.d.ts": {
+        "version": "e6ffa74698f0a1d23e4223242ed7dcdb89d02bbbb063a1930e9f91d0385abe16",
+        "signature": "e6ffa74698f0a1d23e4223242ed7dcdb89d02bbbb063a1930e9f91d0385abe16",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/body-parser/index.d.ts": {
+        "version": "ebddbd167c2fabd0151f50e5df94ca6d845149c47521280d8867afe3429dd078",
+        "signature": "ebddbd167c2fabd0151f50e5df94ca6d845149c47521280d8867afe3429dd078",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/express/index.d.ts": {
+        "version": "ead1ed9dd4874f4907a506a31e4fe9c4e079b42816f6b7ea5016a6d5ddf2fde3",
+        "signature": "ead1ed9dd4874f4907a506a31e4fe9c4e079b42816f6b7ea5016a6d5ddf2fde3",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/describe-result.d.ts": {
+        "version": "f90aa8c6c5fc5ef55a64fbf36d4252db12d5d483a58b45b4e8a1a647bae347ce",
+        "signature": "f90aa8c6c5fc5ef55a64fbf36d4252db12d5d483a58b45b4e8a1a647bae347ce",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/salesforce-id.d.ts": {
+        "version": "4295a5a312a05f59ee74a2774a8e5ff2ae5e8f5d6b44c632dff5570d02aacd4a",
+        "signature": "4295a5a312a05f59ee74a2774a8e5ff2ae5e8f5d6b44c632dff5570d02aacd4a",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/record-result.d.ts": {
+        "version": "c2c4f294bbdc45defee171559af6ea10b49778e7b1e04f74e089efd7019fd071",
+        "signature": "c2c4f294bbdc45defee171559af6ea10b49778e7b1e04f74e089efd7019fd071",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/query.d.ts": {
+        "version": "0d6e5a66f3d3bb6a925bed1ced636484b758a379922c318b9ac24e423de55856",
+        "signature": "0d6e5a66f3d3bb6a925bed1ced636484b758a379922c318b9ac24e423de55856",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/record.d.ts": {
+        "version": "ffd7e949148510a4cb403dc63e4a0642d63b0210d9f18d6fe4c2e2064174e94c",
+        "signature": "ffd7e949148510a4cb403dc63e4a0642d63b0210d9f18d6fe4c2e2064174e94c",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/salesforce-object-options.d.ts": {
+        "version": "e21f2c5930665c998bb05fbaa177e6ba5dd6229991e669289bac71a59efca95d",
+        "signature": "e21f2c5930665c998bb05fbaa177e6ba5dd6229991e669289bac71a59efca95d",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/create-options.d.ts": {
+        "version": "687d1228038281c214caf9351026ae1e7897654ff4055d3869573567f40c0648",
+        "signature": "687d1228038281c214caf9351026ae1e7897654ff4055d3869573567f40c0648",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/batch.d.ts": {
+        "version": "c9416453af059947c690d43a3ea6553669804acabae7c8faa440136ca1f90582",
+        "signature": "c9416453af059947c690d43a3ea6553669804acabae7c8faa440136ca1f90582",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/quick-action.d.ts": {
+        "version": "86f9fbee70e361ce11309ec40232a2a2bf575fea347ed63d38f7cb1af22b9026",
+        "signature": "86f9fbee70e361ce11309ec40232a2a2bf575fea347ed63d38f7cb1af22b9026",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/salesforce-object.d.ts": {
+        "version": "1e1098e62a1669cae7312924e3447b4a1f6957f0cb0c48ef8537e9a8c0103e66",
+        "signature": "1e1098e62a1669cae7312924e3447b4a1f6957f0cb0c48ef8537e9a8c0103e66",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/api/chatter.d.ts": {
+        "version": "0cfdc1e5882685c6fc1c9fc1ed411109eae90e8fea9c814587f8ae564216f988",
+        "signature": "0cfdc1e5882685c6fc1c9fc1ed411109eae90e8fea9c814587f8ae564216f988",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/api/metadata.d.ts": {
+        "version": "6df8dd8de598f11ed97713bcea0080c1ea572860f0f72abe223cb73d99d23e83",
+        "signature": "6df8dd8de598f11ed97713bcea0080c1ea572860f0f72abe223cb73d99d23e83",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/api/apex.d.ts": {
+        "version": "384cc35df9c0639c1a30a689e5261bffdecc0f6e1796cdd81f485ccbef9f1142",
+        "signature": "384cc35df9c0639c1a30a689e5261bffdecc0f6e1796cdd81f485ccbef9f1142",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/job.d.ts": {
+        "version": "16063b35927d9b1efbf94cb3f831728c1bcb62eb4f80d17dd8151c247566fa87",
+        "signature": "16063b35927d9b1efbf94cb3f831728c1bcb62eb4f80d17dd8151c247566fa87",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/bulk.d.ts": {
+        "version": "2d570378b492392ec582e99c70b5f9a87c95166e28490fb5b768c20a6c3a5c5e",
+        "signature": "2d570378b492392ec582e99c70b5f9a87c95166e28490fb5b768c20a6c3a5c5e",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/cache.d.ts": {
+        "version": "c339482a73bbf8976ba0e1e5c1ff48b50de204df02a9900b99b0f1656f20ab68",
+        "signature": "c339482a73bbf8976ba0e1e5c1ff48b50de204df02a9900b99b0f1656f20ab68",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/http-api.d.ts": {
+        "version": "56c948eb116a0a3bd9085aa067a1e012031a1bd4bf5bc5ef19df389c8257d0b7",
+        "signature": "56c948eb116a0a3bd9085aa067a1e012031a1bd4bf5bc5ef19df389c8257d0b7",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/limits-info.d.ts": {
+        "version": "5e1e656e8d08174b6a1fc743965e34b24694f5bc52580e462fac94ba6e2df274",
+        "signature": "5e1e656e8d08174b6a1fc743965e34b24694f5bc52580e462fac94ba6e2df274",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/connection.d.ts": {
+        "version": "8361eaa1272b47ab7b3d2e86bf7ca5acdf8cc28314bb00311ca9dccf78ea1d61",
+        "signature": "8361eaa1272b47ab7b3d2e86bf7ca5acdf8cc28314bb00311ca9dccf78ea1d61",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/api/analytics.d.ts": {
+        "version": "60469513568d434ae4973616c63faf4595e6f86a564d9b9263c4d767f2445681",
+        "signature": "60469513568d434ae4973616c63faf4595e6f86a564d9b9263c4d767f2445681",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/topic.d.ts": {
+        "version": "149cd423c03fbf662c33ffb8f6d2926fd69c0591d8772d2fb17ce9afbc62982a",
+        "signature": "149cd423c03fbf662c33ffb8f6d2926fd69c0591d8772d2fb17ce9afbc62982a",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/streaming.d.ts": {
+        "version": "7c37d30cbfc6ddc78d29c081ee176bd707bba864b099ada4f720331a673ed52d",
+        "signature": "7c37d30cbfc6ddc78d29c081ee176bd707bba864b099ada4f720331a673ed52d",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/channel.d.ts": {
+        "version": "557e49fb7714b0fc0a4c518062338973bde7548e514e27d6ad6ddebf2a1d836a",
+        "signature": "557e49fb7714b0fc0a4c518062338973bde7548e514e27d6ad6ddebf2a1d836a",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/date-enum.d.ts": {
+        "version": "a8e8ecfe9d2bee746a0d4b4e24996d7a1cdefc1472c8957c14ccf44fa4e5766e",
+        "signature": "a8e8ecfe9d2bee746a0d4b4e24996d7a1cdefc1472c8957c14ccf44fa4e5766e",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/oauth2.d.ts": {
+        "version": "cb187cc474ce58a1357e1e1d982813351df2d2b25da8bdfbab6a5f8860a21895",
+        "signature": "cb187cc474ce58a1357e1e1d982813351df2d2b25da8bdfbab6a5f8860a21895",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/promise.d.ts": {
+        "version": "3f6cf478c283467790eb1acb472bb4f2fe1eaa8fd4804a7f109a71f38c58051d",
+        "signature": "3f6cf478c283467790eb1acb472bb4f2fe1eaa8fd4804a7f109a71f38c58051d",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jsforce/index.d.ts": {
+        "version": "a46d64ef98a8ec20357d1b069ae889dafee100b0a9d5ff01f04fcdd481e59a4f",
+        "signature": "a46d64ef98a8ec20357d1b069ae889dafee100b0a9d5ff01f04fcdd481e59a4f",
+        "affectsGlobalScope": false
+      },
+      "../../src/v0/utils/jsforce.ts": {
+        "version": "51be54e4c7a826786dcf264dce766389c7137ed1e5ed40f341633641a0504df0",
+        "signature": "84539850c5a6cc4c39b5ccb4fc3fbe0254729073e8b29e983093e214578548a4",
+        "affectsGlobalScope": false
+      },
+      "../../src/v0/routers/authrouter.ts": {
+        "version": "e7040a57190403c6212d9716d7407116df71fe5843904a73a9b3dec598d70140",
+        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+        "affectsGlobalScope": false
+      },
+      "../../src/v0/routers/uploadrouter.ts": {
+        "version": "a02caa129cb4aad172aa65a8abe806646fa6b0460fc68cafcee52e91ed0a40e3",
+        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+        "affectsGlobalScope": false
       }
     },
     "options": {
@@ -495,6 +735,536 @@
       "configFilePath": "../../tsconfig.json"
     },
     "referencedMap": {
+      "../../node_modules/@types/body-parser/index.d.ts": [
+        "../../node_modules/@types/connect/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/http.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/ts3.7/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/connect/index.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/http.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/ts3.7/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/express-serve-static-core/index.d.ts": [
+        "../../node_modules/@types/node/events.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/http.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/ts3.7/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/qs/index.d.ts",
+        "../../node_modules/@types/range-parser/index.d.ts"
+      ],
+      "../../node_modules/@types/express/index.d.ts": [
+        "../../node_modules/@types/body-parser/index.d.ts",
+        "../../node_modules/@types/express-serve-static-core/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/qs/index.d.ts",
+        "../../node_modules/@types/serve-static/index.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/api/analytics.d.ts": [
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/query.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/api/apex.d.ts": [
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/api/chatter.d.ts": [
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/query.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/api/metadata.d.ts": [
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/node/buffer.d.ts",
+        "../../node_modules/@types/node/events.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/batch.d.ts": [
+        "../../node_modules/@types/jsforce/record-result.d.ts",
+        "../../node_modules/@types/jsforce/record.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/bulk.d.ts": [
+        "../../node_modules/@types/jsforce/batch.d.ts",
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/job.d.ts",
+        "../../node_modules/@types/jsforce/record-result.d.ts",
+        "../../node_modules/@types/jsforce/record.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/cache.d.ts": [
+        "../../node_modules/@types/node/events.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/channel.d.ts": [
+        "../../node_modules/@types/jsforce/streaming.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/connection.d.ts": [
+        "../../node_modules/@types/jsforce/api/analytics.d.ts",
+        "../../node_modules/@types/jsforce/api/apex.d.ts",
+        "../../node_modules/@types/jsforce/api/chatter.d.ts",
+        "../../node_modules/@types/jsforce/api/metadata.d.ts",
+        "../../node_modules/@types/jsforce/bulk.d.ts",
+        "../../node_modules/@types/jsforce/cache.d.ts",
+        "../../node_modules/@types/jsforce/describe-result.d.ts",
+        "../../node_modules/@types/jsforce/http-api.d.ts",
+        "../../node_modules/@types/jsforce/index.d.ts",
+        "../../node_modules/@types/jsforce/limits-info.d.ts",
+        "../../node_modules/@types/jsforce/query.d.ts",
+        "../../node_modules/@types/jsforce/record-result.d.ts",
+        "../../node_modules/@types/jsforce/record.d.ts",
+        "../../node_modules/@types/jsforce/salesforce-object.d.ts",
+        "../../node_modules/@types/node/events.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/create-options.d.ts": [
+        "../../node_modules/@types/jsforce/salesforce-id.d.ts",
+        "../../node_modules/@types/jsforce/salesforce-object-options.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/date-enum.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/describe-result.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/http-api.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/index.d.ts": [
+        "../../node_modules/@types/jsforce/api/analytics.d.ts",
+        "../../node_modules/@types/jsforce/api/apex.d.ts",
+        "../../node_modules/@types/jsforce/api/chatter.d.ts",
+        "../../node_modules/@types/jsforce/api/metadata.d.ts",
+        "../../node_modules/@types/jsforce/batch.d.ts",
+        "../../node_modules/@types/jsforce/bulk.d.ts",
+        "../../node_modules/@types/jsforce/cache.d.ts",
+        "../../node_modules/@types/jsforce/channel.d.ts",
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/date-enum.d.ts",
+        "../../node_modules/@types/jsforce/describe-result.d.ts",
+        "../../node_modules/@types/jsforce/job.d.ts",
+        "../../node_modules/@types/jsforce/limits-info.d.ts",
+        "../../node_modules/@types/jsforce/oauth2.d.ts",
+        "../../node_modules/@types/jsforce/promise.d.ts",
+        "../../node_modules/@types/jsforce/query.d.ts",
+        "../../node_modules/@types/jsforce/record-result.d.ts",
+        "../../node_modules/@types/jsforce/record.d.ts",
+        "../../node_modules/@types/jsforce/salesforce-id.d.ts",
+        "../../node_modules/@types/jsforce/salesforce-object.d.ts",
+        "../../node_modules/@types/jsforce/streaming.d.ts",
+        "../../node_modules/@types/jsforce/topic.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/ts3.7/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/job.d.ts": [
+        "../../node_modules/@types/jsforce/batch.d.ts",
+        "../../node_modules/@types/jsforce/bulk.d.ts",
+        "../../node_modules/@types/node/events.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/limits-info.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/oauth2.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/promise.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/query.d.ts": [
+        "../../node_modules/@types/jsforce/record-result.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/quick-action.d.ts": [
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/record.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/record-result.d.ts": [
+        "../../node_modules/@types/jsforce/salesforce-id.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/record.d.ts": [
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/record-result.d.ts",
+        "../../node_modules/@types/jsforce/salesforce-id.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/salesforce-id.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/salesforce-object-options.d.ts": [
+        "../../node_modules/@types/jsforce/salesforce-id.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/salesforce-object.d.ts": [
+        "../../node_modules/@types/jsforce/batch.d.ts",
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/create-options.d.ts",
+        "../../node_modules/@types/jsforce/describe-result.d.ts",
+        "../../node_modules/@types/jsforce/query.d.ts",
+        "../../node_modules/@types/jsforce/quick-action.d.ts",
+        "../../node_modules/@types/jsforce/record-result.d.ts",
+        "../../node_modules/@types/jsforce/record.d.ts",
+        "../../node_modules/@types/jsforce/salesforce-id.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/streaming.d.ts": [
+        "../../node_modules/@types/jsforce/channel.d.ts",
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/record.d.ts",
+        "../../node_modules/@types/jsforce/topic.d.ts",
+        "../../node_modules/@types/node/events.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/topic.d.ts": [
+        "../../node_modules/@types/jsforce/streaming.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/array.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/common.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/date.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/function.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/math.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/number.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/object.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/string.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/util.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/index.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/mime/index.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../node_modules/@types/node/async_hooks.d.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
@@ -892,6 +1662,26 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../node_modules/@types/qs/index.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/range-parser/index.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/serve-static/index.d.ts": [
+        "../../node_modules/@types/express-serve-static-core/index.d.ts",
+        "../../node_modules/@types/mime/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../src/v0/main.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
@@ -902,7 +1692,10 @@
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
+        "../../node_modules/@types/node/util.d.ts",
+        "../../src/v0/utils/instancemanager.ts",
+        "../../src/v0/utils/logger.ts",
+        "../../src/v0/utils/messageemitter.ts"
       ],
       "../../src/v0/platforms/platform.ts": [
         "../../node_modules/@types/node/fs.d.ts",
@@ -911,29 +1704,45 @@
         "../../node_modules/@types/node/util.d.ts"
       ],
       "../../src/v0/routers/authrouter.ts": [
+        "../../node_modules/@types/express/index.d.ts",
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
+        "../../node_modules/@types/node/util.d.ts",
+        "../../src/v0/platforms/googledrive.ts",
+        "../../src/v0/utils/instancemanager.ts",
+        "../../src/v0/utils/jsforce.ts",
+        "../../src/v0/utils/logger.ts",
+        "../../src/v0/utils/messageemitter.ts"
       ],
       "../../src/v0/routers/uploadrouter.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/stream.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
+        "../../node_modules/@types/node/util.d.ts",
+        "../../src/v0/platforms/googledrive.ts",
+        "../../src/v0/utils/instancemanager.ts",
+        "../../src/v0/utils/jsforce.ts",
+        "../../src/v0/utils/logger.ts",
+        "../../src/v0/utils/messageemitter.ts"
       ],
       "../../src/v0/utils/instancemanager.ts": [
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
       "../../src/v0/utils/jsforce.ts": [
+        "../../node_modules/@types/jsforce/index.d.ts",
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
+        "../../node_modules/@types/node/util.d.ts",
+        "../../src/v0/utils/instancemanager.ts",
+        "../../src/v0/utils/logger.ts",
+        "../../src/v0/utils/messageemitter.ts"
       ],
       "../../src/v0/utils/logger.ts": [
         "../../node_modules/@types/node/fs.d.ts",
@@ -945,7 +1754,9 @@
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
+        "../../node_modules/@types/node/util.d.ts",
+        "../../src/v0/utils/instancemanager.ts",
+        "../../src/v0/utils/logger.ts"
       ],
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.d.ts": [
         "../../node_modules/@types/node/fs.d.ts",
@@ -1135,6 +1946,536 @@
       ]
     },
     "exportedModulesMap": {
+      "../../node_modules/@types/body-parser/index.d.ts": [
+        "../../node_modules/@types/connect/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/http.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/ts3.7/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/connect/index.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/http.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/ts3.7/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/express-serve-static-core/index.d.ts": [
+        "../../node_modules/@types/node/events.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/http.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/ts3.7/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/qs/index.d.ts",
+        "../../node_modules/@types/range-parser/index.d.ts"
+      ],
+      "../../node_modules/@types/express/index.d.ts": [
+        "../../node_modules/@types/body-parser/index.d.ts",
+        "../../node_modules/@types/express-serve-static-core/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/qs/index.d.ts",
+        "../../node_modules/@types/serve-static/index.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/api/analytics.d.ts": [
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/query.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/api/apex.d.ts": [
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/api/chatter.d.ts": [
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/query.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/api/metadata.d.ts": [
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/node/buffer.d.ts",
+        "../../node_modules/@types/node/events.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/batch.d.ts": [
+        "../../node_modules/@types/jsforce/record-result.d.ts",
+        "../../node_modules/@types/jsforce/record.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/bulk.d.ts": [
+        "../../node_modules/@types/jsforce/batch.d.ts",
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/job.d.ts",
+        "../../node_modules/@types/jsforce/record-result.d.ts",
+        "../../node_modules/@types/jsforce/record.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/cache.d.ts": [
+        "../../node_modules/@types/node/events.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/channel.d.ts": [
+        "../../node_modules/@types/jsforce/streaming.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/connection.d.ts": [
+        "../../node_modules/@types/jsforce/api/analytics.d.ts",
+        "../../node_modules/@types/jsforce/api/apex.d.ts",
+        "../../node_modules/@types/jsforce/api/chatter.d.ts",
+        "../../node_modules/@types/jsforce/api/metadata.d.ts",
+        "../../node_modules/@types/jsforce/bulk.d.ts",
+        "../../node_modules/@types/jsforce/cache.d.ts",
+        "../../node_modules/@types/jsforce/describe-result.d.ts",
+        "../../node_modules/@types/jsforce/http-api.d.ts",
+        "../../node_modules/@types/jsforce/index.d.ts",
+        "../../node_modules/@types/jsforce/limits-info.d.ts",
+        "../../node_modules/@types/jsforce/query.d.ts",
+        "../../node_modules/@types/jsforce/record-result.d.ts",
+        "../../node_modules/@types/jsforce/record.d.ts",
+        "../../node_modules/@types/jsforce/salesforce-object.d.ts",
+        "../../node_modules/@types/node/events.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/create-options.d.ts": [
+        "../../node_modules/@types/jsforce/salesforce-id.d.ts",
+        "../../node_modules/@types/jsforce/salesforce-object-options.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/date-enum.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/describe-result.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/http-api.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/index.d.ts": [
+        "../../node_modules/@types/jsforce/api/analytics.d.ts",
+        "../../node_modules/@types/jsforce/api/apex.d.ts",
+        "../../node_modules/@types/jsforce/api/chatter.d.ts",
+        "../../node_modules/@types/jsforce/api/metadata.d.ts",
+        "../../node_modules/@types/jsforce/batch.d.ts",
+        "../../node_modules/@types/jsforce/bulk.d.ts",
+        "../../node_modules/@types/jsforce/cache.d.ts",
+        "../../node_modules/@types/jsforce/channel.d.ts",
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/date-enum.d.ts",
+        "../../node_modules/@types/jsforce/describe-result.d.ts",
+        "../../node_modules/@types/jsforce/job.d.ts",
+        "../../node_modules/@types/jsforce/limits-info.d.ts",
+        "../../node_modules/@types/jsforce/oauth2.d.ts",
+        "../../node_modules/@types/jsforce/promise.d.ts",
+        "../../node_modules/@types/jsforce/query.d.ts",
+        "../../node_modules/@types/jsforce/record-result.d.ts",
+        "../../node_modules/@types/jsforce/record.d.ts",
+        "../../node_modules/@types/jsforce/salesforce-id.d.ts",
+        "../../node_modules/@types/jsforce/salesforce-object.d.ts",
+        "../../node_modules/@types/jsforce/streaming.d.ts",
+        "../../node_modules/@types/jsforce/topic.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/ts3.7/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/job.d.ts": [
+        "../../node_modules/@types/jsforce/batch.d.ts",
+        "../../node_modules/@types/jsforce/bulk.d.ts",
+        "../../node_modules/@types/node/events.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/limits-info.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/oauth2.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/promise.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/query.d.ts": [
+        "../../node_modules/@types/jsforce/record-result.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/quick-action.d.ts": [
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/record.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/record-result.d.ts": [
+        "../../node_modules/@types/jsforce/salesforce-id.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/record.d.ts": [
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/record-result.d.ts",
+        "../../node_modules/@types/jsforce/salesforce-id.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/salesforce-id.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/salesforce-object-options.d.ts": [
+        "../../node_modules/@types/jsforce/salesforce-id.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/salesforce-object.d.ts": [
+        "../../node_modules/@types/jsforce/batch.d.ts",
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/create-options.d.ts",
+        "../../node_modules/@types/jsforce/describe-result.d.ts",
+        "../../node_modules/@types/jsforce/query.d.ts",
+        "../../node_modules/@types/jsforce/quick-action.d.ts",
+        "../../node_modules/@types/jsforce/record-result.d.ts",
+        "../../node_modules/@types/jsforce/record.d.ts",
+        "../../node_modules/@types/jsforce/salesforce-id.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/streaming.d.ts": [
+        "../../node_modules/@types/jsforce/channel.d.ts",
+        "../../node_modules/@types/jsforce/connection.d.ts",
+        "../../node_modules/@types/jsforce/record.d.ts",
+        "../../node_modules/@types/jsforce/topic.d.ts",
+        "../../node_modules/@types/node/events.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/jsforce/topic.d.ts": [
+        "../../node_modules/@types/jsforce/streaming.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/array.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/common.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/date.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/function.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/math.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/number.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/object.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/string.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/common/util.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/lodash/ts3.1/index.d.ts": [
+        "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/mime/index.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../node_modules/@types/node/async_hooks.d.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
@@ -1528,6 +2869,26 @@
       "../../node_modules/@types/node/zlib.d.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/qs/index.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/range-parser/index.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/serve-static/index.d.ts": [
+        "../../node_modules/@types/express-serve-static-core/index.d.ts",
+        "../../node_modules/@types/mime/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -1720,6 +3081,51 @@
       ]
     },
     "semanticDiagnosticsPerFile": [
+      "../../node_modules/@types/body-parser/index.d.ts",
+      "../../node_modules/@types/connect/index.d.ts",
+      "../../node_modules/@types/express-serve-static-core/index.d.ts",
+      "../../node_modules/@types/express/index.d.ts",
+      "../../node_modules/@types/jsforce/api/analytics.d.ts",
+      "../../node_modules/@types/jsforce/api/apex.d.ts",
+      "../../node_modules/@types/jsforce/api/chatter.d.ts",
+      "../../node_modules/@types/jsforce/api/metadata.d.ts",
+      "../../node_modules/@types/jsforce/batch.d.ts",
+      "../../node_modules/@types/jsforce/bulk.d.ts",
+      "../../node_modules/@types/jsforce/cache.d.ts",
+      "../../node_modules/@types/jsforce/channel.d.ts",
+      "../../node_modules/@types/jsforce/connection.d.ts",
+      "../../node_modules/@types/jsforce/create-options.d.ts",
+      "../../node_modules/@types/jsforce/date-enum.d.ts",
+      "../../node_modules/@types/jsforce/describe-result.d.ts",
+      "../../node_modules/@types/jsforce/http-api.d.ts",
+      "../../node_modules/@types/jsforce/index.d.ts",
+      "../../node_modules/@types/jsforce/job.d.ts",
+      "../../node_modules/@types/jsforce/limits-info.d.ts",
+      "../../node_modules/@types/jsforce/oauth2.d.ts",
+      "../../node_modules/@types/jsforce/promise.d.ts",
+      "../../node_modules/@types/jsforce/query.d.ts",
+      "../../node_modules/@types/jsforce/quick-action.d.ts",
+      "../../node_modules/@types/jsforce/record-result.d.ts",
+      "../../node_modules/@types/jsforce/record.d.ts",
+      "../../node_modules/@types/jsforce/salesforce-id.d.ts",
+      "../../node_modules/@types/jsforce/salesforce-object-options.d.ts",
+      "../../node_modules/@types/jsforce/salesforce-object.d.ts",
+      "../../node_modules/@types/jsforce/streaming.d.ts",
+      "../../node_modules/@types/jsforce/topic.d.ts",
+      "../../node_modules/@types/lodash/ts3.1/common/array.d.ts",
+      "../../node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+      "../../node_modules/@types/lodash/ts3.1/common/common.d.ts",
+      "../../node_modules/@types/lodash/ts3.1/common/date.d.ts",
+      "../../node_modules/@types/lodash/ts3.1/common/function.d.ts",
+      "../../node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+      "../../node_modules/@types/lodash/ts3.1/common/math.d.ts",
+      "../../node_modules/@types/lodash/ts3.1/common/number.d.ts",
+      "../../node_modules/@types/lodash/ts3.1/common/object.d.ts",
+      "../../node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+      "../../node_modules/@types/lodash/ts3.1/common/string.d.ts",
+      "../../node_modules/@types/lodash/ts3.1/common/util.d.ts",
+      "../../node_modules/@types/lodash/ts3.1/index.d.ts",
+      "../../node_modules/@types/mime/index.d.ts",
       "../../node_modules/@types/node/async_hooks.d.ts",
       "../../node_modules/@types/node/base.d.ts",
       "../../node_modules/@types/node/buffer.d.ts",
@@ -1770,6 +3176,9 @@
       "../../node_modules/@types/node/vm.d.ts",
       "../../node_modules/@types/node/worker_threads.d.ts",
       "../../node_modules/@types/node/zlib.d.ts",
+      "../../node_modules/@types/qs/index.d.ts",
+      "../../node_modules/@types/range-parser/index.d.ts",
+      "../../node_modules/@types/serve-static/index.d.ts",
       "../../src/v0/main.ts",
       "../../src/v0/platforms/googledrive.ts",
       "../../src/v0/platforms/platform.ts",

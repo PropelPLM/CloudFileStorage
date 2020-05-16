@@ -35,24 +35,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GoogleDrive = void 0;
 var google = require('googleapis').google;
 var PassThrough = require('stream').PassThrough;
-var _a = require('../utils/Logger'), logSuccessResponse = _a.logSuccessResponse, logErrorResponse = _a.logErrorResponse;
-var MessageEmitter = require('../utils/MessageEmitter');
-var InstanceManager = require('../utils/InstanceManager');
+var Logger_1 = require("../utils/Logger");
+var MessageEmitter_1 = __importDefault(require("../utils/MessageEmitter"));
+var InstanceManager_1 = __importDefault(require("../utils/InstanceManager"));
 var GoogleDrive = (function () {
     function GoogleDrive() {
         this.redirect_uris = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];
         this.actions = { driveFiles: 'https://www.googleapis.com/auth/drive.file' };
     }
-    ;
     GoogleDrive.prototype.createAuthUrl = function (credentials, instanceKey) {
         var clientId, clientSecret, redirect_uri;
         (clientId = credentials.clientId, clientSecret = credentials.clientSecret, redirect_uri = credentials.redirect_uri);
         var oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
-        InstanceManager.add(instanceKey, { oAuth2Client: oAuth2Client });
+        InstanceManager_1.default.add(instanceKey, { oAuth2Client: oAuth2Client });
         return oAuth2Client.generateAuthUrl({
             access_type: 'offline',
             prompt: 'consent',
@@ -64,14 +65,14 @@ var GoogleDrive = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var oAuth2Client;
             return __generator(this, function (_a) {
-                (oAuth2Client = InstanceManager.get(instanceKey, ['oAuth2Client']).oAuth2Client);
+                (oAuth2Client = InstanceManager_1.default.get(instanceKey, ['oAuth2Client']).oAuth2Client);
                 oAuth2Client.getToken(code)
                     .then(function (token) {
-                    logSuccessResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
+                    Logger_1.logSuccessResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
                     return token;
                 })
                     .catch(function (err) {
-                    logErrorResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
+                    Logger_1.logErrorResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
                     return err;
                 });
                 return [2];
@@ -85,11 +86,11 @@ var GoogleDrive = (function () {
                 try {
                     oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, this.redirect_uris[0]);
                     oAuth2Client.setCredentials(tokens);
-                    InstanceManager.add(instanceKey, { oAuth2Client: oAuth2Client });
-                    logSuccessResponse({}, '[GOOGLE_DRIVE.AUTHORIZE]');
+                    InstanceManager_1.default.add(instanceKey, { oAuth2Client: oAuth2Client });
+                    Logger_1.logSuccessResponse({}, '[GOOGLE_DRIVE.AUTHORIZE]');
                 }
                 catch (err) {
-                    logErrorResponse(err, '[GOOGLE_DRIVE.AUTHORIZE]');
+                    Logger_1.logErrorResponse(err, '[GOOGLE_DRIVE.AUTHORIZE]');
                 }
                 return [2];
             });
@@ -101,7 +102,7 @@ var GoogleDrive = (function () {
             var destinationFolderId, oAuth2Client, drive, uploadStream, fileMetadata, media, file;
             var _b;
             return __generator(this, function (_c) {
-                (_b = InstanceManager.get(instanceKey, ['destinationFolderId', 'oAuth2Client']), destinationFolderId = _b.destinationFolderId, oAuth2Client = _b.oAuth2Client);
+                (_b = InstanceManager_1.default.get(instanceKey, ['destinationFolderId', 'oAuth2Client']), destinationFolderId = _b.destinationFolderId, oAuth2Client = _b.oAuth2Client);
                 drive = google.drive({ version: 'v3', auth: oAuth2Client });
                 uploadStream = new PassThrough();
                 fileMetadata = {
@@ -121,15 +122,15 @@ var GoogleDrive = (function () {
                 }, {
                     onUploadProgress: function (evt) {
                         var bytesRead = evt.bytesRead;
-                        InstanceManager.update(instanceKey, 'externalBytes', bytesRead);
-                        MessageEmitter.postProgress(instanceKey, 'Google Drive');
+                        InstanceManager_1.default.update(instanceKey, 'externalBytes', bytesRead);
+                        MessageEmitter_1.default.postProgress(instanceKey, 'Google Drive');
                         if (bytesRead == fileSize) {
                             uploadStream.emit('end');
                         }
                     }
                 });
-                InstanceManager.addRef(instanceKey, 'uploadStream', uploadStream);
-                InstanceManager.addRef(instanceKey, 'file', file);
+                InstanceManager_1.default.addRef(instanceKey, 'uploadStream', uploadStream);
+                InstanceManager_1.default.addRef(instanceKey, 'file', file);
                 return [2];
             });
         });
@@ -138,9 +139,9 @@ var GoogleDrive = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var uploadStream;
             return __generator(this, function (_a) {
-                (uploadStream = InstanceManager.getRef(instanceKey, 'uploadStream').uploadStream);
+                (uploadStream = InstanceManager_1.default.getRef(instanceKey, 'uploadStream').uploadStream);
                 uploadStream.write(payload);
-                InstanceManager.update(instanceKey, 'uploadStream', uploadStream);
+                InstanceManager_1.default.update(instanceKey, 'uploadStream', uploadStream);
                 return [2];
             });
         });
@@ -151,7 +152,7 @@ var GoogleDrive = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        (file = InstanceManager.getRef(instanceKey, 'file').file);
+                        (file = InstanceManager_1.default.getRef(instanceKey, 'file').file);
                         return [4, file];
                     case 1: return [2, _a.sent()];
                 }
@@ -160,4 +161,4 @@ var GoogleDrive = (function () {
     };
     return GoogleDrive;
 }());
-exports.GoogleDrive = GoogleDrive;
+exports.default = new GoogleDrive();
