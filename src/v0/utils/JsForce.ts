@@ -1,15 +1,15 @@
 'use strict';
 
-export {};
 const jsConnect = require('jsforce');
 
 const { logSuccessResponse, logErrorResponse } = require('./Logger');
 const InstanceManager = require('./InstanceManager');
 const MessageEmitter = require('./MessageEmitter');
 
-export class JsForce {
+class JsForce {
+  constructor(){}
   
-  async connect(sessionId: string, salesforceUrl: string, instanceKey: string) {
+  public async connect(sessionId: string, salesforceUrl: string, instanceKey: string) {
     try {
       const connection = new jsConnect.Connection({
         instanceUrl: salesforceUrl,
@@ -25,7 +25,7 @@ export class JsForce {
     }
   }
 
-  async sendTokens(tokens: Record<string, string>, instanceKey: string) {
+  public async sendTokens(tokens: Record<string, string>, instanceKey: string) {
     const newSetting = {
       Access_Token__c: tokens.access_token,
       Refresh_Token__c: tokens.refresh_token,
@@ -48,7 +48,7 @@ export class JsForce {
     }
   }
 
-  async create(file: Record<string, string>, instanceKey: string) {
+  public async create(file: Record<string, string>, instanceKey: string) {
     try {
       let connection: any, orgNamespace: string, revisionId: string, isNew: string, name: string,
           webViewLink: string, id: string, fileExtension: string, webContentLink: string;
@@ -81,7 +81,7 @@ export class JsForce {
   }
 
   // UTILS
-  async setupNamespace(instanceKey: string) {
+  public async setupNamespace(instanceKey: string) {
     let connection: any;
     ({ connection } = InstanceManager.get(instanceKey, ['connection']));
     const jsForceRecords = await connection.query(
@@ -92,7 +92,7 @@ export class JsForce {
     logSuccessResponse({ orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
   }
 
-  async addNamespace(customObject: Record<string, string>, instanceKey: string) {
+  public async addNamespace(customObject: Record<string, string>, instanceKey: string) {
     let orgNamespace: string;
     ({ orgNamespace } = InstanceManager.get(instanceKey, ['orgNamespace']));
     for (const key in customObject) {
@@ -106,3 +106,5 @@ export class JsForce {
     return customObject;
   }
 }
+
+export default new JsForce();

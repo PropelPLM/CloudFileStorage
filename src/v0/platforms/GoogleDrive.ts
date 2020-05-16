@@ -7,16 +7,12 @@ const { logSuccessResponse, logErrorResponse } = require('../utils/Logger');
 const MessageEmitter = require('../utils/MessageEmitter');
 const InstanceManager = require('../utils/InstanceManager');
 
-export class GoogleDrive implements IPlatform {
-  redirect_uris: string[];
-  actions: Record<string, string>
-  constructor(){
-    this.redirect_uris = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];
-    this.actions = { driveFiles: 'https://www.googleapis.com/auth/drive.file' };
-  };
+class GoogleDrive implements IPlatform {
+  private redirect_uris: string[] = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];
+  private actions: Record<string, string> = { driveFiles: 'https://www.googleapis.com/auth/drive.file' };
   
   //TOKEN FLOW - INSTANCE MANAGER VARIABLES HERE DO NOT PERSIST TO UPLOAD FLOW
-  createAuthUrl(credentials: Record<string, string> , instanceKey: string): string {
+  public createAuthUrl(credentials: Record<string, string> , instanceKey: string): string {
     let clientId: string, clientSecret: string, redirect_uri: string;
     ({ clientId, clientSecret, redirect_uri } = credentials);
 
@@ -30,7 +26,7 @@ export class GoogleDrive implements IPlatform {
     });
   }
 
-  async getTokens(code: string, instanceKey: string) {
+  public async getTokens(code: string, instanceKey: string) {
     let oAuth2Client: any;
     ({ oAuth2Client } = InstanceManager.get(instanceKey, ['oAuth2Client']));
     oAuth2Client.getToken(code)
@@ -45,7 +41,7 @@ export class GoogleDrive implements IPlatform {
   }
 
   //UPLOAD FLOW- INSTANCE MANAGER VARIABLES HERE DFO NOT PERSIST FROM TOKEN FLOW
-  async authorize(instanceKey: string, clientId: string, clientSecret: string, tokens: Record<string, string>) {//}, options, callback) {
+  public async authorize(instanceKey: string, clientId: string, clientSecret: string, tokens: Record<string, string>) {//}, options, callback) {
     try {
       const oAuth2Client: any = new google.auth.OAuth2(clientId, clientSecret, this.redirect_uris[0]);
       oAuth2Client.setCredentials(tokens);
@@ -106,3 +102,5 @@ export class GoogleDrive implements IPlatform {
     return await file;
   }
 }
+
+export default new GoogleDrive();
