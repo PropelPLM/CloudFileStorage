@@ -10,7 +10,6 @@ $(() => {
   const spinner = $('#spinner');
   const check = $('#check');
   const socket = io();
-  socket.emit("start", instanceKeyFinder());
 
   // INIT
   const resetIcons = () => {

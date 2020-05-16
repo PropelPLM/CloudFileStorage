@@ -99,7 +99,6 @@ router.get('/callback/google', function (req, res) { return __awaiter(void 0, vo
                 return [4, GoogleDrive_1.default.getTokens(code, instanceKey)];
             case 1:
                 token = _b.sent();
-                console.log('token received: ', token.tokens);
                 (_a = InstanceManager_1.default.get(instanceKey, ['clientId', 'clientSecret']), clientId = _a.clientId, clientSecret = _a.clientSecret);
                 return [4, JsForce_1.default.sendTokens(__assign(__assign({}, token.tokens), { clientId: clientId, clientSecret: clientSecret }), instanceKey)];
             case 2:
