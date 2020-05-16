@@ -1,4 +1,4 @@
-const { google } = jest.genMockFromModule("googleapis");
+const { google } = jest.genMockFromModule('googleapis');
 
 const auth = Object.create(null);
 auth.OAuth2 = jest.fn((clientid, clientsecret, redirecturi) => {
@@ -17,7 +17,7 @@ const drive = jest.fn((version, auth) => {
           file.resource.name
             ? resolve({
                 status: 200,
-                data: "hello_test_data",
+                data: 'hello_test_data',
               })
             : reject({
                 status: 503,

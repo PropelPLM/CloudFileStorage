@@ -1,4 +1,4 @@
-const fs = jest.genMockFromModule("fs");
+const fs = jest.genMockFromModule('fs');
 
 const FAKE_FILE_SIZE = 1024;
 const FAKE_STREAM = Object.create(null);

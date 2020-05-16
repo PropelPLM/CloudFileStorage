@@ -4,25 +4,36 @@
   "description": "Upload files from local storage onto Google Drive.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node build/v0/main.js",
     "test": "jest",
     "test:watch": "jest --watch"
   },
   "author": "clinton",
   "license": "ISC",
   "dependencies": {
+    "busboy": "^0.3.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "formidable": "^1.2.2",
     "googleapis": "^39.2.0",
     "jquery": "^3.4.1",
     "jsforce": "^1.9.3",
     "multer": "^1.4.2",
     "progress-stream": "^2.0.0",
     "socket.io": "^2.3.0",
-    "socketio": "^1.0.0"
+    "socketio": "^1.0.0",
+    "tsc": "^1.20150623.0",
+    "typescript": "^3.9.2"
   },
   "devDependencies": {
-    "jest": "^25.1.0"
+    "@types/express": "^4.17.6",
+    "@types/gapi": "0.0.39",
+    "@types/gapi.auth2": "0.0.52",
+    "@types/gapi.client.drive": "^3.0.4",
+    "@types/lodash": "^4.14.150",
+    "@types/node": "^14.0.1",
+    "jest": "^25.1.0",
+    "tslint": "^6.1.2"
   },
   "jest": {
     "setupFiles": [
