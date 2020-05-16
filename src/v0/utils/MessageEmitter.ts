@@ -29,7 +29,7 @@ export default {
     console.log('posttrigger instanceKey: ', instanceKey)
     io.to(instanceKey).emit('trigger', { topic, payload });
   },
-
+  
   postProgress: (instanceKey: string, src: string) => {
     let frontendBytes: number, externalBytes: number, fileSize: number;
     ({ frontendBytes, externalBytes, fileSize } = InstanceManager.get(instanceKey, ['frontendBytes', 'externalBytes', 'fileSize']));

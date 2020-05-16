@@ -237,7 +237,7 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/utils/messageemitter.ts": {
-        "version": "c0293087c33ae3aa1ca0669e68e6f05c25c28e744b2fcd17cfebb677d3cd9d70",
+        "version": "0d9367b86ecf364a4bf8a2a0345e9f4b89f706f10b8ec7098624cdde22ed1992",
         "signature": "d8efcccc8531bf9a70ce2a87de492200de162f9a45d0e5f5daa3fe13627497cb",
         "affectsGlobalScope": false
       },
@@ -682,7 +682,7 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/routers/authrouter.ts": {
-        "version": "a8f573958d83567da521f506a8618fac13cc4e6a1896ac93869ad63fe2c12825",
+        "version": "cef312c7a826819eb925aafec2c297039709cb1aeac8046296a1b714235100d1",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },

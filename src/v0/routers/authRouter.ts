@@ -3,12 +3,17 @@
 export {};
 import express from 'express';
 const router = express.Router();
+const path = require('path');
 
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
 import MessageEmitter from '../utils/MessageEmitter';
 import GoogleDrive from '../platforms/GoogleDrive';
 import JsForce from '../utils/JsForce';
+
+router.get('/:instanceKey', (_, res)=> {
+  res.sendFile('index.html', { root: path.join(__dirname, '../../public/') });
+})
 
 router.post('/:instanceKey', async (req: any, res: any) => {
   const instanceKey: string = req.params.instanceKey;
