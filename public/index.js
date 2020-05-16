@@ -31,7 +31,7 @@ $(() => {
     Object.entries(object).forEach(([key, value]) => {
       form.attr(`data-${key}`, value);
     });
-  };
+  });
 
   socket.on('trigger', ({ topic, payload }) => {
     window.parent.postMessage(
