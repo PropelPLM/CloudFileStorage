@@ -16,8 +16,8 @@ server.listen(port, function () {
     try {
         logSuccessResponse('SUCCESS', '[SERVER_INIT]');
     }
-    catch (error) {
-        logErrorResponse(error, '[SERVER_INIT]');
+    catch (err) {
+        logErrorResponse(err, '[SERVER_INIT]');
     }
 });
 app.use('/auth', authRouter);
@@ -28,8 +28,8 @@ app.get('/:instanceKey', function (req, res) {
         logSuccessResponse(instanceKey, '[END_POINT.INSTANCE_KEY]');
         res.sendFile('index.html', { root: path.join(__dirname, '../../public/') });
     }
-    catch (error) {
-        logErrorResponse(error, '[END_POINT.INSTANCE_KEY]');
+    catch (err) {
+        logErrorResponse(err, '[END_POINT.INSTANCE_KEY]');
     }
 });
 module.exports = {};

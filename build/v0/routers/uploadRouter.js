@@ -143,8 +143,8 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
                                     MessageEmitter_1.default.postProgress(instanceKey, 'frontend');
                                     GoogleDrive_1.default.uploadFile(instanceKey, data);
                                 })
-                                    .on('error', function (error) {
-                                    Logger_1.logErrorResponse(error, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
+                                    .on('error', function (err) {
+                                    Logger_1.logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
                                 });
                                 return [2];
                         }

@@ -21,8 +21,8 @@ app.use(express.static(path.join(__dirname, '../../public')));
 server.listen(port, () => {
   try {
     logSuccessResponse('SUCCESS', '[SERVER_INIT]');
-  } catch (error) {
-    logErrorResponse(error, '[SERVER_INIT]');
+  } catch (err) {
+    logErrorResponse(err, '[SERVER_INIT]');
   }
 });
 
@@ -34,7 +34,7 @@ app.get('/:instanceKey', (req: any, res: any) => {
     const instanceKey = req.params.instanceKey;
     logSuccessResponse(instanceKey, '[END_POINT.INSTANCE_KEY]');
     res.sendFile('index.html', { root: path.join(__dirname, '../../public/') });
-  } catch (error) {
-    logErrorResponse(error, '[END_POINT.INSTANCE_KEY]');
+  } catch (err) {
+    logErrorResponse(err, '[END_POINT.INSTANCE_KEY]');
   }
 });

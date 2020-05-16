@@ -8,7 +8,7 @@ exports.logSuccessResponse = function (response, functionName) {
     console.log("\u001B[92m" + functionName + " succeeded \u001B[39m with a response" + logEnding + ".");
     return response;
 };
-exports.logErrorResponse = function (error, functionName) {
-    console.log("\u001B[31m" + functionName + " failed \u001B[39m due to error: " + JSON.stringify(error) + ".");
-    return error;
+exports.logErrorResponse = function (err, functionName) {
+    console.log("\u001B[31m" + functionName + " failed \u001B[39m due to error: " + JSON.stringify(err) + ".");
+    return err;
 };

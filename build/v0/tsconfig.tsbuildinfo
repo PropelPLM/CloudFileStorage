@@ -157,13 +157,13 @@
         "affectsGlobalScope": true
       },
       "../../src/v0/main.ts": {
-        "version": "126f978a3a2889891f0d2507a72e82ad1c799be1384a7123bd2ce9ab598dd278",
+        "version": "68c152f0c1b090af721ff8a6f0a5672a592bba9f6a92b86da57b16e775d26904",
         "signature": "839b2b6f12f70ada60664ff858eb63d4cc0ce80954ff3880b44f845b3fe37df2",
         "affectsGlobalScope": false
       },
       "../../src/v0/utils/logger.ts": {
-        "version": "1a3b45ec2be13def2db92faaefeb9854a54994965650b979f974270160d4f22e",
-        "signature": "1fccb7eb097d8e7d46828555c55f83cf35824e937bae43433190fd2c01b13b11",
+        "version": "35429b8d966633e30c923151f008c42879273b127e64fd0672c0d61a73207092",
+        "signature": "6b142a3dee4320f5efac97671c44718bd2952df3181193ebf3e2279370440fcc",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/lodash/ts3.1/common/common.d.ts": {
@@ -682,12 +682,12 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/routers/authrouter.ts": {
-        "version": "5268e98f7f55b7bba06a10c1eb476c063299c35e0a2bcaeeee8ade55f71df6e0",
+        "version": "a8f573958d83567da521f506a8618fac13cc4e6a1896ac93869ad63fe2c12825",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
       "../../src/v0/routers/uploadrouter.ts": {
-        "version": "a02caa129cb4aad172aa65a8abe806646fa6b0460fc68cafcee52e91ed0a40e3",
+        "version": "1c648df40270cb74fbb9c55a4b0e1f7fd0f4ff62e131ae46e44f4ab748b5de1e",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       }

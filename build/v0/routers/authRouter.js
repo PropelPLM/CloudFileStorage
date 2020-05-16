@@ -89,22 +89,33 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
     });
 }); });
 router.get('/callback/google', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var instanceKey, code, token, clientId, clientSecret;
+    var instanceKey, code, token, clientId, clientSecret, err_1;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 instanceKey = Buffer.from(req.query.state, 'base64').toString();
                 code = req.query.code;
-                return [4, GoogleDrive_1.default.getTokens(code, instanceKey)];
+                _b.label = 1;
             case 1:
+                _b.trys.push([1, 4, , 5]);
+                return [4, GoogleDrive_1.default.getTokens(code, instanceKey)];
+            case 2:
                 token = _b.sent();
+                clientId = void 0, clientSecret = void 0;
                 (_a = InstanceManager_1.default.get(instanceKey, ['clientId', 'clientSecret']), clientId = _a.clientId, clientSecret = _a.clientSecret);
                 return [4, JsForce_1.default.sendTokens(__assign(__assign({}, token.tokens), { clientId: clientId, clientSecret: clientSecret }), instanceKey)];
-            case 2:
+            case 3:
                 _b.sent();
+                MessageEmitter_1.default.postTrigger(instanceKey, 'authComplete', {});
+                Logger_1.logSuccessResponse('MessageEmitted', '[CALLBACK_GOOGLE');
                 res.send('<script>window.close()</script>');
-                return [2];
+                return [3, 5];
+            case 4:
+                err_1 = _b.sent();
+                Logger_1.logErrorResponse(err_1, '[CALLBACK_GOOGLE');
+                return [3, 5];
+            case 5: return [2];
         }
     });
 }); });

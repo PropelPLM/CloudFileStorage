@@ -77,8 +77,8 @@ router.post('/:instanceKey', async (req: any, res: any) => {
             MessageEmitter.postProgress(instanceKey, 'frontend');
             GoogleDrive.uploadFile(instanceKey, data);
           })
-          .on('error', error => {
-            logErrorResponse(error, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
+          .on('error', err => {
+            logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
           })
       })
       .on('finish', async () => {
