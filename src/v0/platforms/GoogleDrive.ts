@@ -31,15 +31,21 @@ class GoogleDrive implements IPlatform {
   public async getTokens(code: string, instanceKey: string) {
     let oAuth2Client: any;
     ({ oAuth2Client } = InstanceManager.get(instanceKey, ['oAuth2Client']));
-    oAuth2Client.getToken(code)
-      .then((token: Record<string, string>) => {
-        logSuccessResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
-        return token;
-      })
-      .catch((err: Error) => {
-        logErrorResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
-        return err;
-      })
+    try {
+      const token = await oAuth2Client.getToken(code);
+      console.log(token);
+      return token;
+    } catch (err) {
+      console.log(err);
+    }
+      // .then((token: Record<string, string>) => {
+      //   logSuccessResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
+      //   return token;
+      // })
+      // .catch((err: Error) => {
+      //   logErrorResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
+      //   return err;
+      // })
   }
 
   //UPLOAD FLOW- INSTANCE MANAGER VARIABLES HERE DFO NOT PERSIST FROM TOKEN FLOW
