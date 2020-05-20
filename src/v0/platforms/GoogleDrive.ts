@@ -77,7 +77,7 @@ class GoogleDrive implements IPlatform {
         onUploadProgress: (evt: Record<string, any>) => {
           const bytesRead: number = evt.bytesRead;
           InstanceManager.update(instanceKey, 'externalBytes', bytesRead)
-          MessageEmitter.postProgress(instanceKey, 'Google Drive');
+          MessageEmitter.postProgress(instanceKey, 'GOOGLE_DRIVE');
           if (bytesRead == fileSize) {
             //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
             uploadStream.emit('end');

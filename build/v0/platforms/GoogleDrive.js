@@ -129,7 +129,7 @@ var GoogleDrive = (function () {
                     onUploadProgress: function (evt) {
                         var bytesRead = evt.bytesRead;
                         InstanceManager_1.default.update(instanceKey, 'externalBytes', bytesRead);
-                        MessageEmitter_1.default.postProgress(instanceKey, 'Google Drive');
+                        MessageEmitter_1.default.postProgress(instanceKey, 'GOOGLE_DRIVE');
                         if (bytesRead == fileSize) {
                             uploadStream.emit('end');
                         }

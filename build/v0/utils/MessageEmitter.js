@@ -29,10 +29,10 @@ exports.default = {
     },
     postProgress: function (instanceKey, src) {
         var _a;
-        var frontendBytes, externalBytes, fileSize;
-        (_a = InstanceManager_1.default.get(instanceKey, ['frontendBytes', 'externalBytes', 'fileSize']), frontendBytes = _a.frontendBytes, externalBytes = _a.externalBytes, fileSize = _a.fileSize);
+        var fileName, frontendBytes, externalBytes, fileSize;
+        (_a = InstanceManager_1.default.get(instanceKey, ['fileName', 'frontendBytes', 'externalBytes', 'fileSize']), fileName = _a.fileName, frontendBytes = _a.frontendBytes, externalBytes = _a.externalBytes, fileSize = _a.fileSize);
         var percentCompletion = Math.floor((100 * (frontendBytes + externalBytes)) / (fileSize * 2));
-        console.log("[" + instanceKey + "][" + src + "_UPLOAD]: " + (src == 'frontend' ? frontendBytes / fileSize : externalBytes / fileSize));
+        console.log("[" + fileName + "][" + src + "_UPLOAD]: " + (src == 'FRONTEND' ? frontendBytes / fileSize : externalBytes / fileSize));
         io.to(instanceKey).emit('progress', percentCompletion);
     },
     setAttribute: setAttribute,

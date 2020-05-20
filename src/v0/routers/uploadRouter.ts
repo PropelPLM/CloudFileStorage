@@ -43,13 +43,17 @@ router.post('/token/:instanceKey', async (req: any, res: any) => {
 });
 
 router.post('/uploadDetails/:instanceKey', async (req: any, res: any) => {
-  const instanceKey = req.params.instanceKey;
-  let revisionId, destinationFolderId, isNew;
-  ({ revisionId, destinationFolderId, isNew } = req.body);
-  const instanceDetails = { revisionId, destinationFolderId, isNew };
-  InstanceManager.add(instanceKey, instanceDetails);
-  logSuccessResponse({ instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
-  res.status(200).send({ instanceKey });
+  try {
+    const instanceKey = req.params.instanceKey;
+    let revisionId, destinationFolderId, isNew;
+    ({ revisionId, destinationFolderId, isNew } = req.body);
+    const instanceDetails = { revisionId, destinationFolderId, isNew };
+    InstanceManager.add(instanceKey, instanceDetails);
+    logSuccessResponse({ instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
+    res.status(200).send({ instanceKey });
+  } catch (err) {
+    logErrorResponse(err , '[END_POINT.UPLOAD_DETAILS]');
+  }
 });
 
 router.post('/:instanceKey', async (req: any, res: any) => {
@@ -67,14 +71,14 @@ router.post('/:instanceKey', async (req: any, res: any) => {
       .on('file', async function(_1: any, file: Stream, fileName: string, _2: any, mimeType: string) {
         await Promise.all([
           GoogleDrive.initUpload(instanceKey, { fileName, mimeType, fileSize }),
-          InstanceManager.add(instanceKey, {frontendBytes: 0, externalBytes: 0, fileSize })
+          InstanceManager.add(instanceKey, {fileName, frontendBytes: 0, externalBytes: 0, fileSize })
         ]);
         let progress: number = 0;
         file
           .on('data', (data: Record<string, any>) => {
             progress = progress + data.length
             InstanceManager.update(instanceKey, 'frontendBytes', progress)
-            MessageEmitter.postProgress(instanceKey, 'frontend');
+            MessageEmitter.postProgress(instanceKey, 'FRONTEND');
             GoogleDrive.uploadFile(instanceKey, data);
           })
           .on('error', err => {

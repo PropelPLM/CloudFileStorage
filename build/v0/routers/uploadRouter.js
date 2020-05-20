@@ -102,12 +102,18 @@ router.post('/uploadDetails/:instanceKey', function (req, res) { return __awaite
     var instanceKey, revisionId, destinationFolderId, isNew, instanceDetails;
     var _a;
     return __generator(this, function (_b) {
-        instanceKey = req.params.instanceKey;
-        (_a = req.body, revisionId = _a.revisionId, destinationFolderId = _a.destinationFolderId, isNew = _a.isNew);
-        instanceDetails = { revisionId: revisionId, destinationFolderId: destinationFolderId, isNew: isNew };
-        InstanceManager_1.default.add(instanceKey, instanceDetails);
-        Logger_1.logSuccessResponse({ instanceKey: instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
-        res.status(200).send({ instanceKey: instanceKey });
+        try {
+            instanceKey = req.params.instanceKey;
+            revisionId = void 0, destinationFolderId = void 0, isNew = void 0;
+            (_a = req.body, revisionId = _a.revisionId, destinationFolderId = _a.destinationFolderId, isNew = _a.isNew);
+            instanceDetails = { revisionId: revisionId, destinationFolderId: destinationFolderId, isNew: isNew };
+            InstanceManager_1.default.add(instanceKey, instanceDetails);
+            Logger_1.logSuccessResponse({ instanceKey: instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
+            res.status(200).send({ instanceKey: instanceKey });
+        }
+        catch (err) {
+            Logger_1.logErrorResponse(err, '[END_POINT.UPLOAD_DETAILS]');
+        }
         return [2];
     });
 }); });
@@ -131,7 +137,7 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
                         switch (_a.label) {
                             case 0: return [4, Promise.all([
                                     GoogleDrive_1.default.initUpload(instanceKey, { fileName: fileName, mimeType: mimeType, fileSize: fileSize_1 }),
-                                    InstanceManager_1.default.add(instanceKey, { frontendBytes: 0, externalBytes: 0, fileSize: fileSize_1 })
+                                    InstanceManager_1.default.add(instanceKey, { fileName: fileName, frontendBytes: 0, externalBytes: 0, fileSize: fileSize_1 })
                                 ])];
                             case 1:
                                 _a.sent();
@@ -140,7 +146,7 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
                                     .on('data', function (data) {
                                     progress = progress + data.length;
                                     InstanceManager_1.default.update(instanceKey, 'frontendBytes', progress);
-                                    MessageEmitter_1.default.postProgress(instanceKey, 'frontend');
+                                    MessageEmitter_1.default.postProgress(instanceKey, 'FRONTEND');
                                     GoogleDrive_1.default.uploadFile(instanceKey, data);
                                 })
                                     .on('error', function (err) {

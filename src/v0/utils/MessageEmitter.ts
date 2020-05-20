@@ -31,10 +31,10 @@ export default {
   },
   
   postProgress: (instanceKey: string, src: string) => {
-    let frontendBytes: number, externalBytes: number, fileSize: number;
-    ({ frontendBytes, externalBytes, fileSize } = InstanceManager.get(instanceKey, ['frontendBytes', 'externalBytes', 'fileSize']));
+    let fileName: string, frontendBytes: number, externalBytes: number, fileSize: number;
+    ({ fileName, frontendBytes, externalBytes, fileSize } = InstanceManager.get(instanceKey, ['fileName', 'frontendBytes', 'externalBytes', 'fileSize']));
     const percentCompletion: number = Math.floor((100 * (frontendBytes + externalBytes)) / (fileSize * 2))
-    console.log(`[${instanceKey}][${src}_UPLOAD]: ${src == 'frontend' ? frontendBytes/fileSize : externalBytes/fileSize}`);
+    console.log(`[${fileName}][${src}_UPLOAD]: ${src == 'FRONTEND' ? frontendBytes/fileSize : externalBytes/fileSize}`);
     io.to(instanceKey).emit('progress', percentCompletion);
   },
   setAttribute,
