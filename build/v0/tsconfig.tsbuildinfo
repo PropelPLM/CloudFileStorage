@@ -1,9 +1,9 @@
 {
   "program": {
     "fileInfos": {
-      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.d.ts": {
-        "version": "2dc8c927c9c162a773c6bb3cdc4f3286c23f10eedc67414028f9cb5951610f60",
-        "signature": "2dc8c927c9c162a773c6bb3cdc4f3286c23f10eedc67414028f9cb5951610f60",
+      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es6.d.ts": {
+        "version": "721cec59c3fef87aaf480047d821fb758b3ec9482c4129a54631e6e25e432a31",
+        "signature": "721cec59c3fef87aaf480047d821fb758b3ec9482c4129a54631e6e25e432a31",
         "affectsGlobalScope": false
       },
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es5.d.ts": {
@@ -34,6 +34,11 @@
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts": {
         "version": "9affb0a2ddc57df5b8174c0af96c288d697a262e5bc9ca1f544c999dc64a91e6",
         "signature": "9affb0a2ddc57df5b8174c0af96c288d697a262e5bc9ca1f544c999dc64a91e6",
+        "affectsGlobalScope": true
+      },
+      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.iterable.d.ts": {
+        "version": "fb0c09b697dc42afa84d1587e3c994a2f554d2a45635e4f0618768d16a86b69a",
+        "signature": "fb0c09b697dc42afa84d1587e3c994a2f554d2a45635e4f0618768d16a86b69a",
         "affectsGlobalScope": true
       },
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.webworker.importscripts.d.ts": {
@@ -659,7 +664,7 @@
     },
     "options": {
       "incremental": true,
-      "target": 1,
+      "target": 2,
       "module": 1,
       "allowJs": true,
       "checkJs": true,
@@ -1539,13 +1544,13 @@
         "../../src/v0/utils/instancemanager.ts",
         "../../src/v0/utils/logger.ts"
       ],
-      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.d.ts": [
+      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
-      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts": [
+      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.iterable.d.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -1702,6 +1707,12 @@
         "../../node_modules/@types/node/util.d.ts"
       ],
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es5.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es6.d.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -2484,13 +2495,13 @@
       "../../src/v0/routers/uploadrouter.ts": [
         "../../node_modules/@types/express-serve-static-core/index.d.ts"
       ],
-      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.d.ts": [
+      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
-      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts": [
+      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.iterable.d.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -2652,6 +2663,12 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es6.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.esnext.intl.d.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
@@ -2772,8 +2789,8 @@
       "../../src/v0/utils/jsforce.ts",
       "../../src/v0/utils/logger.ts",
       "../../src/v0/utils/messageemitter.ts",
-      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts",
+      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.iterable.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts",
@@ -2800,6 +2817,7 @@
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2018.regexp.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2020.bigint.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es5.d.ts",
+      "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es6.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.scripthost.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.webworker.importscripts.d.ts"

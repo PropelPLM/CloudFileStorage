@@ -1,15 +1,4 @@
 'use strict';
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -19,109 +8,58 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
-var router = express_1.default.Router();
-var path_1 = __importDefault(require("path"));
-var Logger_1 = require("../utils/Logger");
-var InstanceManager_1 = __importDefault(require("../utils/InstanceManager"));
-var MessageEmitter_1 = __importDefault(require("../utils/MessageEmitter"));
-var GoogleDrive_1 = __importDefault(require("../platforms/GoogleDrive"));
-var JsForce_1 = __importDefault(require("../utils/JsForce"));
-router.get('/:instanceKey', function (req, res) {
+const express_1 = __importDefault(require("express"));
+const router = express_1.default.Router();
+const path_1 = __importDefault(require("path"));
+const Logger_1 = require("../utils/Logger");
+const InstanceManager_1 = __importDefault(require("../utils/InstanceManager"));
+const MessageEmitter_1 = __importDefault(require("../utils/MessageEmitter"));
+const GoogleDrive_1 = __importDefault(require("../platforms/GoogleDrive"));
+const JsForce_1 = __importDefault(require("../utils/JsForce"));
+router.get('/:instanceKey', (req, res) => {
     InstanceManager_1.default.register(req.params.instanceKey);
     res.sendFile('index.html', { root: path_1.default.join(__dirname, '../../../public/') });
 });
-router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var instanceKey, sessionId, salesforceUrl, clientId, clientSecret, instanceDetails, credentials, url;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                instanceKey = req.params.instanceKey;
-                (_a = req.body, sessionId = _a.sessionId, salesforceUrl = _a.salesforceUrl, clientId = _a.clientId, clientSecret = _a.clientSecret);
-                InstanceManager_1.default.register(instanceKey);
-                instanceDetails = { salesforceUrl: salesforceUrl, clientId: clientId, clientSecret: clientSecret };
-                return [4, Promise.all([
-                        InstanceManager_1.default.upsert(instanceKey, instanceDetails),
-                        JsForce_1.default.connect(sessionId, salesforceUrl, instanceKey)
-                    ])];
-            case 1:
-                _b.sent();
-                if (clientId && clientSecret) {
-                    credentials = { clientId: clientId, clientSecret: clientSecret, redirect_uri: "https://" + req.hostname + "/auth/callback/google" };
-                    url = GoogleDrive_1.default.createAuthUrl(credentials, instanceKey);
-                    MessageEmitter_1.default.setAttribute(instanceKey, 'target-window', salesforceUrl);
-                    Logger_1.logSuccessResponse(instanceKey, '[END_POINT.AUTH_REDIRECT]');
-                    res.status(200).send({ url: url });
-                }
-                else {
-                    Logger_1.logErrorResponse({ clientId: clientId, clientSecret: clientSecret }, '[END_POINT.AUTH_REDIRECT]');
-                    res.status(400).send('Authorization failed, please ensure client credentials are populated.');
-                }
-                return [2];
-        }
-    });
-}); });
-router.get('/callback/google', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var instanceKey, code, token, clientId, clientSecret, err_1;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                instanceKey = Buffer.from(req.query.state, 'base64').toString();
-                code = req.query.code;
-                _b.label = 1;
-            case 1:
-                _b.trys.push([1, 4, , 5]);
-                return [4, GoogleDrive_1.default.getTokens(code, instanceKey)];
-            case 2:
-                token = _b.sent();
-                clientId = void 0, clientSecret = void 0;
-                (_a = InstanceManager_1.default.get(instanceKey, ["clientId", "clientSecret"]), clientId = _a.clientId, clientSecret = _a.clientSecret);
-                return [4, JsForce_1.default.sendTokens(__assign(__assign({}, token.tokens), { clientId: clientId, clientSecret: clientSecret }), instanceKey)];
-            case 3:
-                _b.sent();
-                MessageEmitter_1.default.postTrigger(instanceKey, 'authComplete', {});
-                Logger_1.logSuccessResponse('MessageEmitted', '[CALLBACK_GOOGLE');
-                res.send('<script>window.close()</script>');
-                return [3, 5];
-            case 4:
-                err_1 = _b.sent();
-                Logger_1.logErrorResponse(err_1, '[CALLBACK_GOOGLE');
-                return [3, 5];
-            case 5: return [2];
-        }
-    });
-}); });
+router.post('/:instanceKey', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const instanceKey = req.params.instanceKey;
+    let sessionId, salesforceUrl, clientId, clientSecret;
+    ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
+    InstanceManager_1.default.register(instanceKey);
+    const instanceDetails = { salesforceUrl, clientId, clientSecret };
+    yield Promise.all([
+        InstanceManager_1.default.upsert(instanceKey, instanceDetails),
+        JsForce_1.default.connect(sessionId, salesforceUrl, instanceKey)
+    ]);
+    if (clientId && clientSecret) {
+        const credentials = { clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google` };
+        const url = GoogleDrive_1.default.createAuthUrl(credentials, instanceKey);
+        MessageEmitter_1.default.setAttribute(instanceKey, 'target-window', salesforceUrl);
+        Logger_1.logSuccessResponse(instanceKey, '[END_POINT.AUTH_REDIRECT]');
+        res.status(200).send({ url });
+    }
+    else {
+        Logger_1.logErrorResponse({ clientId, clientSecret }, '[END_POINT.AUTH_REDIRECT]');
+        res.status(400).send('Authorization failed, please ensure client credentials are populated.');
+    }
+}));
+router.get('/callback/google', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const instanceKey = Buffer.from(req.query.state, 'base64').toString();
+    const code = req.query.code;
+    try {
+        const token = yield GoogleDrive_1.default.getTokens(code, instanceKey);
+        let clientId, clientSecret;
+        ({ clientId, clientSecret } = InstanceManager_1.default.get(instanceKey, ["clientId", "clientSecret"]));
+        yield JsForce_1.default.sendTokens(Object.assign(Object.assign({}, token.tokens), { clientId, clientSecret }), instanceKey);
+        MessageEmitter_1.default.postTrigger(instanceKey, 'authComplete', {});
+        Logger_1.logSuccessResponse('MessageEmitted', '[CALLBACK_GOOGLE');
+        res.send('<script>window.close()</script>');
+    }
+    catch (err) {
+        Logger_1.logErrorResponse(err, '[CALLBACK_GOOGLE');
+    }
+}));
 exports.default = router;
