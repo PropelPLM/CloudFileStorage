@@ -147,7 +147,7 @@ var GoogleDrive = (function () {
                 (uploadStream = InstanceManager_1.default.get(instanceKey, ["uploadStream"]).uploadStream);
                 console.log('uploadStream', uploadStream);
                 try {
-                    uploadStream.write(payload);
+                    uploadStream.push(payload);
                     InstanceManager_1.default.upsert(instanceKey, { uploadStream: uploadStream });
                 }
                 catch (err) {

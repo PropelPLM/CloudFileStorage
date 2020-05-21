@@ -93,7 +93,7 @@ class GoogleDrive implements IPlatform {
     ({ uploadStream } = InstanceManager.get(instanceKey, [MapKey.uploadStream])); //REVERT
     console.log('uploadStream', uploadStream)
     try {
-      uploadStream.write(payload)
+      uploadStream.push(payload)
       InstanceManager.upsert(instanceKey, { uploadStream });
     } catch (err) {
       logErrorResponse(err, '[GOOGLE_DRIVE > UPLOAD_FILE]')
