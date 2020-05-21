@@ -247,7 +247,7 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/platforms/googledrive.ts": {
-        "version": "c1230f3fc614ddf231d89e1a5798504aac6685d3bf64bab4c1fb91facb4ec68d",
+        "version": "0895db8da0d430837723ce4d504808453b4c023fdb86e02d6001bf5c63b97ea6",
         "signature": "21419cd19993a76341a44fa0ca2493705b4277ed770f07c062e734a4bceb2c28",
         "affectsGlobalScope": false
       },
