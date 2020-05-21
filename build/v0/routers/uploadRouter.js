@@ -167,6 +167,7 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
                             return [4, JsForce_1.default.create(file.data, instanceKey)];
                         case 2:
                             sfObject = _a.sent();
+                            console.log('sfObject', sfObject);
                             response = {
                                 status: parseInt(file.status),
                                 data: __assign(__assign({}, file.data), { sfId: sfObject.id, revisionId: sfObject.revisionId, salesforceUrl: salesforceUrl,

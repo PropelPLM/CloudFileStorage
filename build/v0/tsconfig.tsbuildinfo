@@ -247,7 +247,7 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/platforms/googledrive.ts": {
-        "version": "1ed083cac0e0153147cc4f661ce95d83561c00b55f37e923e3208e4eddfc52fe",
+        "version": "826b06bb3e63ab9dc98df110fac27e1f3922d3aa03d4059730a2e0f8e10f7660",
         "signature": "21419cd19993a76341a44fa0ca2493705b4277ed770f07c062e734a4bceb2c28",
         "affectsGlobalScope": false
       },
@@ -692,7 +692,7 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/routers/uploadrouter.ts": {
-        "version": "53e82fe6e19dcccb4cecedbc18c857fd33596c106933f1d89562cc0a0ee8ff63",
+        "version": "85bc0a743cdce7e6e8d22513d6c5b66421444698bf5c125c12aab27137ebd795",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
