@@ -100,7 +100,7 @@ var JsForce = (function () {
                             Client_Id__c: tokens.clientId,
                             Client_Secret__c: tokens.clientSecret
                         };
-                        (_d = InstanceManager_1.default.get(instanceKey, [MapKey.connection, MapKey.orgNamespace]), connection = _d.connection, orgNamespace = _d.orgNamespace);
+                        (_d = InstanceManager_1.default.get(instanceKey, ["connection", "orgNamespace"]), connection = _d.connection, orgNamespace = _d.orgNamespace);
                         _e.label = 1;
                     case 1:
                         _e.trys.push([1, 4, , 5]);
@@ -132,7 +132,7 @@ var JsForce = (function () {
                     case 0:
                         _e.trys.push([0, 3, , 4]);
                         connection = void 0, orgNamespace = void 0, revisionId = void 0, isNew = void 0, webViewLink = void 0, id = void 0, fileExtension = void 0, webContentLink = void 0;
-                        (_d = InstanceManager_1.default.get(instanceKey, [MapKey.connection, MapKey.orgNamespace, MapKey.revisionId, MapKey.isNew]), connection = _d.connection, orgNamespace = _d.orgNamespace, revisionId = _d.revisionId, isNew = _d.isNew);
+                        (_d = InstanceManager_1.default.get(instanceKey, ["connection", "orgNamespace", "revisionId", "isNew"]), connection = _d.connection, orgNamespace = _d.orgNamespace, revisionId = _d.revisionId, isNew = _d.isNew);
                         (name_1 = file.name, webViewLink = file.webViewLink, id = file.id, fileExtension = file.fileExtension, webContentLink = file.webContentLink);
                         newAttachment = {
                             External_Attachment_URL__c: webViewLink,
@@ -168,7 +168,7 @@ var JsForce = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        (connection = InstanceManager_1.default.get(instanceKey, [MapKey.connection]).connection);
+                        (connection = InstanceManager_1.default.get(instanceKey, ["connection"]).connection);
                         return [4, connection.query('SELECT NamespacePrefix FROM ApexClass WHERE Name = \'CloudStorageService\' LIMIT 1')];
                     case 1:
                         jsForceRecords = _a.sent();
@@ -184,7 +184,7 @@ var JsForce = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var orgNamespace, key;
             return __generator(this, function (_a) {
-                (orgNamespace = InstanceManager_1.default.get(instanceKey, [MapKey.orgNamespace]).orgNamespace);
+                (orgNamespace = InstanceManager_1.default.get(instanceKey, ["orgNamespace"]).orgNamespace);
                 for (key in customObject) {
                     Object.defineProperty(customObject, orgNamespace + "__" + key, Object.getOwnPropertyDescriptor(customObject, key));
                     delete customObject[key];

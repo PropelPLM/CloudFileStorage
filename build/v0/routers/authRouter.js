@@ -108,7 +108,7 @@ router.get('/callback/google', function (req, res) { return __awaiter(void 0, vo
             case 2:
                 token = _b.sent();
                 clientId = void 0, clientSecret = void 0;
-                (_a = InstanceManager_1.default.get(instanceKey, [MapKey.clientId, MapKey.clientSecret]), clientId = _a.clientId, clientSecret = _a.clientSecret);
+                (_a = InstanceManager_1.default.get(instanceKey, ["clientId", "clientSecret"]), clientId = _a.clientId, clientSecret = _a.clientSecret);
                 return [4, JsForce_1.default.sendTokens(__assign(__assign({}, token.tokens), { clientId: clientId, clientSecret: clientSecret }), instanceKey)];
             case 3:
                 _b.sent();

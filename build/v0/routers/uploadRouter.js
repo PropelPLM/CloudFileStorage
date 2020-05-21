@@ -123,7 +123,7 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
     return __generator(this, function (_b) {
         instanceKey = req.params.instanceKey;
         form = new Busboy({ headers: req.headers });
-        (_a = InstanceManager_1.default.get(instanceKey, [MapKey.salesforceUrl, MapKey.isNew]), salesforceUrl = _a.salesforceUrl, isNew = _a.isNew);
+        (_a = InstanceManager_1.default.get(instanceKey, ["salesforceUrl", "isNew"]), salesforceUrl = _a.salesforceUrl, isNew = _a.isNew);
         try {
             form
                 .on('field', function (fieldName, value) {

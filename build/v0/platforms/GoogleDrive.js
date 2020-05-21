@@ -67,7 +67,7 @@ var GoogleDrive = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        (oAuth2Client = InstanceManager_1.default.get(instanceKey, [MapKey.oAuth2Client]).oAuth2Client);
+                        (oAuth2Client = InstanceManager_1.default.get(instanceKey, ["oAuth2Client"]).oAuth2Client);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -108,7 +108,7 @@ var GoogleDrive = (function () {
             var destinationFolderId, oAuth2Client, drive, uploadStream, fileMetadata, media, file;
             var _b;
             return __generator(this, function (_c) {
-                (_b = InstanceManager_1.default.get(instanceKey, [MapKey.destinationFolderId, MapKey.oAuth2Client]), destinationFolderId = _b.destinationFolderId, oAuth2Client = _b.oAuth2Client);
+                (_b = InstanceManager_1.default.get(instanceKey, ["destinationFolderId", "oAuth2Client"]), destinationFolderId = _b.destinationFolderId, oAuth2Client = _b.oAuth2Client);
                 drive = google.drive({ version: 'v3', auth: oAuth2Client });
                 uploadStream = new PassThrough();
                 fileMetadata = {
@@ -144,7 +144,7 @@ var GoogleDrive = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var uploadStream;
             return __generator(this, function (_a) {
-                (uploadStream = InstanceManager_1.default.get(instanceKey, [MapKey.uploadStream]).uploadStream);
+                (uploadStream = InstanceManager_1.default.get(instanceKey, ["uploadStream"]).uploadStream);
                 uploadStream.write(payload);
                 InstanceManager_1.default.upsert(instanceKey, { uploadStream: uploadStream });
                 return [2];
@@ -157,7 +157,7 @@ var GoogleDrive = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        (file = InstanceManager_1.default.get(instanceKey, [MapKey.file]).file);
+                        (file = InstanceManager_1.default.get(instanceKey, ["file"]).file);
                         return [4, file];
                     case 1: return [2, _a.sent()];
                 }
