@@ -161,6 +161,11 @@
         "signature": "839b2b6f12f70ada60664ff858eb63d4cc0ce80954ff3880b44f845b3fe37df2",
         "affectsGlobalScope": false
       },
+      "../../src/v0/customtypes/googleobjects.d.ts": {
+        "version": "8cb79298a1e48da56fa54acd33e96940a19cba27b828458a25fac37ab3cde62b",
+        "signature": "8cb79298a1e48da56fa54acd33e96940a19cba27b828458a25fac37ab3cde62b",
+        "affectsGlobalScope": true
+      },
       "../../src/v0/customtypes/instancemap.d.ts": {
         "version": "32b18003e168e86c46c63aa96cf1a2007b90821a53db2661cd987165bfc16c46",
         "signature": "32b18003e168e86c46c63aa96cf1a2007b90821a53db2661cd987165bfc16c46",
@@ -247,8 +252,8 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/platforms/googledrive.ts": {
-        "version": "826b06bb3e63ab9dc98df110fac27e1f3922d3aa03d4059730a2e0f8e10f7660",
-        "signature": "21419cd19993a76341a44fa0ca2493705b4277ed770f07c062e734a4bceb2c28",
+        "version": "cfcd2dff6f7967af34890512c7f724252f8d45786377d49c47a0765b6f840c09",
+        "signature": "4fcee18ca9cc132757ec825bf63cc4f12d707850ffb5328eb25907eadbcc983f",
         "affectsGlobalScope": false
       },
       "../../src/v0/platforms/platform.ts": {
@@ -692,7 +697,7 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/routers/uploadrouter.ts": {
-        "version": "85bc0a743cdce7e6e8d22513d6c5b66421444698bf5c125c12aab27137ebd795",
+        "version": "680d77c3ad994923855b68f7a2c5e6b3f98ad3f332c805c6778cf74872b341e2",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
@@ -1720,6 +1725,12 @@
       "../../node_modules/@types/serve-static/index.d.ts": [
         "../../node_modules/@types/express-serve-static-core/index.d.ts",
         "../../node_modules/@types/mime/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../src/v0/customtypes/googleobjects.d.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -2961,6 +2972,12 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../src/v0/customtypes/googleobjects.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../src/v0/customtypes/instancemap.d.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
@@ -3256,6 +3273,7 @@
       "../../node_modules/@types/qs/index.d.ts",
       "../../node_modules/@types/range-parser/index.d.ts",
       "../../node_modules/@types/serve-static/index.d.ts",
+      "../../src/v0/customtypes/googleobjects.d.ts",
       "../../src/v0/customtypes/instancemap.d.ts",
       "../../src/v0/main.ts",
       "../../src/v0/platforms/googledrive.ts",
