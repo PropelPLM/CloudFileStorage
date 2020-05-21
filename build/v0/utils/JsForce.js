@@ -136,7 +136,7 @@ var JsForce = (function () {
                         console.log('orgNamespace', orgNamespace);
                         console.log('revisionId', revisionId);
                         console.log('isNew', isNew);
-                        console.log('connection', connection);
+                        console.log('file', file);
                         (name_1 = file.name, webViewLink = file.webViewLink, id = file.id, fileExtension = file.fileExtension, webContentLink = file.webContentLink);
                         console.log('name', name_1);
                         console.log('webViewLink', webViewLink);

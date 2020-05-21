@@ -682,8 +682,8 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/utils/jsforce.ts": {
-        "version": "338b725037787ece386fecc97e3cc2c27e38002e3095dcd657cb064826b70da5",
-        "signature": "84539850c5a6cc4c39b5ccb4fc3fbe0254729073e8b29e983093e214578548a4",
+        "version": "1c3c2b2c5bbff573e42f845fc1b93954d1815192acf0b0e42f0934d1b8fcc916",
+        "signature": "d9a43ecfc9d4d050986a99aae0b5de707501faf735a07a389480f9249be90104",
         "affectsGlobalScope": false
       },
       "../../src/v0/routers/authrouter.ts": {

@@ -48,7 +48,7 @@ export class JsForce {
     }
   }
 
-  public async create(file: Record<string, string>, instanceKey: string) {
+  public async create(file: any, instanceKey: string) {
     try {
       let connection: any, orgNamespace: string, revisionId: string, isNew: string, name: string,
           webViewLink: string, id: string, fileExtension: string, webContentLink: string;
@@ -56,7 +56,7 @@ export class JsForce {
       console.log('orgNamespace', orgNamespace);
       console.log('revisionId', revisionId);
       console.log('isNew', isNew);
-      console.log('connection', connection);
+      console.log('file', file);
 
       ({ name, webViewLink, id, fileExtension, webContentLink } = file);
       console.log('name', name);
