@@ -1,9 +1,8 @@
 'use strict';
 
-export {};
 import express from 'express';
 const router = express.Router();
-const path = require('path');
+import path from 'path';
 
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';

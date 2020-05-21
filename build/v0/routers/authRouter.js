@@ -52,7 +52,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var router = express_1.default.Router();
-var path = require('path');
+var path_1 = __importDefault(require("path"));
 var Logger_1 = require("../utils/Logger");
 var InstanceManager_1 = __importDefault(require("../utils/InstanceManager"));
 var MessageEmitter_1 = __importDefault(require("../utils/MessageEmitter"));
@@ -60,7 +60,7 @@ var GoogleDrive_1 = __importDefault(require("../platforms/GoogleDrive"));
 var JsForce_1 = __importDefault(require("../utils/JsForce"));
 router.get('/:instanceKey', function (req, res) {
     InstanceManager_1.default.register(req.params.instanceKey);
-    res.sendFile('index.html', { root: path.join(__dirname, '../../../public/') });
+    res.sendFile('index.html', { root: path_1.default.join(__dirname, '../../../public/') });
 });
 router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var instanceKey, sessionId, salesforceUrl, clientId, clientSecret, instanceDetails, credentials, url;

@@ -1,6 +1,5 @@
 'use strict';
 
-export {};
 // Will be used more widely when there are different storages
 const server = require('../main');
 const io = require('socket.io')(server);

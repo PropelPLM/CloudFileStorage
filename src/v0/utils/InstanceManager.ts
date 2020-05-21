@@ -1,7 +1,5 @@
 'use strict';
 
-// import { cloneDeep } from 'lodash';
-
 const instanceMap: Record<string , Partial<IMap>> = {};
 
 export default {

@@ -40,7 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var google = require('googleapis').google;
-var PassThrough = require('stream').PassThrough;
+var stream_1 = require("stream");
 var Logger_1 = require("../utils/Logger");
 var MessageEmitter_1 = __importDefault(require("../utils/MessageEmitter"));
 var InstanceManager_1 = __importDefault(require("../utils/InstanceManager"));
@@ -110,7 +110,7 @@ var GoogleDrive = (function () {
             return __generator(this, function (_c) {
                 (_b = InstanceManager_1.default.get(instanceKey, ["destinationFolderId", "oAuth2Client"]), destinationFolderId = _b.destinationFolderId, oAuth2Client = _b.oAuth2Client);
                 drive = google.drive({ version: 'v3', auth: oAuth2Client });
-                uploadStream = new PassThrough();
+                uploadStream = new stream_1.PassThrough();
                 fileMetadata = {
                     name: fileName,
                     driveId: destinationFolderId,

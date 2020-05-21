@@ -1,7 +1,7 @@
 'use strict';
 
 const { google } = require('googleapis');
-const { PassThrough } = require('stream');
+import { PassThrough } from 'stream';
 
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import MessageEmitter from '../utils/MessageEmitter';

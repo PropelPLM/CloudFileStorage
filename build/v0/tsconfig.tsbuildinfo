@@ -457,17 +457,17 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/utils/instancemanager.ts": {
-        "version": "f0e608765713d74c68356fa471d8d6e707a5f911ab3c617fa68629296582d5f3",
+        "version": "2fde86ce19380a50884969c2e3d1cf579205378418f633fc0a1ee9fa5918e309",
         "signature": "83a23d541e59c9aa4c8a1bd32e07b8df9a5623e9c96271279e8258cc3561c704",
         "affectsGlobalScope": false
       },
       "../../src/v0/utils/messageemitter.ts": {
-        "version": "9753c65a626564fc123a8404adfdaf3159080629f243e9e06d28a7763ef6b17f",
-        "signature": "d8efcccc8531bf9a70ce2a87de492200de162f9a45d0e5f5daa3fe13627497cb",
+        "version": "467394f21b9752b79691466c8bc7a91009a46ba7fa7f17756273ddc3020b2aa7",
+        "signature": "5e94d945fc24331647189dba983e7412d3554423242df5af993f36c1838c5b1f",
         "affectsGlobalScope": false
       },
       "../../src/v0/platforms/googledrive.ts": {
-        "version": "213b0532c53e071aab27c46b079b3083b7df66ff1a09e7ff5a9f9e7a6f724b89",
+        "version": "f6c396656b754e20032f924cce1d3e7591e2a7ebaf49360907078dde698fccd9",
         "signature": "1129b27d1a10e408d84de9427d9b7d38db4296ef6d267df9ec0eee0fd1c217ef",
         "affectsGlobalScope": false
       },
@@ -612,13 +612,13 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/routers/authrouter.ts": {
-        "version": "0444d71e5459eb382a3b6d28af8b53f69e3bb5c7dfc8b10738fe3167f3822cb8",
-        "signature": "6748425d549adcb4bfeecf4b77879986784a0181f650ddb11b825dd8180d706a",
+        "version": "46060da6ec4220f5397121544c37c410d96a7bbfd296b7db1562e0e505a9af34",
+        "signature": "c106970ee4b686b5ebf0964ea4e0d1b2af02bdecd2d5cfeecedeb7bb5b2f404b",
         "affectsGlobalScope": false
       },
       "../../src/v0/routers/uploadrouter.ts": {
-        "version": "984407223941bb9b9b4287d48424ca80d5242ffcd9094761dc2b698466d17b3f",
-        "signature": "6748425d549adcb4bfeecf4b77879986784a0181f650ddb11b825dd8180d706a",
+        "version": "d382d2cd6e0cd096872b58bf9ac84e68f2c0b82cf0161f74ec2cf1becbf5285f",
+        "signature": "c106970ee4b686b5ebf0964ea4e0d1b2af02bdecd2d5cfeecedeb7bb5b2f404b",
         "affectsGlobalScope": false
       },
       "../../src/v0/main.ts": {
@@ -1469,6 +1469,7 @@
       ],
       "../../src/v0/platforms/googledrive.ts": [
         "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
@@ -1485,6 +1486,7 @@
       "../../src/v0/routers/authrouter.ts": [
         "../../node_modules/@types/express/index.d.ts",
         "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/path.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
