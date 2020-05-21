@@ -12,7 +12,7 @@ io.on('connection', function (socket) {
         socket.join(instanceKey);
         Logger_1.logSuccessResponse({ instanceKey: instanceKey }, '[MESSAGE_EMITTER.JOIN_ROOM]');
         var salesforceUrl;
-        (salesforceUrl = InstanceManager_1.default.get(instanceKey, ['salesforceUrl']).salesforceUrl);
+        (salesforceUrl = InstanceManager_1.default.get(instanceKey, [MapKey.salesforceUrl]).salesforceUrl);
         setAttribute(instanceKey, 'target-window', salesforceUrl);
     });
 });
@@ -30,7 +30,7 @@ exports.default = {
     postProgress: function (instanceKey, src) {
         var _a;
         var fileName, frontendBytes, externalBytes, fileSize;
-        (_a = InstanceManager_1.default.get(instanceKey, ['fileName', 'frontendBytes', 'externalBytes', 'fileSize']), fileName = _a.fileName, frontendBytes = _a.frontendBytes, externalBytes = _a.externalBytes, fileSize = _a.fileSize);
+        (_a = InstanceManager_1.default.get(instanceKey, [MapKey.fileName, MapKey.frontendBytes, MapKey.externalBytes, MapKey.fileSize]), fileName = _a.fileName, frontendBytes = _a.frontendBytes, externalBytes = _a.externalBytes, fileSize = _a.fileSize);
         var percentCompletion = Math.floor((100 * (frontendBytes + externalBytes)) / (fileSize * 2));
         console.log("[" + fileName + "][" + src + "_UPLOAD]: " + (src == 'FRONTEND' ? frontendBytes / fileSize : externalBytes / fileSize));
         io.to(instanceKey).emit('progress', percentCompletion);

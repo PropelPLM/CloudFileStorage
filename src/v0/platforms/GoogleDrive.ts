@@ -18,8 +18,8 @@ class GoogleDrive implements IPlatform {
     let clientId: string, clientSecret: string, redirect_uri: string;
     ({ clientId, clientSecret, redirect_uri } = credentials);
 
-    const oAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
-    InstanceManager.add(instanceKey, { oAuth2Client });
+    const oAuth2Client: any = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
+    InstanceManager.upsert(instanceKey, { oAuth2Client });
     return oAuth2Client.generateAuthUrl({
       access_type: 'offline',
       prompt: 'consent',
@@ -30,7 +30,7 @@ class GoogleDrive implements IPlatform {
 
   public async getTokens(code: string, instanceKey: string) {
     let oAuth2Client: any;
-    ({ oAuth2Client } = InstanceManager.get(instanceKey, ['oAuth2Client']));
+    ({ oAuth2Client } = InstanceManager.get(instanceKey, [MapKey.oAuth2Client]));
     try {
       const token = await oAuth2Client.getToken(code);
       logSuccessResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
@@ -45,7 +45,7 @@ class GoogleDrive implements IPlatform {
     try {
       const oAuth2Client: any = new google.auth.OAuth2(clientId, clientSecret, this.redirect_uris[0]);
       oAuth2Client.setCredentials(tokens);
-      InstanceManager.add(instanceKey, { oAuth2Client });
+      InstanceManager.upsert(instanceKey, { oAuth2Client });
       logSuccessResponse({}, '[GOOGLE_DRIVE.AUTHORIZE]');
     } catch (err) {
       logErrorResponse(err, '[GOOGLE_DRIVE.AUTHORIZE]');
@@ -54,7 +54,7 @@ class GoogleDrive implements IPlatform {
 
   async initUpload(instanceKey: string, { fileName, mimeType, fileSize }: { fileName: string, mimeType: string, fileSize: number }) {
     let destinationFolderId: string, oAuth2Client: any;
-    ({ destinationFolderId, oAuth2Client } = InstanceManager.get(instanceKey, ['destinationFolderId', 'oAuth2Client']));
+    ({ destinationFolderId, oAuth2Client } = InstanceManager.get(instanceKey, [MapKey.destinationFolderId, MapKey.oAuth2Client]));
     const drive = google.drive({ version: 'v3', auth: oAuth2Client });
     const uploadStream = new PassThrough();
     const fileMetadata = {
@@ -76,7 +76,7 @@ class GoogleDrive implements IPlatform {
       {
         onUploadProgress: (evt: Record<string, any>) => {
           const bytesRead: number = evt.bytesRead;
-          InstanceManager.update(instanceKey, 'externalBytes', bytesRead)
+          InstanceManager.upsert(instanceKey, { externalBytes: bytesRead }) //REVERT
           MessageEmitter.postProgress(instanceKey, 'GOOGLE_DRIVE');
           if (bytesRead == fileSize) {
             //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
@@ -85,20 +85,19 @@ class GoogleDrive implements IPlatform {
         }
       }
     )
-    InstanceManager.addRef(instanceKey, 'uploadStream', uploadStream);
-    InstanceManager.addRef(instanceKey, 'file', file);
+    InstanceManager.upsert(instanceKey, { uploadStream: uploadStream, file }); //REVERT
   }
 
   async uploadFile(instanceKey: string, payload: Record<string, any>) {
     let uploadStream;
-    ({ uploadStream } = InstanceManager.getRef(instanceKey, 'uploadStream'));
+    ({ uploadStream } = InstanceManager.get(instanceKey, [MapKey.uploadStream])); //REVERT
     uploadStream.write(payload)
-    InstanceManager.update(instanceKey, 'uploadStream', uploadStream);
+    InstanceManager.upsert(instanceKey, { uploadStream });
   }
 
   async endUpload(instanceKey: string) {
     let file: Object;
-    ({ file } = InstanceManager.getRef(instanceKey, 'file'));
+    ({ file } = InstanceManager.get(instanceKey, [MapKey.file]));
     return await file;
   }
 }

@@ -24,7 +24,7 @@ router.post('/:instanceKey', async (req: any, res: any) => {
   InstanceManager.register(instanceKey);
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
   await Promise.all([
-    InstanceManager.add(instanceKey, instanceDetails),
+    InstanceManager.upsert(instanceKey, instanceDetails),
     JsForce.connect(sessionId, salesforceUrl, instanceKey)
   ]);
 
@@ -49,7 +49,7 @@ router.get('/callback/google', async (req: any, res: any) => {
     const token: any = await GoogleDrive.getTokens(code, instanceKey);
   
     let clientId: string, clientSecret: string;
-    ({ clientId, clientSecret } = InstanceManager.get(instanceKey, ['clientId', 'clientSecret']));
+    ({ clientId, clientSecret } = InstanceManager.get(instanceKey, [MapKey.clientId, MapKey.clientSecret]));
     await JsForce.sendTokens({ ...token.tokens, clientId, clientSecret }, instanceKey);
     MessageEmitter.postTrigger(instanceKey, 'authComplete', {});
     logSuccessResponse('MessageEmitted', '[CALLBACK_GOOGLE');

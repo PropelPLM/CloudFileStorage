@@ -25,13 +25,13 @@ router.post('/token/:instanceKey', async (req: any, res: any) => {
         scope: GoogleDrive.actions.driveFiles,
         token_type: 'Bearer',
         expiry_date
-    };
+    };    
 
     InstanceManager.register(instanceKey);
     GoogleDrive.authorize(instanceKey, client_id, client_secret, tokensFromCredentials); //getAdapter().authorize(...)
-    const instanceDetails = { sessionId, salesforceUrl };
+    const instanceDetails: Partial<Record<MapKey, any>> = { sessionId, salesforceUrl };
     await Promise.all([
-        InstanceManager.add(instanceKey, instanceDetails),
+        InstanceManager.upsert(instanceKey, instanceDetails),
         JsForce.connect(sessionId, salesforceUrl, instanceKey)
     ]);
     logSuccessResponse({...tokensFromCredentials, instanceKey}, '[END_POINT.TOKEN]');
@@ -48,7 +48,7 @@ router.post('/uploadDetails/:instanceKey', async (req: any, res: any) => {
     let revisionId, destinationFolderId, isNew;
     ({ revisionId, destinationFolderId, isNew } = req.body);
     const instanceDetails = { revisionId, destinationFolderId, isNew };
-    InstanceManager.add(instanceKey, instanceDetails);
+    InstanceManager.upsert(instanceKey, instanceDetails);
     logSuccessResponse({ instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
     res.status(200).send({ instanceKey });
   } catch (err) {
@@ -60,7 +60,7 @@ router.post('/:instanceKey', async (req: any, res: any) => {
   const instanceKey = req.params.instanceKey;
   const form = new Busboy({ headers: req.headers });
   let salesforceUrl: string, isNew: string;
-  ({ salesforceUrl, isNew } = InstanceManager.get(instanceKey, ['salesforceUrl', 'isNew']));
+  ({ salesforceUrl, isNew } = InstanceManager.get(instanceKey, [MapKey.salesforceUrl, MapKey.isNew]));
   try {
     let fileSize: number;
     form
@@ -71,13 +71,13 @@ router.post('/:instanceKey', async (req: any, res: any) => {
       .on('file', async function(_1: any, file: Stream, fileName: string, _2: any, mimeType: string) {
         await Promise.all([
           GoogleDrive.initUpload(instanceKey, { fileName, mimeType, fileSize }),
-          InstanceManager.add(instanceKey, {fileName, frontendBytes: 0, externalBytes: 0, fileSize })
+          InstanceManager.upsert(instanceKey, {fileName, frontendBytes: 0, externalBytes: 0, fileSize })
         ]);
         let progress: number = 0;
         file
           .on('data', (data: Record<string, any>) => {
             progress = progress + data.length
-            InstanceManager.update(instanceKey, 'frontendBytes', progress)
+            InstanceManager.upsert(instanceKey, { frontendBytes: progress })
             MessageEmitter.postProgress(instanceKey, 'FRONTEND');
             GoogleDrive.uploadFile(instanceKey, data);
           })

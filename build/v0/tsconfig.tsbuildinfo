@@ -161,6 +161,11 @@
         "signature": "839b2b6f12f70ada60664ff858eb63d4cc0ce80954ff3880b44f845b3fe37df2",
         "affectsGlobalScope": false
       },
+      "../../src/v0/customtypes/instancemap.d.ts": {
+        "version": "afdd6b29d916e251affeef93f2b1a01e503cccdfd63d2a3131d80aa8e0fa58e9",
+        "signature": "afdd6b29d916e251affeef93f2b1a01e503cccdfd63d2a3131d80aa8e0fa58e9",
+        "affectsGlobalScope": true
+      },
       "../../src/v0/utils/logger.ts": {
         "version": "35429b8d966633e30c923151f008c42879273b127e64fd0672c0d61a73207092",
         "signature": "6b142a3dee4320f5efac97671c44718bd2952df3181193ebf3e2279370440fcc",
@@ -232,17 +237,17 @@
         "affectsGlobalScope": true
       },
       "../../src/v0/utils/instancemanager.ts": {
-        "version": "2ed17dbfce3ceba79187e07dfe2602685ded483be5f599eba381ae570ab64587",
-        "signature": "70f9d51aa83d5f2fe90c8b30f0c6232715b219f348c4f165c7a739ce1f23261b",
+        "version": "f8829e91b4586fb359a06b314aa4da1af88a1f0e5e30fb8161384882316b846f",
+        "signature": "83a23d541e59c9aa4c8a1bd32e07b8df9a5623e9c96271279e8258cc3561c704",
         "affectsGlobalScope": false
       },
       "../../src/v0/utils/messageemitter.ts": {
-        "version": "4a1be87665e10ccfc9602b1cb3c3c6f94b0f50cb4249006590c0be92e6eda9f0",
+        "version": "dea3debf269e05da888b4751dfe5c82b3169d69608e6d8436a5d315936b6501e",
         "signature": "d8efcccc8531bf9a70ce2a87de492200de162f9a45d0e5f5daa3fe13627497cb",
         "affectsGlobalScope": false
       },
       "../../src/v0/platforms/googledrive.ts": {
-        "version": "2e72d9cac338faa42ab25817eae9ce92211b13183804ab1637343296324f794e",
+        "version": "ba6fdd7d61dfdb368249cdbad8930f3c945bf5b9c26970b3bf6807f6b457f2dd",
         "signature": "21419cd19993a76341a44fa0ca2493705b4277ed770f07c062e734a4bceb2c28",
         "affectsGlobalScope": false
       },
@@ -252,8 +257,8 @@
         "affectsGlobalScope": true
       },
       "../../node_modules/@types/node/globals.d.ts": {
-        "version": "53b53e40cdadf9d10ddd96151480c648bf2461cc7e43d305052459940a994c05",
-        "signature": "53b53e40cdadf9d10ddd96151480c648bf2461cc7e43d305052459940a994c05",
+        "version": "5eb052e53209d73f3da3c2b4a30a5d79168d3dc98f8f31dd86abdb3a09fed026",
+        "signature": "5eb052e53209d73f3da3c2b4a30a5d79168d3dc98f8f31dd86abdb3a09fed026",
         "affectsGlobalScope": true
       },
       "../../node_modules/@types/node/async_hooks.d.ts": {
@@ -307,8 +312,8 @@
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/node/events.d.ts": {
-        "version": "5ffa4219ee64e130980a4231392cbc628544df137ccf650ae8d76e0a1744fd2b",
-        "signature": "5ffa4219ee64e130980a4231392cbc628544df137ccf650ae8d76e0a1744fd2b",
+        "version": "eaa8136bb11fbea5bdaf29e06aa45a1969ddd39fbfb5fe58a01f00d7f1562cd9",
+        "signature": "eaa8136bb11fbea5bdaf29e06aa45a1969ddd39fbfb5fe58a01f00d7f1562cd9",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/node/fs.d.ts": {
@@ -427,8 +432,8 @@
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/node/util.d.ts": {
-        "version": "893d1b5dd98f1c01a0ec4122dfd7f774e0fa1560e1aa19e509c96ed543c6244e",
-        "signature": "893d1b5dd98f1c01a0ec4122dfd7f774e0fa1560e1aa19e509c96ed543c6244e",
+        "version": "baa711b17f67390c60eac3c70a1391b23a8e3833cb723b2d7336d4817a22455c",
+        "signature": "baa711b17f67390c60eac3c70a1391b23a8e3833cb723b2d7336d4817a22455c",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/node/v8.d.ts": {
@@ -677,19 +682,34 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/utils/jsforce.ts": {
-        "version": "12e9464739c4c15526a7144350de6fb402b74e785be0ffad02faa2db72df04ab",
+        "version": "4e5b69dd2b3d190012d1c19a742ee7974a53c4f52a81f51aa445ae17fd5c7354",
         "signature": "84539850c5a6cc4c39b5ccb4fc3fbe0254729073e8b29e983093e214578548a4",
         "affectsGlobalScope": false
       },
       "../../src/v0/routers/authrouter.ts": {
-        "version": "8f074815d381899b94931af6c13c0631c3f5a1b216cb90997d45f77b313badde",
+        "version": "eb9e467735834271a81a414c573e589966167465055f87b116382fdb2ec2fbd3",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
       "../../src/v0/routers/uploadrouter.ts": {
-        "version": "0f7bd765e75ca2e2ec2edbc3c3e2bf5d7d183ae595df1f41b01d6c6d76832c4f",
+        "version": "53e82fe6e19dcccb4cecedbc18c857fd33596c106933f1d89562cc0a0ee8ff63",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/gapi/index.d.ts": {
+        "version": "78b5210213381792780dcf82f54f2092f6caa54e4659a38b194d4869bcb7df00",
+        "signature": "78b5210213381792780dcf82f54f2092f6caa54e4659a38b194d4869bcb7df00",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/@types/gapi.auth2/index.d.ts": {
+        "version": "fcdf422d762ed483ca311e7c574bd32d4fc1325fc2a066d353174e633b421b5a",
+        "signature": "fcdf422d762ed483ca311e7c574bd32d4fc1325fc2a066d353174e633b421b5a",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/@types/gapi.client/index.d.ts": {
+        "version": "345003394ae1d9163597251c95cbb2d15b174af52ce4bdca64a031906c90aa2a",
+        "signature": "345003394ae1d9163597251c95cbb2d15b174af52ce4bdca64a031906c90aa2a",
+        "affectsGlobalScope": true
       }
     },
     "options": {
@@ -720,10 +740,14 @@
         ]
       },
       "typeRoots": [
-        "../../node_modules/@types"
+        "../../node_modules/@types",
+        "../../src/**/customTypes/*.d.ts"
       ],
       "types": [
-        "node"
+        "node",
+        "gapi",
+        "gapi.auth2",
+        "gapi.client"
       ],
       "allowSyntheticDefaultImports": true,
       "esModuleInterop": true,
@@ -772,6 +796,25 @@
         "../../node_modules/@types/node/util.d.ts",
         "../../node_modules/@types/qs/index.d.ts",
         "../../node_modules/@types/serve-static/index.d.ts"
+      ],
+      "../../node_modules/@types/gapi.auth2/index.d.ts": [
+        "../../node_modules/@types/gapi/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/gapi.client/index.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/gapi/index.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
       ],
       "../../node_modules/@types/jsforce/api/analytics.d.ts": [
         "../../node_modules/@types/jsforce/connection.d.ts",
@@ -1677,6 +1720,12 @@
       "../../node_modules/@types/serve-static/index.d.ts": [
         "../../node_modules/@types/express-serve-static-core/index.d.ts",
         "../../node_modules/@types/mime/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../src/v0/customtypes/instancemap.d.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -1984,6 +2033,25 @@
         "../../node_modules/@types/qs/index.d.ts",
         "../../node_modules/@types/serve-static/index.d.ts"
       ],
+      "../../node_modules/@types/gapi.auth2/index.d.ts": [
+        "../../node_modules/@types/gapi/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/gapi.client/index.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/gapi/index.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../node_modules/@types/jsforce/api/analytics.d.ts": [
         "../../node_modules/@types/jsforce/connection.d.ts",
         "../../node_modules/@types/jsforce/query.d.ts",
@@ -2893,6 +2961,12 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../src/v0/customtypes/instancemap.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.d.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
@@ -3085,6 +3159,9 @@
       "../../node_modules/@types/connect/index.d.ts",
       "../../node_modules/@types/express-serve-static-core/index.d.ts",
       "../../node_modules/@types/express/index.d.ts",
+      "../../node_modules/@types/gapi.auth2/index.d.ts",
+      "../../node_modules/@types/gapi.client/index.d.ts",
+      "../../node_modules/@types/gapi/index.d.ts",
       "../../node_modules/@types/jsforce/api/analytics.d.ts",
       "../../node_modules/@types/jsforce/api/apex.d.ts",
       "../../node_modules/@types/jsforce/api/chatter.d.ts",
@@ -3179,6 +3256,7 @@
       "../../node_modules/@types/qs/index.d.ts",
       "../../node_modules/@types/range-parser/index.d.ts",
       "../../node_modules/@types/serve-static/index.d.ts",
+      "../../src/v0/customtypes/instancemap.d.ts",
       "../../src/v0/main.ts",
       "../../src/v0/platforms/googledrive.ts",
       "../../src/v0/platforms/platform.ts",

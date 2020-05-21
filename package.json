@@ -32,7 +32,7 @@
     "@types/gapi.client.drive": "^3.0.4",
     "@types/jsforce": "^1.9.18",
     "@types/lodash": "^4.14.150",
-    "@types/node": "^14.0.1",
+    "@types/node": "^14.0.4",
     "jest": "^25.1.0",
     "tslint": "^6.1.2"
   },

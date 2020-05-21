@@ -16,7 +16,7 @@ export class JsForce {
         sessionId
       });
       await Promise.all([
-        InstanceManager.add(instanceKey, { connection }),
+        InstanceManager.upsert(instanceKey, { connection }),
         this.setupNamespace(instanceKey)
       ]);
       logSuccessResponse({}, '[JSFORCE.CONNECT]');
@@ -35,7 +35,7 @@ export class JsForce {
     };
 
     let connection: any, orgNamespace: string;
-    ({ connection, orgNamespace } = InstanceManager.get(instanceKey, ['connection', 'orgNamespace']));
+    ({ connection, orgNamespace } = InstanceManager.get(instanceKey, [MapKey.connection, MapKey.orgNamespace]));
     try {
       const upsertedTokens = await connection
         .sobject(`${orgNamespace}__Cloud_Storage__c`)
@@ -52,7 +52,7 @@ export class JsForce {
     try {
       let connection: any, orgNamespace: string, revisionId: string, isNew: string, name: string,
           webViewLink: string, id: string, fileExtension: string, webContentLink: string;
-      ({ connection, orgNamespace, revisionId, isNew } = InstanceManager.get(instanceKey, ['connection', 'orgNamespace', 'revisionId', 'isNew']));
+      ({ connection, orgNamespace, revisionId, isNew } = InstanceManager.get(instanceKey, [MapKey.connection, MapKey.orgNamespace, MapKey.revisionId, MapKey.isNew]));
 
       ({ name, webViewLink, id, fileExtension, webContentLink } = file);
       const newAttachment: Record<string, string> = {
@@ -83,18 +83,18 @@ export class JsForce {
   // UTILS
   public async setupNamespace(instanceKey: string) {
     let connection: any;
-    ({ connection } = InstanceManager.get(instanceKey, ['connection']));
+    ({ connection } = InstanceManager.get(instanceKey, [MapKey.connection]));
     const jsForceRecords = await connection.query(
       'SELECT NamespacePrefix FROM ApexClass WHERE Name = \'CloudStorageService\' LIMIT 1'
     );
     const orgNamespace: string = jsForceRecords.records[0].NamespacePrefix;
-    InstanceManager.add(instanceKey, { orgNamespace });
+    InstanceManager.upsert(instanceKey, { orgNamespace });
     logSuccessResponse({ orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
   }
 
   public async addNamespace(customObject: Record<string, string>, instanceKey: string) {
     let orgNamespace: string;
-    ({ orgNamespace } = InstanceManager.get(instanceKey, ['orgNamespace']));
+    ({ orgNamespace } = InstanceManager.get(instanceKey, [MapKey.orgNamespace]));
     for (const key in customObject) {
       Object.defineProperty(
         customObject,

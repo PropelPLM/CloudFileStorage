@@ -12,7 +12,7 @@ io.on('connection', (socket: any) => {
     socket.join(instanceKey);
     logSuccessResponse({ instanceKey }, '[MESSAGE_EMITTER.JOIN_ROOM]');
     let salesforceUrl;
-    ({ salesforceUrl } = InstanceManager.get(instanceKey, ['salesforceUrl']));
+    ({ salesforceUrl } = InstanceManager.get(instanceKey, [MapKey.salesforceUrl]));
     setAttribute(instanceKey, 'target-window', salesforceUrl);
   });
 });
@@ -32,7 +32,7 @@ export default {
   
   postProgress: (instanceKey: string, src: string) => {
     let fileName: string, frontendBytes: number, externalBytes: number, fileSize: number;
-    ({ fileName, frontendBytes, externalBytes, fileSize } = InstanceManager.get(instanceKey, ['fileName', 'frontendBytes', 'externalBytes', 'fileSize']));
+    ({ fileName, frontendBytes, externalBytes, fileSize } = InstanceManager.get(instanceKey, [MapKey.fileName, MapKey.frontendBytes, MapKey.externalBytes, MapKey.fileSize]));
     const percentCompletion: number = Math.floor((100 * (frontendBytes + externalBytes)) / (fileSize * 2))
     console.log(`[${fileName}][${src}_UPLOAD]: ${src == 'FRONTEND' ? frontendBytes/fileSize : externalBytes/fileSize}`);
     io.to(instanceKey).emit('progress', percentCompletion);
