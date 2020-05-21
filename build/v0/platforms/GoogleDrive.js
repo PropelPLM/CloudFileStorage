@@ -105,7 +105,7 @@ var GoogleDrive = (function () {
     GoogleDrive.prototype.initUpload = function (instanceKey, _a) {
         var fileName = _a.fileName, mimeType = _a.mimeType, fileSize = _a.fileSize;
         return __awaiter(this, void 0, void 0, function () {
-            var destinationFolderId, oAuth2Client, drive, uploadStream, fileMetadata, media, file, afile;
+            var destinationFolderId, oAuth2Client, drive, uploadStream, fileMetadata, media, file;
             var _b;
             return __generator(this, function (_c) {
                 (_b = InstanceManager_1.default.get(instanceKey, ["destinationFolderId", "oAuth2Client"]), destinationFolderId = _b.destinationFolderId, oAuth2Client = _b.oAuth2Client);
@@ -135,10 +135,7 @@ var GoogleDrive = (function () {
                         }
                     }
                 });
-                console.log('pre file', file);
                 InstanceManager_1.default.upsert(instanceKey, { uploadStream: uploadStream, file: file });
-                afile = InstanceManager_1.default.get(instanceKey, ["file"]);
-                console.log('post file', afile);
                 return [2];
             });
         });

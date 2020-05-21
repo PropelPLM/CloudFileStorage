@@ -1,6 +1,6 @@
 'use strict';
 
-import { cloneDeep } from 'lodash';
+// import { cloneDeep } from 'lodash';
 
 const instanceMap: Record<string , Partial<IMap>> = {};
 
@@ -18,7 +18,7 @@ export default {
   get: (instanceKey: string, detailKeys: MapKey[]) => {
     const requestedDetails: Record<string ,any> = {};
     detailKeys.forEach((key: MapKey) => {
-      requestedDetails[key] = cloneDeep(instanceMap[instanceKey][key]);
+      requestedDetails[key] = instanceMap[instanceKey][key];
     });
     return requestedDetails;
   },
