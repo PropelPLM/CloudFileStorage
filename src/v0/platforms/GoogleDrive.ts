@@ -86,7 +86,7 @@ class GoogleDrive implements IPlatform {
       }
     )
     console.log('pre file', file)
-    InstanceManager.upsert(instanceKey, { uploadStream: uploadStream, file }); //REVERT
+    InstanceManager.upsert(instanceKey, { uploadStream: uploadStream, file: file }); //REVERT
     const afile = InstanceManager.get(instanceKey, [MapKey.file])
     console.log('post file', afile)
   }
