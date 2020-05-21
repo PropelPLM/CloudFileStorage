@@ -145,8 +145,13 @@ var GoogleDrive = (function () {
             var uploadStream;
             return __generator(this, function (_a) {
                 (uploadStream = InstanceManager_1.default.get(instanceKey, ["uploadStream"]).uploadStream);
-                uploadStream.write(payload);
-                InstanceManager_1.default.upsert(instanceKey, { uploadStream: uploadStream });
+                try {
+                    uploadStream.write(payload);
+                    InstanceManager_1.default.upsert(instanceKey, { uploadStream: uploadStream });
+                }
+                catch (err) {
+                    Logger_1.logErrorResponse(err, '[GOOGLE_DRIVE > UPLOAD_FILE]');
+                }
                 return [2];
             });
         });

@@ -91,8 +91,12 @@ class GoogleDrive implements IPlatform {
   async uploadFile(instanceKey: string, payload: Record<string, any>) {
     let uploadStream;
     ({ uploadStream } = InstanceManager.get(instanceKey, [MapKey.uploadStream])); //REVERT
-    uploadStream.write(payload)
-    InstanceManager.upsert(instanceKey, { uploadStream });
+    try {
+      uploadStream.write(payload)
+      InstanceManager.upsert(instanceKey, { uploadStream });
+    } catch (err) {
+      logErrorResponse(err, '[GOOGLE_DRIVE > UPLOAD_FILE]')
+    }
   }
 
   async endUpload(instanceKey: string) {
