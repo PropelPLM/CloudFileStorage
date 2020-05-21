@@ -682,7 +682,7 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/utils/jsforce.ts": {
-        "version": "4e5b69dd2b3d190012d1c19a742ee7974a53c4f52a81f51aa445ae17fd5c7354",
+        "version": "338b725037787ece386fecc97e3cc2c27e38002e3095dcd657cb064826b70da5",
         "signature": "84539850c5a6cc4c39b5ccb4fc3fbe0254729073e8b29e983093e214578548a4",
         "affectsGlobalScope": false
       },
