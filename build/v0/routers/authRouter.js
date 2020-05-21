@@ -124,4 +124,4 @@ router.get('/callback/google', function (req, res) { return __awaiter(void 0, vo
         }
     });
 }); });
-module.exports = router;
+exports.default = router;

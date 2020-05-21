@@ -133,16 +133,7 @@ var JsForce = (function () {
                         _e.trys.push([0, 3, , 4]);
                         connection = void 0, orgNamespace = void 0, revisionId = void 0, isNew = void 0, webViewLink = void 0, id = void 0, fileExtension = void 0, webContentLink = void 0;
                         (_d = InstanceManager_1.default.get(instanceKey, ["connection", "orgNamespace", "revisionId", "isNew"]), connection = _d.connection, orgNamespace = _d.orgNamespace, revisionId = _d.revisionId, isNew = _d.isNew);
-                        console.log('orgNamespace', orgNamespace);
-                        console.log('revisionId', revisionId);
-                        console.log('isNew', isNew);
-                        console.log('file', file);
                         (name_1 = file.name, webViewLink = file.webViewLink, id = file.id, fileExtension = file.fileExtension, webContentLink = file.webContentLink);
-                        console.log('name', name_1);
-                        console.log('webViewLink', webViewLink);
-                        console.log('id', id);
-                        console.log('fileExtension', fileExtension);
-                        console.log('webContentLink', webContentLink);
                         newAttachment = {
                             External_Attachment_URL__c: webViewLink,
                             File_Extension__c: fileExtension,

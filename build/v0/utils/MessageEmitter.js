@@ -24,8 +24,13 @@ var setAttribute = function (instanceKey, attribute, value) {
 };
 exports.default = {
     postTrigger: function (instanceKey, topic, payload) {
-        console.log('posttrigger instanceKey: ', instanceKey);
-        io.to(instanceKey).emit('trigger', { topic: topic, payload: payload });
+        try {
+            io.to(instanceKey).emit('trigger', { topic: topic, payload: payload });
+            Logger_1.logSuccessResponse(instanceKey, '[MESSAGE_EMITTER > POST_TRIGGER]');
+        }
+        catch (err) {
+            Logger_1.logErrorResponse(err, '[MESSAGE_EMITTER > POST_TRIGGER]');
+        }
     },
     postProgress: function (instanceKey, src) {
         var _a;

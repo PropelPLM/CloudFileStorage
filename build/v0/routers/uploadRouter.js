@@ -10,6 +10,25 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -50,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express = require('express');
+var express = __importStar(require("express"));
 var router = express.Router();
 var Busboy = require('busboy');
 var Logger_1 = require("../utils/Logger");
@@ -128,7 +147,6 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
             form
                 .on('field', function (fieldName, value) {
                 fileSize_1 = fieldName == 'fileSize' ? value : 0;
-                console.log('fileSize', fileSize_1);
             })
                 .on('file', function (_1, file, fileName, _2, mimeType) {
                 return __awaiter(this, void 0, void 0, function () {
@@ -167,7 +185,6 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
                             return [4, JsForce_1.default.create(file.data, instanceKey)];
                         case 2:
                             sfObject = _a.sent();
-                            console.log('sfObject', sfObject);
                             response = {
                                 status: parseInt(file.status),
                                 data: __assign(__assign({}, file.data), { sfId: sfObject.id, revisionId: sfObject.revisionId, salesforceUrl: salesforceUrl,
@@ -187,4 +204,4 @@ router.post('/:instanceKey', function (req, res) { return __awaiter(void 0, void
         return [2];
     });
 }); });
-module.exports = router;
+exports.default = router;

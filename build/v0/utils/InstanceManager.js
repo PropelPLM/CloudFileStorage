@@ -17,5 +17,5 @@ exports.default = {
             requestedDetails[key] = instanceMap[instanceKey][key];
         });
         return requestedDetails;
-    },
+    }
 };

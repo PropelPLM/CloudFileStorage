@@ -3,7 +3,7 @@
 import { Stream } from "stream";
 
 export {};
-const express = require('express');
+import * as express from 'express';
 const router = express.Router();
 const Busboy = require('busboy');
 
@@ -66,7 +66,6 @@ router.post('/:instanceKey', async (req: any, res: any) => {
     form
       .on('field', (fieldName: string, value: number) => {
         fileSize = fieldName == 'fileSize' ? value : 0;
-        console.log('fileSize', fileSize);
       })
       .on('file', async function(_1: any, file: Stream, fileName: string, _2: any, mimeType: string) {
         await Promise.all([
@@ -88,7 +87,6 @@ router.post('/:instanceKey', async (req: any, res: any) => {
       .on('finish', async () => {
         const file: GoogleFile = await GoogleDrive.endUpload(instanceKey);
         const sfObject = await JsForce.create(file.data, instanceKey);
-        console.log('sfObject', sfObject)
         const response = {
           status: parseInt(file.status),
           data: {
@@ -108,4 +106,4 @@ router.post('/:instanceKey', async (req: any, res: any) => {
     }
 });
 
-module.exports = router;
+export default router;

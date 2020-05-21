@@ -18,7 +18,7 @@ class GoogleDrive implements IPlatform {
     let clientId: string, clientSecret: string, redirect_uri: string;
     ({ clientId, clientSecret, redirect_uri } = credentials);
 
-    const oAuth2Client: any = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
+    const oAuth2Client: OAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
     InstanceManager.upsert(instanceKey, { oAuth2Client });
     return oAuth2Client.generateAuthUrl({
       access_type: 'offline',
@@ -28,8 +28,8 @@ class GoogleDrive implements IPlatform {
     });
   }
 
-  public async getTokens(code: string, instanceKey: string) {
-    let oAuth2Client: any;
+  public async getTokens(code: string, instanceKey: string): Promise<Record<string, any>> {
+    let oAuth2Client: OAuth2Client;
     ({ oAuth2Client } = InstanceManager.get(instanceKey, [MapKey.oAuth2Client]));
     try {
       const token = await oAuth2Client.getToken(code);
@@ -37,13 +37,14 @@ class GoogleDrive implements IPlatform {
       return token;
     } catch (err) {
       logErrorResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
+      return {};
     }
   }
 
   //UPLOAD FLOW- INSTANCE MANAGER VARIABLES HERE DFO NOT PERSIST FROM TOKEN FLOW
-  public async authorize(instanceKey: string, clientId: string, clientSecret: string, tokens: Record<string, string>) {//}, options, callback) {
+  public async authorize(instanceKey: string, clientId: string, clientSecret: string, tokens: Record<string, string>): Promise<void> {
     try {
-      const oAuth2Client: any = new google.auth.OAuth2(clientId, clientSecret, this.redirect_uris[0]);
+      const oAuth2Client: OAuth2Client = new google.auth.OAuth2(clientId, clientSecret, this.redirect_uris[0]);
       oAuth2Client.setCredentials(tokens);
       InstanceManager.upsert(instanceKey, { oAuth2Client });
       logSuccessResponse({}, '[GOOGLE_DRIVE.AUTHORIZE]');
@@ -52,8 +53,8 @@ class GoogleDrive implements IPlatform {
     }
   }
 
-  async initUpload(instanceKey: string, { fileName, mimeType, fileSize }: { fileName: string, mimeType: string, fileSize: number }) {
-    let destinationFolderId: string, oAuth2Client: any;
+  async initUpload(instanceKey: string, { fileName, mimeType, fileSize }: { fileName: string, mimeType: string, fileSize: number }): Promise<void> {
+    let destinationFolderId: string, oAuth2Client: OAuth2Client;
     ({ destinationFolderId, oAuth2Client } = InstanceManager.get(instanceKey, [MapKey.destinationFolderId, MapKey.oAuth2Client]));
     const drive = google.drive({ version: 'v3', auth: oAuth2Client });
     const uploadStream = new PassThrough();
@@ -88,7 +89,7 @@ class GoogleDrive implements IPlatform {
     InstanceManager.upsert(instanceKey, { uploadStream, file }); //REVERT
   }
 
-  async uploadFile(instanceKey: string, payload: Record<string, any>) {
+  async uploadFile(instanceKey: string, payload: Record<string, any>): Promise<void> {
     let uploadStream;
     ({ uploadStream } = InstanceManager.get(instanceKey, [MapKey.uploadStream])); //REVERT
     try {
@@ -102,8 +103,6 @@ class GoogleDrive implements IPlatform {
   async endUpload(instanceKey: string): Promise<GoogleFile> {
     let file: GoogleFile;
     ({ file } = InstanceManager.get(instanceKey, [MapKey.file]));
-    console.log('file', file)
-    console.log('await file', await file)
     return await file;
   }
 }

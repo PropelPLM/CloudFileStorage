@@ -1,18 +1,17 @@
 'use strict';
 
-export = {};
-const cors = require('cors');
-const express = require('express');
-const path = require('path');
+import cors from 'cors';
+import express from 'express';
+import path from 'path';
 
 const app = express();
 const server = require('http').createServer(app);
 module.exports = server;
 const port = process.env.PORT || 5000;
 
-const { logSuccessResponse, logErrorResponse } = require('./utils/Logger');
-const authRouter = require('./routers/authRouter');
-const uploadRouter = require('./routers/uploadRouter');
+import { logSuccessResponse, logErrorResponse } from './utils/Logger';
+import authRouter from './routers/authRouter';
+import uploadRouter from './routers/uploadRouter';
 
 app.use(express.json());
 app.use(cors());

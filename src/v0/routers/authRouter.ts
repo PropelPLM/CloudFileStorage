@@ -46,7 +46,7 @@ router.get('/callback/google', async (req: any, res: any) => {
   const code = req.query.code;
   try {
 
-    const token: any = await GoogleDrive.getTokens(code, instanceKey);
+    const token: Record<string, any> = await GoogleDrive.getTokens(code, instanceKey);
   
     let clientId: string, clientSecret: string;
     ({ clientId, clientSecret } = InstanceManager.get(instanceKey, [MapKey.clientId, MapKey.clientSecret]));
@@ -59,4 +59,4 @@ router.get('/callback/google', async (req: any, res: any) => {
   }
 });
 
-module.exports = router;
+export default router;

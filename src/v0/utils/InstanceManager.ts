@@ -21,15 +21,5 @@ export default {
       requestedDetails[key] = instanceMap[instanceKey][key];
     });
     return requestedDetails;
-  },
-
-  // getRef: (instanceKey: string, key: MapKey) => {
-  //   const requestedDetails: Record<string ,any> = {};
-  //   requestedDetails[key] = instanceMap[instanceKey][key];
-  //   return requestedDetails;
-  // },
-
-  // upsert: (instanceKey: string, key: MapKey, value: any) => {
-  //   instanceMap[instanceKey][key] = value //uses same object in memory
-  // },
+  }
 };

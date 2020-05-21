@@ -53,17 +53,8 @@ export class JsForce {
       let connection: any, orgNamespace: string, revisionId: string, isNew: string, name: string,
           webViewLink: string, id: string, fileExtension: string, webContentLink: string;
       ({ connection, orgNamespace, revisionId, isNew } = InstanceManager.get(instanceKey, [MapKey.connection, MapKey.orgNamespace, MapKey.revisionId, MapKey.isNew]));
-      console.log('orgNamespace', orgNamespace);
-      console.log('revisionId', revisionId);
-      console.log('isNew', isNew);
-      console.log('file', file);
 
       ({ name, webViewLink, id, fileExtension, webContentLink } = file);
-      console.log('name', name);
-      console.log('webViewLink', webViewLink);
-      console.log('id', id);
-      console.log('fileExtension', fileExtension);
-      console.log('webContentLink', webContentLink);
       const newAttachment: Record<string, string> = {
         External_Attachment_URL__c: webViewLink,
         File_Extension__c: fileExtension,

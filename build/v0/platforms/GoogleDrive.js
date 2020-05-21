@@ -79,7 +79,7 @@ var GoogleDrive = (function () {
                     case 3:
                         err_1 = _a.sent();
                         Logger_1.logErrorResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
-                        return [3, 4];
+                        return [2, {}];
                     case 4: return [2];
                 }
             });
@@ -158,19 +158,13 @@ var GoogleDrive = (function () {
     };
     GoogleDrive.prototype.endUpload = function (instanceKey) {
         return __awaiter(this, void 0, void 0, function () {
-            var file, _a, _b, _c;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var file;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         (file = InstanceManager_1.default.get(instanceKey, ["file"]).file);
-                        console.log('file', file);
-                        _b = (_a = console).log;
-                        _c = ['await file'];
                         return [4, file];
-                    case 1:
-                        _b.apply(_a, _c.concat([_d.sent()]));
-                        return [4, file];
-                    case 2: return [2, _d.sent()];
+                    case 1: return [2, _a.sent()];
                 }
             });
         });
