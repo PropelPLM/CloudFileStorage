@@ -36,7 +36,7 @@ class GoogleDrive implements IPlatform {
       logSuccessResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
       return token;
     } catch (err) {
-      logErrorResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
+      logErrorResponse(err, '[GOOGLE_DRIVE.GET_TOKENS]');
       return {};
     }
   }

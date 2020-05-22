@@ -472,7 +472,7 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/platforms/googledrive.ts": {
-        "version": "f6c396656b754e20032f924cce1d3e7591e2a7ebaf49360907078dde698fccd9",
+        "version": "0c27ca1b97d6f28c2803f7e581d38658f0422a3623056181a27d9b00c51a7de0",
         "signature": "1129b27d1a10e408d84de9427d9b7d38db4296ef6d267df9ec0eee0fd1c217ef",
         "affectsGlobalScope": false
       },
