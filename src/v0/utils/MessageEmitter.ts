@@ -5,6 +5,8 @@
 import { server } from '../main';
 import ioSocket from 'socket.io';
 const io = ioSocket(server);
+console.log('server', server);
+console.log('io', io);
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
 
