@@ -8,18 +8,15 @@ const io = ioSocket(server);
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
 
-const init = () => {
-  io.on('connection', (socket: any) => {
-    socket.on('start', (instanceKey: string) => {
-      socket.join(instanceKey);
-      logSuccessResponse({ instanceKey }, '[MESSAGE_EMITTER.JOIN_ROOM]');
-      let salesforceUrl;
-      ({ salesforceUrl } = InstanceManager.get(instanceKey, [MapKey.salesforceUrl]));
-      setAttribute(instanceKey, 'target-window', salesforceUrl);
-    });
+io.on('connection', (socket: any) => {
+  socket.on('start', (instanceKey: string) => {
+    socket.join(instanceKey);
+    logSuccessResponse({ instanceKey }, '[MESSAGE_EMITTER.JOIN_ROOM]');
+    let salesforceUrl;
+    ({ salesforceUrl } = InstanceManager.get(instanceKey, [MapKey.salesforceUrl]));
+    setAttribute(instanceKey, 'target-window', salesforceUrl);
   });
-}
-init();
+});
 
 const setAttribute = (instanceKey: string, attribute: string, value: string) => {
   const keyedAttribute: Record<string, string> = {};
