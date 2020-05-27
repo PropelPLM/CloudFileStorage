@@ -1,17 +1,15 @@
 'use strict';
 
 // Will be used more widely when there are different storages
-// import { server } from '../main';
-// import ioSocket from 'socket.io';
-// const io = ioSocket(server);
-const server = require('../main');
-const io = require('socket.io')(server);
-console.log('server', server);
-console.log('io', io);
+var server = require('../main');
+import ioSocket from 'socket.io';
+const io = ioSocket(server);
+
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
 
-io.on('connection', (socket: any) => {
+const init = () => {
+  io.on('connection', (socket: any) => {
   socket.on('start', (instanceKey: string) => {
     socket.join(instanceKey);
     logSuccessResponse({ instanceKey }, '[MESSAGE_EMITTER.JOIN_ROOM]');
@@ -20,6 +18,8 @@ io.on('connection', (socket: any) => {
     setAttribute(instanceKey, 'target-window', salesforceUrl);
   });
 });
+}
+init();
 
 const setAttribute = (instanceKey: string, attribute: string, value: string) => {
   const keyedAttribute: Record<string, string> = {};

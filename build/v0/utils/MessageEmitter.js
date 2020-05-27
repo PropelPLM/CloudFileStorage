@@ -3,22 +3,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const main_1 = require("../main");
+var server = require('../main');
 const socket_io_1 = __importDefault(require("socket.io"));
-const io = socket_io_1.default(main_1.server);
-console.log('server', main_1.server);
-console.log('io', io);
+const io = socket_io_1.default(server);
 const Logger_1 = require("../utils/Logger");
 const InstanceManager_1 = __importDefault(require("../utils/InstanceManager"));
-io.on('connection', (socket) => {
-    socket.on('start', (instanceKey) => {
-        socket.join(instanceKey);
-        Logger_1.logSuccessResponse({ instanceKey }, '[MESSAGE_EMITTER.JOIN_ROOM]');
-        let salesforceUrl;
-        ({ salesforceUrl } = InstanceManager_1.default.get(instanceKey, ["salesforceUrl"]));
-        setAttribute(instanceKey, 'target-window', salesforceUrl);
+const init = () => {
+    io.on('connection', (socket) => {
+        socket.on('start', (instanceKey) => {
+            socket.join(instanceKey);
+            Logger_1.logSuccessResponse({ instanceKey }, '[MESSAGE_EMITTER.JOIN_ROOM]');
+            let salesforceUrl;
+            ({ salesforceUrl } = InstanceManager_1.default.get(instanceKey, ["salesforceUrl"]));
+            setAttribute(instanceKey, 'target-window', salesforceUrl);
+        });
     });
-});
+};
+init();
 const setAttribute = (instanceKey, attribute, value) => {
     const keyedAttribute = {};
     keyedAttribute[`instance-key`] = instanceKey;
