@@ -542,7 +542,7 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/utils/messageemitter.ts": {
-        "version": "a8fce67af722c512ff6effa35c8c9b45f5a784da211d38a37a0f047ea0ab0a8a",
+        "version": "e91004f42378dd098ec7c454e81a812c9e3db0c19eab78550fff90d4ddb4f80f",
         "signature": "5e94d945fc24331647189dba983e7412d3554423242df5af993f36c1838c5b1f",
         "affectsGlobalScope": false
       },

@@ -1,10 +1,11 @@
-// @ts-nocheck
 'use strict';
 
 // Will be used more widely when there are different storages
-import { server } from '../main';
-import ioSocket from 'socket.io';
-const io = ioSocket(server);
+// import { server } from '../main';
+// import ioSocket from 'socket.io';
+// const io = ioSocket(server);
+const server = require('../main');
+const io = require('socket.io')(server);
 console.log('server', server);
 console.log('io', io);
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';

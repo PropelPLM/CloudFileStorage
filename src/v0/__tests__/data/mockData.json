@@ -1,0 +1,57 @@
+{
+  "instanceKey1": "dummy_key1",
+  "instanceKey2": "dummy_key2",
+  "accessToken": "dummy_accessToken",
+  "refreshToken": "dummy_refreshToken",
+  "expiryDate": "dummy_expiryDate",
+  "instanceMap": {
+    "dummy_key1": {
+      "clientId": "dummyId1",
+      "clientSecret": "dummySecret1",
+      "connection": "connection1",
+      "destinationFolderId": "folderDest1",
+      "externalBytes": "externalBytes1",
+      "file": {
+        "name": "fileName1",
+        "webViewLink": "webViewLink1",
+        "id": "fileId1",
+        "fileExtension": "fileExtension1",
+        "webContentLink": "webContentLink1"
+      },
+      "fileName": "dummyFileName1.png",
+      "fileSize": 1000,
+      "frontendBytes": "frontendBytes1",
+      "isNew": false,
+      "oAuth2Client": "",
+      "orgNamespace": "orgNamespace1",
+      "revisionId": "revisionId1",
+      "salesforceUrl": "salesforceUrl1",
+      "sessionId": "sessionId1",
+      "uploadStream": "uploadStream1"
+    },
+    "dummy_key2": {
+      "clientId": "dummyId2",
+      "clientSecret": "dummySecret2",
+      "connection": "connection2",
+      "destinationFolderId": "folderDest2",
+      "externalBytes": "externalBytes2",
+      "file": {
+        "name": "fileName2",
+        "webViewLink": "webViewLink2",
+        "id": "fileId2",
+        "fileExtension": "fileExtension2",
+        "webContentLink": "webContentLink2"
+      },
+      "fileName": "dummyFileName2.png",
+      "fileSize": 2000,
+      "frontendBytes": "frontendBytes2",
+      "isNew": true,
+      "oAuth2Client": "",
+      "orgNamespace": "orgNamespace2",
+      "revisionId": "revisionId2",
+      "salesforceUrl": "salesforceUrl2",
+      "sessionId": "sessionId2",
+      "uploadStream": "uploadStream2"
+    }
+  }
+}
