@@ -1,13 +1,4 @@
 'use strict';
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -24,13 +15,13 @@ router.get('/:instanceKey', (req, res) => {
     InstanceManager_1.default.register(req.params.instanceKey);
     res.sendFile('index.html', { root: path_1.default.join(__dirname, '../../../public/') });
 });
-router.post('/:instanceKey', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/:instanceKey', async (req, res) => {
     const instanceKey = req.params.instanceKey;
     let sessionId, salesforceUrl, clientId, clientSecret;
     ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
     InstanceManager_1.default.register(instanceKey);
     const instanceDetails = { salesforceUrl, clientId, clientSecret };
-    yield Promise.all([
+    await Promise.all([
         InstanceManager_1.default.upsert(instanceKey, instanceDetails),
         JsForce_1.default.connect(sessionId, salesforceUrl, instanceKey)
     ]);
@@ -45,15 +36,15 @@ router.post('/:instanceKey', (req, res) => __awaiter(void 0, void 0, void 0, fun
         Logger_1.logErrorResponse({ clientId, clientSecret }, '[END_POINT.AUTH_REDIRECT]');
         res.status(400).send('Authorization failed, please ensure client credentials are populated.');
     }
-}));
-router.get('/callback/google', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+});
+router.get('/callback/google', async (req, res) => {
     const instanceKey = Buffer.from(req.query.state, 'base64').toString();
     const code = req.query.code;
     try {
-        const token = yield GoogleDrive_1.default.getTokens(code, instanceKey);
+        const token = await GoogleDrive_1.default.getTokens(code, instanceKey);
         let clientId, clientSecret;
         ({ clientId, clientSecret } = InstanceManager_1.default.get(instanceKey, ["clientId", "clientSecret"]));
-        yield JsForce_1.default.sendTokens(Object.assign(Object.assign({}, token.tokens), { clientId, clientSecret }), instanceKey);
+        await JsForce_1.default.sendTokens({ ...token.tokens, clientId, clientSecret }, instanceKey);
         MessageEmitter_1.default.postTrigger(instanceKey, 'authComplete', {});
         Logger_1.logSuccessResponse('MessageEmitted', '[CALLBACK_GOOGLE');
         res.send('<script>window.close()</script>');
@@ -61,5 +52,5 @@ router.get('/callback/google', (req, res) => __awaiter(void 0, void 0, void 0, f
     catch (err) {
         Logger_1.logErrorResponse(err, '[CALLBACK_GOOGLE');
     }
-}));
+});
 exports.default = router;

@@ -21,6 +21,7 @@ export class JsForce {
       ]);
       logSuccessResponse({}, '[JSFORCE.CONNECT]');
     } catch (err) {
+      console.log('err', err)
       logErrorResponse(err, '[JSFORCE.CONNECT]');
     }
   }
@@ -44,7 +45,7 @@ export class JsForce {
       logSuccessResponse(upsertedTokens, '[JSFORCE.SEND_TOKENS]');
       MessageEmitter.postTrigger(instanceKey, 'authComplete', {});
     } catch (err) {
-      logSuccessResponse(err, '[JSFORCE.SEND_TOKENS]');
+      logErrorResponse(err, '[JSFORCE.SEND_TOKENS]');
     }
   }
 
@@ -82,14 +83,18 @@ export class JsForce {
 
   // UTILS
   public async setupNamespace(instanceKey: string) {
-    let connection: any;
-    ({ connection } = InstanceManager.get(instanceKey, [MapKey.connection]));
-    const jsForceRecords = await connection.query(
-      'SELECT NamespacePrefix FROM ApexClass WHERE Name = \'CloudStorageService\' LIMIT 1'
-    );
-    const orgNamespace: string = jsForceRecords.records[0].NamespacePrefix;
-    InstanceManager.upsert(instanceKey, { orgNamespace });
-    logSuccessResponse({ orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
+    try {
+      let connection: any;
+      ({ connection } = InstanceManager.get(instanceKey, [MapKey.connection]));
+      const jsForceRecords = await connection.query(
+          'SELECT NamespacePrefix FROM ApexClass WHERE Name = \'CloudStorageService\' LIMIT 1'
+        );
+      const orgNamespace: string = jsForceRecords.records[0].NamespacePrefix;
+      InstanceManager.upsert(instanceKey, { orgNamespace });
+      logSuccessResponse({ orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
+    } catch (err) {
+      logErrorResponse(err, '[JSFORCE.SETUP_NAMESPACE]');
+    }
   }
 
   public async addNamespace(customObject: Record<string, string>, instanceKey: string) {

@@ -1,7 +1,7 @@
 type IMap = {
     [key in MapKey]: any;
   };
-  
+
 const enum MapKey {
   clientId = "clientId",
   clientSecret = "clientSecret",
@@ -17,6 +17,5 @@ const enum MapKey {
   orgNamespace = "orgNamespace",
   revisionId = "revisionId",
   salesforceUrl = "salesforceUrl",
-  sessionId = "sessionId",
   uploadStream = "uploadStream",
 }

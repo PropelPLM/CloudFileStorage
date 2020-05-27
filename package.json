@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node build/v0/main.js",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch --no-cache --colors"
   },
   "author": "clinton",
   "license": "ISC",
@@ -26,6 +26,9 @@
     "typescript": "^3.9.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-typescript": "^7.9.0",
     "@types/busboy": "^0.2.3",
     "@types/cors": "^2.8.6",
     "@types/express": "^4.17.6",
@@ -33,15 +36,30 @@
     "@types/gapi": "0.0.39",
     "@types/gapi.auth2": "0.0.52",
     "@types/gapi.client.drive": "^3.0.4",
+    "@types/jest": "^25.2.3",
     "@types/jsforce": "^1.9.18",
     "@types/lodash": "^4.14.150",
     "@types/node": "^14.0.4",
-    "jest": "^25.1.0",
+    "@types/socket.io": "^2.1.8",
+    "babel-jest": "^26.0.1",
+    "jest": "^26.0.0",
+    "ts-jest": "^26.0.0",
     "tslint": "^6.1.2"
   },
   "jest": {
-    "setupFiles": [
-      "./jest-setup.js"
-    ]
+    "transform": {
+      "^.+\\.[jt]sx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json",
+      "node"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.extend.ts"
+    ],
+    "transformIgnorePatterns": ["<rootDir>/node_modules/"]
   }
 }

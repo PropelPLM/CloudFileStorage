@@ -18,15 +18,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -39,7 +30,7 @@ const InstanceManager_1 = __importDefault(require("../utils/InstanceManager"));
 const MessageEmitter_1 = __importDefault(require("../utils/MessageEmitter"));
 const JsForce_1 = __importDefault(require("../utils/JsForce"));
 const GoogleDrive_1 = __importDefault(require("../platforms/GoogleDrive"));
-router.post('/token/:instanceKey', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/token/:instanceKey', async (req, res) => {
     const instanceKey = req.params.instanceKey;
     try {
         let client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl, tokensFromCredentials;
@@ -53,20 +44,20 @@ router.post('/token/:instanceKey', (req, res) => __awaiter(void 0, void 0, void 
         };
         InstanceManager_1.default.register(instanceKey);
         GoogleDrive_1.default.authorize(instanceKey, client_id, client_secret, tokensFromCredentials);
-        const instanceDetails = { sessionId, salesforceUrl };
-        yield Promise.all([
+        const instanceDetails = { salesforceUrl };
+        await Promise.all([
             InstanceManager_1.default.upsert(instanceKey, instanceDetails),
             JsForce_1.default.connect(sessionId, salesforceUrl, instanceKey)
         ]);
-        Logger_1.logSuccessResponse(Object.assign(Object.assign({}, tokensFromCredentials), { instanceKey }), '[END_POINT.TOKEN]');
-        res.status(200).send(Object.assign(Object.assign({}, tokensFromCredentials), { instanceKey }));
+        Logger_1.logSuccessResponse({ ...tokensFromCredentials, instanceKey }, '[END_POINT.TOKEN]');
+        res.status(200).send({ ...tokensFromCredentials, instanceKey });
     }
     catch (err) {
         Logger_1.logErrorResponse(err, '[END_POINT.TOKEN]');
         res.send(`Failed to receive tokens: ${err}`);
     }
-}));
-router.post('/uploadDetails/:instanceKey', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+});
+router.post('/uploadDetails/:instanceKey', async (req, res) => {
     try {
         const instanceKey = req.params.instanceKey;
         let revisionId, destinationFolderId, isNew;
@@ -79,8 +70,8 @@ router.post('/uploadDetails/:instanceKey', (req, res) => __awaiter(void 0, void 
     catch (err) {
         Logger_1.logErrorResponse(err, '[END_POINT.UPLOAD_DETAILS]');
     }
-}));
-router.post('/:instanceKey', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+});
+router.post('/:instanceKey', async (req, res) => {
     const instanceKey = req.params.instanceKey;
     const form = new Busboy({ headers: req.headers });
     let salesforceUrl, isNew;
@@ -91,40 +82,43 @@ router.post('/:instanceKey', (req, res) => __awaiter(void 0, void 0, void 0, fun
             .on('field', (fieldName, value) => {
             fileSize = fieldName == 'fileSize' ? value : 0;
         })
-            .on('file', function (_1, file, fileName, _2, mimeType) {
-            return __awaiter(this, void 0, void 0, function* () {
-                yield Promise.all([
-                    GoogleDrive_1.default.initUpload(instanceKey, { fileName, mimeType, fileSize }),
-                    InstanceManager_1.default.upsert(instanceKey, { fileName, frontendBytes: 0, externalBytes: 0, fileSize })
-                ]);
-                let progress = 0;
-                file
-                    .on('data', (data) => {
-                    progress = progress + data.length;
-                    InstanceManager_1.default.upsert(instanceKey, { frontendBytes: progress });
-                    MessageEmitter_1.default.postProgress(instanceKey, 'FRONTEND');
-                    GoogleDrive_1.default.uploadFile(instanceKey, data);
-                })
-                    .on('error', err => {
-                    Logger_1.logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
-                });
+            .on('file', async function (_1, file, fileName, _2, mimeType) {
+            await Promise.all([
+                GoogleDrive_1.default.initUpload(instanceKey, { fileName, mimeType, fileSize }),
+                InstanceManager_1.default.upsert(instanceKey, { fileName, frontendBytes: 0, externalBytes: 0, fileSize })
+            ]);
+            let progress = 0;
+            file
+                .on('data', async (data) => {
+                progress = progress + data.length;
+                InstanceManager_1.default.upsert(instanceKey, { frontendBytes: progress });
+                MessageEmitter_1.default.postProgress(instanceKey, 'FRONTEND');
+                await GoogleDrive_1.default.uploadFile(instanceKey, data);
+            })
+                .on('error', err => {
+                Logger_1.logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
             });
         })
-            .on('finish', () => __awaiter(void 0, void 0, void 0, function* () {
-            const file = yield GoogleDrive_1.default.endUpload(instanceKey);
-            const sfObject = yield JsForce_1.default.create(file.data, instanceKey);
+            .on('finish', async () => {
+            const file = await GoogleDrive_1.default.endUpload(instanceKey);
+            const sfObject = await JsForce_1.default.create(file.data, instanceKey);
             const response = {
                 status: parseInt(file.status),
-                data: Object.assign(Object.assign({}, file.data), { sfId: sfObject.id, revisionId: sfObject.revisionId, salesforceUrl,
-                    isNew })
+                data: {
+                    ...file.data,
+                    sfId: sfObject.id,
+                    revisionId: sfObject.revisionId,
+                    salesforceUrl,
+                    isNew
+                }
             };
             res.status(response.status).send(response.data);
             Logger_1.logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
-        }));
+        });
         req.pipe(form);
     }
     catch (err) {
         Logger_1.logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
     }
-}));
+});
 exports.default = router;

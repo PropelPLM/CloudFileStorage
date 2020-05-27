@@ -28,7 +28,7 @@ router.post('/token/:instanceKey', async (req: any, res: any) => {
 
     InstanceManager.register(instanceKey);
     GoogleDrive.authorize(instanceKey, client_id, client_secret, tokensFromCredentials); //getAdapter().authorize(...)
-    const instanceDetails: Partial<Record<MapKey, any>> = { sessionId, salesforceUrl };
+    const instanceDetails: Partial<Record<MapKey, any>> = { salesforceUrl };
     await Promise.all([
         InstanceManager.upsert(instanceKey, instanceDetails),
         JsForce.connect(sessionId, salesforceUrl, instanceKey)
@@ -73,11 +73,11 @@ router.post('/:instanceKey', async (req: any, res: any) => {
         ]);
         let progress: number = 0;
         file
-          .on('data', (data: Record<string, any>) => {
+          .on('data', async (data: Record<string, any>) => { //added async
             progress = progress + data.length
             InstanceManager.upsert(instanceKey, { frontendBytes: progress })
             MessageEmitter.postProgress(instanceKey, 'FRONTEND');
-            GoogleDrive.uploadFile(instanceKey, data);
+            await GoogleDrive.uploadFile(instanceKey, data);
           })
           .on('error', err => {
             logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');

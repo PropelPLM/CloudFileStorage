@@ -5,7 +5,7 @@ import express from 'express';
 import path from 'path';
 
 const app = express();
-const server = require('http').createServer(app);
+export const server = require('http').createServer(app);
 module.exports = server;
 const port = process.env.PORT || 5000;
 

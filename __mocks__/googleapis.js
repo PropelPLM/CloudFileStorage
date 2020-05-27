@@ -1,29 +1,10 @@
+import { auth } from './helperObjects/OAuth';
 const { google } = jest.genMockFromModule('googleapis');
 
-const auth = Object.create(null);
-auth.OAuth2 = jest.fn((clientid, clientsecret, redirecturi) => {
-  return {
-    setCredentials: jest.fn((tokens) => {
-      return true;
-    }),
-  };
-});
-
-const drive = jest.fn((version, auth) => {
+const drive = jest.fn(() => {
   return {
     files: {
-      create: jest.fn((file) => {
-        return new Promise((resolve, reject) => {
-          file.resource.name
-            ? resolve({
-                status: 200,
-                data: 'hello_test_data',
-              })
-            : reject({
-                status: 503,
-              });
-        });
-      }),
+      create: jest.fn().mockReturnValue({})
     },
   };
 });
@@ -31,4 +12,4 @@ const drive = jest.fn((version, auth) => {
 google.auth = auth;
 google.drive = drive;
 
-module.exports = { google };
+export { google };
