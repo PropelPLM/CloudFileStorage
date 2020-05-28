@@ -50,6 +50,7 @@ class GoogleDrive implements IPlatform {
       logSuccessResponse({}, '[GOOGLE_DRIVE.AUTHORIZE]');
     } catch (err) {
       logErrorResponse(err, '[GOOGLE_DRIVE.AUTHORIZE]');
+      throw (err);
     }
   }
 

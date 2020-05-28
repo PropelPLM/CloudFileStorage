@@ -13,3 +13,7 @@ export const logErrorResponse = (err: any, functionName: string) => {
   console.log(`\x1b[31m${functionName} failed \x1b[39m due to error: ${JSON.stringify(err)}.`);
   return err;
 }
+
+export const logProgressResponse = (fileName: string, src: string, progress: number) => {
+  console.log(`[${fileName}][${src}_UPLOAD]: ${progress}`);
+}

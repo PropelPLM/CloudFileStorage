@@ -6,10 +6,8 @@ import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
 import MessageEmitter from '../utils/MessageEmitter';
 
-export class JsForce {
-  public constructor() {}
-  
-  public async connect(sessionId: string, salesforceUrl: string, instanceKey: string) {
+export default {  
+  async connect(sessionId: string, salesforceUrl: string, instanceKey: string) {
     try {
       const connection = new jsConnect.Connection({
         instanceUrl: salesforceUrl,
@@ -21,12 +19,11 @@ export class JsForce {
       ]);
       logSuccessResponse({}, '[JSFORCE.CONNECT]');
     } catch (err) {
-      console.log('err', err)
       logErrorResponse(err, '[JSFORCE.CONNECT]');
     }
-  }
+  },
 
-  public async sendTokens(tokens: Record<string, string>, instanceKey: string) {
+  async sendTokens(tokens: Record<string, string>, instanceKey: string) {
     const newSetting = {
       Access_Token__c: tokens.access_token,
       Refresh_Token__c: tokens.refresh_token,
@@ -47,9 +44,9 @@ export class JsForce {
     } catch (err) {
       logErrorResponse(err, '[JSFORCE.SEND_TOKENS]');
     }
-  }
+  },
 
-  public async create(file: any, instanceKey: string) {
+  async create(file: any, instanceKey: string) {
     try {
       let connection: any, orgNamespace: string, revisionId: string, isNew: string, name: string,
           webViewLink: string, id: string, fileExtension: string, webContentLink: string;
@@ -79,10 +76,10 @@ export class JsForce {
     } catch (err) {
       logErrorResponse({ err }, '[JSFORCE.CREATE]');
     }
-  }
+  },
 
   // UTILS
-  public async setupNamespace(instanceKey: string) {
+  async setupNamespace(instanceKey: string) {
     try {
       let connection: any;
       ({ connection } = InstanceManager.get(instanceKey, [MapKey.connection]));
@@ -95,9 +92,9 @@ export class JsForce {
     } catch (err) {
       logErrorResponse(err, '[JSFORCE.SETUP_NAMESPACE]');
     }
-  }
+  },
 
-  public async addNamespace(customObject: Record<string, string>, instanceKey: string) {
+  async addNamespace(customObject: Record<string, string>, instanceKey: string) {
     let orgNamespace: string;
     ({ orgNamespace } = InstanceManager.get(instanceKey, [MapKey.orgNamespace]));
     for (const key in customObject) {
@@ -111,5 +108,3 @@ export class JsForce {
     return customObject;
   }
 }
-
-export default new JsForce();

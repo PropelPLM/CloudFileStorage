@@ -1,37 +1,29 @@
-
 // @ts-nocheck
 // TODO: find another way to enforce type safety OR get ts to realise this is a jest file
-const io = require('socket.io')();
-import MessageEmitter from '../../utils/MessageEmitter';
 import { logErrorResponse, logSuccessResponse } from '../../utils/Logger';
 import InstanceManager from '../../utils/InstanceManager';
+import MessageEmitter from '../../utils/MessageEmitter';
 import data from '../data/mockData.json';
+const io = require('socket.io')();
 
 jest
   .mock('socket.io')
   .mock('../../utils/Logger')
-  .mock('../../utils/InstanceManager');
+  .mock('../../utils/InstanceManager')
 
-const instanceMap: Record<string, Partial<IMap>> = data.instanceMap;
 const instanceKey1 = data.instanceKey1;
-const instanceKey2 = data.instanceKey2;
 
 describe ('MessageEmittertest suite', () => {
-  beforeAll(() => {
-    expect(io.on).toHaveBeenCalled();
-    // expect(io.on.mock.calls[0][0]).toBe('connection');
-    io.on.mock.calls[0][1]('start', instanceKey1);
-    expect(logSuccessResponse).toHaveBeenCalledTimes(1);
-    expect(logSuccessResponse).toHaveBeenCalledWith({ instanceKey1 });
-    console.log(io.on.mock.calls[0][1]('start', instanceKey1))
-    console.log(io.on.mock.results)
-    expect(io.on.mock.results[0].value.join).toHaveBeenCalledTimes(1);
-    expect(io.on.mock.results[0].value.join).toHaveBeenCalledWith('start');
-  })
 
   afterEach(() => {
     jest.clearAllMocks();
   });
+
+  it ('init to be called on connection', () => {
+    MessageEmitter.init();
+    expect(io.on).toHaveBeenCalled();
+    expect(io.on.mock.calls[0][0]).toBe('connection');
+  })
 
   it('postTrigger causes io to emit a trigger event', () => {
     const dummyTopic = 'dummyTopic';

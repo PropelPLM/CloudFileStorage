@@ -30,20 +30,25 @@ router.post('/:instanceKey', (req, res) => __awaiter(void 0, void 0, void 0, fun
     ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
     InstanceManager_1.default.register(instanceKey);
     const instanceDetails = { salesforceUrl, clientId, clientSecret };
-    yield Promise.all([
-        InstanceManager_1.default.upsert(instanceKey, instanceDetails),
-        JsForce_1.default.connect(sessionId, salesforceUrl, instanceKey)
-    ]);
-    if (clientId && clientSecret) {
-        const credentials = { clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google` };
-        const url = GoogleDrive_1.default.createAuthUrl(credentials, instanceKey);
-        MessageEmitter_1.default.setAttribute(instanceKey, 'target-window', salesforceUrl);
-        Logger_1.logSuccessResponse(instanceKey, '[END_POINT.AUTH_REDIRECT]');
-        res.status(200).send({ url });
+    try {
+        yield Promise.all([
+            InstanceManager_1.default.upsert(instanceKey, instanceDetails),
+            JsForce_1.default.connect(sessionId, salesforceUrl, instanceKey)
+        ]);
+        if (clientId && clientSecret) {
+            const credentials = { clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google` };
+            const url = GoogleDrive_1.default.createAuthUrl(credentials, instanceKey);
+            MessageEmitter_1.default.setAttribute(instanceKey, 'target-window', salesforceUrl);
+            Logger_1.logSuccessResponse(instanceKey, '[END_POINT.AUTH_REDIRECT]');
+            res.status(200).send({ url });
+        }
+        else {
+            throw new Error('Client Id or secret is missing.');
+        }
     }
-    else {
-        Logger_1.logErrorResponse({ clientId, clientSecret }, '[END_POINT.AUTH_REDIRECT]');
-        res.status(400).send('Authorization failed, please ensure client credentials are populated.');
+    catch (err) {
+        Logger_1.logErrorResponse(err, '[END_POINT.AUTH_REDIRECT]');
+        res.status(400).send(`Authorization failed, please check your credentials: ${err}`);
     }
 }));
 router.get('/callback/google', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -53,12 +58,18 @@ router.get('/callback/google', (req, res) => __awaiter(void 0, void 0, void 0, f
         const token = yield GoogleDrive_1.default.getTokens(code, instanceKey);
         let clientId, clientSecret;
         ({ clientId, clientSecret } = InstanceManager_1.default.get(instanceKey, ["clientId", "clientSecret"]));
-        yield JsForce_1.default.sendTokens(Object.assign(Object.assign({}, token.tokens), { clientId, clientSecret }), instanceKey);
+        if (token.tokens) {
+            yield JsForce_1.default.sendTokens(Object.assign(Object.assign({}, token.tokens), { clientId, clientSecret }), instanceKey);
+        }
+        else {
+            throw new Error('No tokens found in Google Drive callback.');
+        }
         MessageEmitter_1.default.postTrigger(instanceKey, 'authComplete', {});
         Logger_1.logSuccessResponse('MessageEmitted', '[CALLBACK_GOOGLE');
         res.send('<script>window.close()</script>');
     }
     catch (err) {
+        res.status(500).send(`Callback from google has failed: ${err}`);
         Logger_1.logErrorResponse(err, '[CALLBACK_GOOGLE');
     }
 }));

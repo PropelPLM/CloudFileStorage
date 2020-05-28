@@ -6,8 +6,8 @@ import path from 'path';
 
 const app = express();
 const server = require('http').createServer(app);
+const port = process.env.PORT || 6000;
 module.exports = server;
-const port = process.env.PORT || 5000;
 
 import { logSuccessResponse, logErrorResponse } from './utils/Logger';
 import authRouter from './routers/authRouter';
@@ -17,13 +17,15 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, '../../public')));
 
-server.listen(port, () => {
-  try {
-    logSuccessResponse('SUCCESS', '[SERVER_INIT]');
-  } catch (err) {
-    logErrorResponse(err, '[SERVER_INIT]');
-  }
-});
+if (process.argv[2] == 'PRODUCTION') {
+  server.listen(port, () => {
+    try {
+      logSuccessResponse('SUCCESS', '[SERVER_INIT]');
+    } catch (err) {
+      logErrorResponse(err, '[SERVER_INIT]');
+    }
+  });
+}
 
 app.use('/auth', authRouter);
 app.use('/upload', uploadRouter);

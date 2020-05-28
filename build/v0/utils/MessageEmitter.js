@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var server = require('../main');
+const server = require('../main');
 const socket_io_1 = __importDefault(require("socket.io"));
 const io = socket_io_1.default(server);
 const Logger_1 = require("../utils/Logger");
@@ -27,6 +27,7 @@ const setAttribute = (instanceKey, attribute, value) => {
     io.to(instanceKey).emit('setAttribute', keyedAttribute);
 };
 exports.default = {
+    init,
     postTrigger: (instanceKey, topic, payload) => {
         try {
             io.to(instanceKey).emit('trigger', { topic, payload });
@@ -39,8 +40,9 @@ exports.default = {
     postProgress: (instanceKey, src) => {
         let fileName, frontendBytes, externalBytes, fileSize;
         ({ fileName, frontendBytes, externalBytes, fileSize } = InstanceManager_1.default.get(instanceKey, ["fileName", "frontendBytes", "externalBytes", "fileSize"]));
+        const srcProgress = src == 'FRONTEND' ? frontendBytes / fileSize : externalBytes / fileSize;
+        Logger_1.logProgressResponse(fileName, src, srcProgress);
         const percentCompletion = Math.floor((100 * (frontendBytes + externalBytes)) / (fileSize * 2));
-        console.log(`[${fileName}][${src}_UPLOAD]: ${src == 'FRONTEND' ? frontendBytes / fileSize : externalBytes / fileSize}`);
         io.to(instanceKey).emit('progress', percentCompletion);
     },
     setAttribute,

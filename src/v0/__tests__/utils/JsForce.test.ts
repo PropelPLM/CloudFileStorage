@@ -17,7 +17,7 @@ const instanceMap: Record<string, Partial<IMap>> = data.instanceMap;
 const instanceKey1 = data.instanceKey1;
 const instanceKey2 = data.instanceKey2;
 
-xdescribe ('JsForce test suite', () => {
+describe ('JsForce test suite', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -91,7 +91,7 @@ xdescribe ('JsForce test suite', () => {
   describe('create triggers item creation on SF Apex', () => {
     it('writes to existing object', async () => {
       const file = {
-        name: instanceMap[instanceKey1].file.name,
+        name: instanceMap[instanceKey1].fileName,
         webViewLink: instanceMap[instanceKey1].file.webViewLink,
         id: instanceMap[instanceKey1].file.id,
         fileExtension: instanceMap[instanceKey1].file.fileExtension,
@@ -111,14 +111,14 @@ xdescribe ('JsForce test suite', () => {
       itemRev[`${namespace}__Item_Revision__c`] = instanceMap[instanceKey1].revisionId;
       expect(InstanceManager.get.mock.results[0].value.connection.sobject.mock.results[0].value.create.mock.calls[0][0])
         .toMatchObject({
-          Name: instanceMap[instanceKey1].file.name,
+          Name: instanceMap[instanceKey1].fileName,
           ...itemRev
         });
     });
 
     it('writes to new object', async () => {
       const file = {
-        name: instanceMap[instanceKey2].file.name,
+        name: instanceMap[instanceKey2].fileName,
         webViewLink: instanceMap[instanceKey2].file.webViewLink,
         id: instanceMap[instanceKey2].file.id,
         fileExtension: instanceMap[instanceKey2].file.fileExtension,
@@ -131,7 +131,7 @@ xdescribe ('JsForce test suite', () => {
       itemRev[`${namespace}__Item_Revision__c`] = instanceMap[instanceKey2].revisionId;
       expect(InstanceManager.get.mock.results[0].value.connection.sobject.mock.results[0].value.create.mock.calls[0][0])
         .not.toMatchObject({
-          Name: instanceMap[instanceKey2].file.name,
+          Name: instanceMap[instanceKey2].fileName,
           ...itemRev
         });
     });

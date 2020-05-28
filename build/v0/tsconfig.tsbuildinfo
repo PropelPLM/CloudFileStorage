@@ -462,8 +462,8 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/utils/logger.ts": {
-        "version": "35429b8d966633e30c923151f008c42879273b127e64fd0672c0d61a73207092",
-        "signature": "6b142a3dee4320f5efac97671c44718bd2952df3181193ebf3e2279370440fcc",
+        "version": "0a0ff9cce25d63e93d61fcb04b6139d02d0d4fd32062a170caaa4b91ee908eb7",
+        "signature": "b2cbe7bf108df8b7d12d790709a30c8f42c4d05914b944e2c482bb16c50a7ef8",
         "affectsGlobalScope": false
       },
       "../../src/v0/utils/instancemanager.ts": {
@@ -482,12 +482,12 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/utils/messageemitter.ts": {
-        "version": "a333ac0167616fe5dac5679e29630b680eabe37505ccba352b3861be431dd7ea",
-        "signature": "5e94d945fc24331647189dba983e7412d3554423242df5af993f36c1838c5b1f",
+        "version": "43c0657ac0a2f3ffb6069fd923cf09d27df0b1de7ebdd9d0ffaff43c561fa1e3",
+        "signature": "d4810720ef3bfdb619b13d28ac21b456f148fd566988d33ff19b04c005b69088",
         "affectsGlobalScope": false
       },
       "../../src/v0/platforms/googledrive.ts": {
-        "version": "e43722d154a698ac71ff86c566ed5820a11b559a809747b2863a034595e535a5",
+        "version": "24dc41cd53beee2a1d008cc76c80060b707bad2546c1c939152c7e690e9a5e82",
         "signature": "d7048273d957f5b4bf8763805c4188c2e02981e086de0ae89f0e33feb432b838",
         "affectsGlobalScope": false
       },
@@ -627,22 +627,22 @@
         "affectsGlobalScope": false
       },
       "../../src/v0/utils/jsforce.ts": {
-        "version": "75b895a6894563320b3e588cc4ed23b9140095b4553d915589ec9e21394377a3",
-        "signature": "d9a43ecfc9d4d050986a99aae0b5de707501faf735a07a389480f9249be90104",
+        "version": "55a2855ebce6e0f68827d5ea558f723697588646c82328d382c593e8bdefbfa4",
+        "signature": "0c008f6c816c56f8021989229247a40551d711cbe3415b6aa2e3fc77b3df74fc",
         "affectsGlobalScope": false
       },
       "../../src/v0/routers/authrouter.ts": {
-        "version": "46060da6ec4220f5397121544c37c410d96a7bbfd296b7db1562e0e505a9af34",
+        "version": "a1a23b6bce878072225f0e78f24bfe53e4cc1d2fcc6896562379f5a673dc8be6",
         "signature": "c106970ee4b686b5ebf0964ea4e0d1b2af02bdecd2d5cfeecedeb7bb5b2f404b",
         "affectsGlobalScope": false
       },
       "../../src/v0/routers/uploadrouter.ts": {
-        "version": "422a21b76c1d64e19e800d03bbf566d6c1b8a56f374160ae4e5ffeb8cbfd7d42",
+        "version": "6fff9a7d77bd6f3de8368d0965ec6870fcf5e2785a3a421df7e11790b5250942",
         "signature": "c106970ee4b686b5ebf0964ea4e0d1b2af02bdecd2d5cfeecedeb7bb5b2f404b",
         "affectsGlobalScope": false
       },
       "../../src/v0/main.ts": {
-        "version": "49aaeadae26bab88b91f3402f772e724903a4673ca8a4790dab8d5fdf7abfbe8",
+        "version": "dc6bcb1e22583861383349f25b8f0e8ca0ca3750bbaa1576435aed1cc346688d",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
@@ -699,6 +699,11 @@
       "../../node_modules/@types/color-name/index.d.ts": {
         "version": "f0cb4b3ab88193e3e51e9e2622e4c375955003f1f81239d72c5b7a95415dad3e",
         "signature": "f0cb4b3ab88193e3e51e9e2622e4c375955003f1f81239d72c5b7a95415dad3e",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/cookiejar/index.d.ts": {
+        "version": "16b7fb094ffaa5d270f934e7406e8baee2f8245cfabf6dcc20f693389f005f56",
+        "signature": "16b7fb094ffaa5d270f934e7406e8baee2f8245cfabf6dcc20f693389f005f56",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/gapi/index.d.ts": {
@@ -861,14 +866,19 @@
         "signature": "9f648f662bddda1b68b01992edd275c214838124a43c8d9210e4a61b974ff82d",
         "affectsGlobalScope": false
       },
-      "../../node_modules/@types/socket.io-client/index.d.ts": {
-        "version": "829cee346cb86de54e7a633a42d0ea1f5b3408f2de26759b1084e6e9ffe9fbcc",
-        "signature": "829cee346cb86de54e7a633a42d0ea1f5b3408f2de26759b1084e6e9ffe9fbcc",
-        "affectsGlobalScope": true
-      },
       "../../node_modules/@types/stack-utils/index.d.ts": {
         "version": "41422586881bcd739b4e62d9b91cd29909f8572aa3e3cdf316b7c50f14708d49",
         "signature": "41422586881bcd739b4e62d9b91cd29909f8572aa3e3cdf316b7c50f14708d49",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/superagent/index.d.ts": {
+        "version": "5ee2df16a34ba9df84c284500ca9bca1cab8226adb825aa929a5749413f17f02",
+        "signature": "5ee2df16a34ba9df84c284500ca9bca1cab8226adb825aa929a5749413f17f02",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/supertest/index.d.ts": {
+        "version": "570b7eeb7fbe76c13a700d4c99a71d4307e17178c2c7f3bcc3c4d5115be4be6d",
+        "signature": "570b7eeb7fbe76c13a700d4c99a71d4307e17178c2c7f3bcc3c4d5115be4be6d",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/yargs-parser/index.d.ts": {
@@ -1009,6 +1019,13 @@
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/ts3.7/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/cookiejar/index.d.ts": [
+        "../../node_modules/@types/graceful-fs/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
       "../../node_modules/@types/cors/index.d.ts": [
@@ -2156,13 +2173,6 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
-      "../../node_modules/@types/socket.io-client/index.d.ts": [
-        "../../node_modules/@types/graceful-fs/index.d.ts",
-        "../../node_modules/@types/node/fs.d.ts",
-        "../../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
-      ],
       "../../node_modules/@types/socket.io/index.d.ts": [
         "../../node_modules/@types/engine.io/index.d.ts",
         "../../node_modules/@types/graceful-fs/index.d.ts",
@@ -2179,6 +2189,25 @@
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/superagent/index.d.ts": [
+        "../../node_modules/@types/cookiejar/index.d.ts",
+        "../../node_modules/@types/graceful-fs/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/http.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/ts3.7/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/supertest/index.d.ts": [
+        "../../node_modules/@types/graceful-fs/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/superagent/index.d.ts"
       ],
       "../../node_modules/@types/yargs-parser/index.d.ts": [
         "../../node_modules/@types/graceful-fs/index.d.ts",
@@ -2673,6 +2702,13 @@
         "../../node_modules/@types/node/ts3.7/index.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../node_modules/@types/cookiejar/index.d.ts": [
+        "../../node_modules/@types/graceful-fs/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../node_modules/@types/cors/index.d.ts": [
         "../../node_modules/@types/express/index.d.ts",
         "../../node_modules/@types/graceful-fs/index.d.ts",
@@ -3818,13 +3854,6 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
-      "../../node_modules/@types/socket.io-client/index.d.ts": [
-        "../../node_modules/@types/graceful-fs/index.d.ts",
-        "../../node_modules/@types/node/fs.d.ts",
-        "../../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
-      ],
       "../../node_modules/@types/socket.io/index.d.ts": [
         "../../node_modules/@types/engine.io/index.d.ts",
         "../../node_modules/@types/graceful-fs/index.d.ts",
@@ -3841,6 +3870,25 @@
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/superagent/index.d.ts": [
+        "../../node_modules/@types/cookiejar/index.d.ts",
+        "../../node_modules/@types/graceful-fs/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/http.d.ts",
+        "../../node_modules/@types/node/stream.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/ts3.7/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@types/supertest/index.d.ts": [
+        "../../node_modules/@types/graceful-fs/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/superagent/index.d.ts"
       ],
       "../../node_modules/@types/yargs-parser/index.d.ts": [
         "../../node_modules/@types/graceful-fs/index.d.ts",
@@ -4171,6 +4219,7 @@
       "../../node_modules/@types/busboy/index.d.ts",
       "../../node_modules/@types/color-name/index.d.ts",
       "../../node_modules/@types/connect/index.d.ts",
+      "../../node_modules/@types/cookiejar/index.d.ts",
       "../../node_modules/@types/cors/index.d.ts",
       "../../node_modules/@types/engine.io/index.d.ts",
       "../../node_modules/@types/express-serve-static-core/index.d.ts",
@@ -4282,9 +4331,10 @@
       "../../node_modules/@types/qs/index.d.ts",
       "../../node_modules/@types/range-parser/index.d.ts",
       "../../node_modules/@types/serve-static/index.d.ts",
-      "../../node_modules/@types/socket.io-client/index.d.ts",
       "../../node_modules/@types/socket.io/index.d.ts",
       "../../node_modules/@types/stack-utils/index.d.ts",
+      "../../node_modules/@types/superagent/index.d.ts",
+      "../../node_modules/@types/supertest/index.d.ts",
       "../../node_modules/@types/yargs-parser/index.d.ts",
       "../../node_modules/@types/yargs/index.d.ts",
       "../../node_modules/jest-diff/build/cleanupsemantic.d.ts",
@@ -4339,5 +4389,5 @@
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.webworker.importscripts.d.ts"
     ]
   },
-  "version": "3.9.2"
+  "version": "3.9.3"
 }

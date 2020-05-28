@@ -1,6 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logErrorResponse = exports.logSuccessResponse = void 0;
+exports.logProgressResponse = exports.logErrorResponse = exports.logSuccessResponse = void 0;
 exports.logSuccessResponse = (response, functionName) => {
     const logEnding = Object.entries(response).length === 0 && response.constructor === Object
         ? ''
@@ -11,4 +11,7 @@ exports.logSuccessResponse = (response, functionName) => {
 exports.logErrorResponse = (err, functionName) => {
     console.log(`\x1b[31m${functionName} failed \x1b[39m due to error: ${JSON.stringify(err)}.`);
     return err;
+};
+exports.logProgressResponse = (fileName, src, progress) => {
+    console.log(`[${fileName}][${src}_UPLOAD]: ${progress}`);
 };

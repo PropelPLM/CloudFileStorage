@@ -42,9 +42,9 @@ const GoogleDrive_1 = __importDefault(require("../platforms/GoogleDrive"));
 router.post('/token/:instanceKey', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const instanceKey = req.params.instanceKey;
     try {
-        let client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl, tokensFromCredentials;
+        let client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl;
         ({ client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl } = req.body);
-        tokensFromCredentials = {
+        const tokensFromCredentials = {
             access_token,
             refresh_token,
             scope: GoogleDrive_1.default.actions.driveFiles,
@@ -63,7 +63,7 @@ router.post('/token/:instanceKey', (req, res) => __awaiter(void 0, void 0, void 
     }
     catch (err) {
         Logger_1.logErrorResponse(err, '[END_POINT.TOKEN]');
-        res.send(`Failed to receive tokens: ${err}`);
+        res.status(400).send(`Failed to receive tokens: ${err}`);
     }
 }));
 router.post('/uploadDetails/:instanceKey', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -77,6 +77,7 @@ router.post('/uploadDetails/:instanceKey', (req, res) => __awaiter(void 0, void 
         res.status(200).send({ instanceKey });
     }
     catch (err) {
+        res.status(400).send(`Failed to update upload details ${err}`);
         Logger_1.logErrorResponse(err, '[END_POINT.UPLOAD_DETAILS]');
     }
 }));
@@ -124,6 +125,7 @@ router.post('/:instanceKey', (req, res) => __awaiter(void 0, void 0, void 0, fun
         req.pipe(form);
     }
     catch (err) {
+        res.status(500).send(`Upload failed: ${err}`);
         Logger_1.logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
     }
 }));

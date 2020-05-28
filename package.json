@@ -4,9 +4,9 @@
   "description": "Upload files from local storage onto Google Drive.",
   "main": "index.js",
   "scripts": {
-    "start": "node build/v0/main.js",
+    "start": "node build/v0/main.js PRODUCTION",
     "test": "jest",
-    "test:watch": "jest --watch --no-cache --colors"
+    "test:watch": "jest --watch --no-cache ----detectOpenHandles --colors"
   },
   "author": "clinton",
   "license": "ISC",
@@ -22,8 +22,7 @@
     "progress-stream": "^2.0.0",
     "socket.io": "^2.3.0",
     "socketio": "^1.0.0",
-    "tsc": "^1.20150623.0",
-    "typescript": "^3.9.2"
+    "tsc": "^1.20150623.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
@@ -41,10 +40,13 @@
     "@types/lodash": "^4.14.150",
     "@types/node": "^14.0.4",
     "@types/socket.io": "^2.1.8",
+    "@types/supertest": "^2.0.9",
     "babel-jest": "^26.0.1",
     "jest": "^26.0.0",
+    "supertest": "^4.0.2",
     "ts-jest": "^26.0.0",
-    "tslint": "^6.1.2"
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.3"
   },
   "jest": {
     "transform": {
@@ -60,6 +62,8 @@
     "setupFilesAfterEnv": [
       "<rootDir>/jest.extend.ts"
     ],
-    "transformIgnorePatterns": ["<rootDir>/node_modules/"]
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/"
+    ]
   }
 }

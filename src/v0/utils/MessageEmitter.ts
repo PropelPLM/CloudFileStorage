@@ -1,23 +1,23 @@
 'use strict';
 
 // Will be used more widely when there are different storages
-var server = require('../main');
+const server = require('../main');
 import ioSocket from 'socket.io';
 const io = ioSocket(server);
 
-import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
+import { logSuccessResponse, logErrorResponse, logProgressResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
 
 const init = () => {
   io.on('connection', (socket: any) => {
-  socket.on('start', (instanceKey: string) => {
-    socket.join(instanceKey);
-    logSuccessResponse({ instanceKey }, '[MESSAGE_EMITTER.JOIN_ROOM]');
-    let salesforceUrl;
-    ({ salesforceUrl } = InstanceManager.get(instanceKey, [MapKey.salesforceUrl]));
-    setAttribute(instanceKey, 'target-window', salesforceUrl);
+    socket.on('start', (instanceKey: string) => {
+      socket.join(instanceKey);
+      logSuccessResponse({ instanceKey }, '[MESSAGE_EMITTER.JOIN_ROOM]');
+      let salesforceUrl;
+      ({ salesforceUrl } = InstanceManager.get(instanceKey, [MapKey.salesforceUrl]));
+      setAttribute(instanceKey, 'target-window', salesforceUrl);
+    });
   });
-});
 }
 init();
 
@@ -29,6 +29,7 @@ const setAttribute = (instanceKey: string, attribute: string, value: string) => 
 }
 
 export default {
+  init, 
   postTrigger: (instanceKey: string, topic: string, payload: any) => {
     try {
       io.to(instanceKey).emit('trigger', { topic, payload });
@@ -41,8 +42,9 @@ export default {
   postProgress: (instanceKey: string, src: string) => {
     let fileName: string, frontendBytes: number, externalBytes: number, fileSize: number;
     ({ fileName, frontendBytes, externalBytes, fileSize } = InstanceManager.get(instanceKey, [MapKey.fileName, MapKey.frontendBytes, MapKey.externalBytes, MapKey.fileSize]));
+    const srcProgress: number = src == 'FRONTEND' ? frontendBytes/fileSize : externalBytes/fileSize;
+    logProgressResponse(fileName, src, srcProgress);
     const percentCompletion: number = Math.floor((100 * (frontendBytes + externalBytes)) / (fileSize * 2))
-    console.log(`[${fileName}][${src}_UPLOAD]: ${src == 'FRONTEND' ? frontendBytes/fileSize : externalBytes/fileSize}`);
     io.to(instanceKey).emit('progress', percentCompletion);
   },
   setAttribute,

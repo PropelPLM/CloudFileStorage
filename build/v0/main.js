@@ -8,22 +8,24 @@ const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const app = express_1.default();
 const server = require('http').createServer(app);
+const port = process.env.PORT || 6000;
 module.exports = server;
-const port = process.env.PORT || 5000;
 const Logger_1 = require("./utils/Logger");
 const authRouter_1 = __importDefault(require("./routers/authRouter"));
 const uploadRouter_1 = __importDefault(require("./routers/uploadRouter"));
 app.use(express_1.default.json());
 app.use(cors_1.default());
 app.use(express_1.default.static(path_1.default.join(__dirname, '../../public')));
-server.listen(port, () => {
-    try {
-        Logger_1.logSuccessResponse('SUCCESS', '[SERVER_INIT]');
-    }
-    catch (err) {
-        Logger_1.logErrorResponse(err, '[SERVER_INIT]');
-    }
-});
+if (process.argv[2] == 'PRODUCTION') {
+    server.listen(port, () => {
+        try {
+            Logger_1.logSuccessResponse('SUCCESS', '[SERVER_INIT]');
+        }
+        catch (err) {
+            Logger_1.logErrorResponse(err, '[SERVER_INIT]');
+        }
+    });
+}
 app.use('/auth', authRouter_1.default);
 app.use('/upload', uploadRouter_1.default);
 app.get('/:instanceKey', (req, res) => {

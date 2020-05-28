@@ -57,6 +57,7 @@ class GoogleDrive {
             }
             catch (err) {
                 Logger_1.logErrorResponse(err, '[GOOGLE_DRIVE.AUTHORIZE]');
+                throw (err);
             }
         });
     }

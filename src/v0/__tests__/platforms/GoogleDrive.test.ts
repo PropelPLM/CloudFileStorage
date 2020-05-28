@@ -1,7 +1,6 @@
 // @ts-nocheck
 // TODO: find another way to enforce type safety OR get ts to realise this is a jest file
 import { google } from 'googleapis';
-import { PassThrough } from 'stream';
 import GoogleDrive from '../../platforms/GoogleDrive';
 import InstanceManager from '../../utils/InstanceManager';
 import { logErrorResponse, logSuccessResponse } from '../../utils/Logger';
@@ -19,7 +18,7 @@ const instanceMap: Record<string, Partial<IMap>> = data.instanceMap;
 const instanceKey1 = data.instanceKey1;
 const instanceKey2 = data.instanceKey2;
 
-xdescribe ('GoogleDrive test suite', () => {
+describe ('GoogleDrive test suite', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -34,6 +33,7 @@ xdescribe ('GoogleDrive test suite', () => {
       
       expect(url).toBeType('string');
       expect(InstanceManager.upsert).toBeCalledTimes(1);
+
       expect(google.auth.OAuth2).toBeCalledTimes(1);
       expect(google.auth.OAuth2.mock.results[0].value.generateAuthUrl)
         .toBeCalledWith(expect.objectContaining({
@@ -86,6 +86,7 @@ xdescribe ('GoogleDrive test suite', () => {
           uploadStream: expect.anything()
         }
       ));
+
       expect(google.drive)
         .toBeCalledWith(
           expect.objectContaining({ auth: expect.any(Object) })
@@ -112,11 +113,12 @@ xdescribe ('GoogleDrive test suite', () => {
       expect(InstanceManager.get).toHaveBeenCalledTimes(2);
       expect(InstanceManager.upsert).toHaveBeenCalledTimes(2);
       expect(InstanceManager.upsert.mock.calls[0]).not.toEqual(InstanceManager.upsert.mock.calls[1]);
+
       expect(google.drive.mock.results[0].value.files.create.mock.calls[0][0])
         .not.toEqual(google.drive.mock.results[1].value.files.create.mock.calls[0][0]);
     });
 
-    it('uploadFile updates file stream', async () => {      
+    it('uploadFile updates file stream', async () => {
       await GoogleDrive.uploadFile(instanceKey1, {});
 
       expect(InstanceManager.get).toHaveBeenCalledTimes(1);

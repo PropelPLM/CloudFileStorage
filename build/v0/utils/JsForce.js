@@ -12,13 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JsForce = void 0;
 const jsforce_1 = __importDefault(require("jsforce"));
 const Logger_1 = require("../utils/Logger");
 const InstanceManager_1 = __importDefault(require("../utils/InstanceManager"));
 const MessageEmitter_1 = __importDefault(require("../utils/MessageEmitter"));
-class JsForce {
-    constructor() { }
+exports.default = {
     connect(sessionId, salesforceUrl, instanceKey) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -33,11 +31,10 @@ class JsForce {
                 Logger_1.logSuccessResponse({}, '[JSFORCE.CONNECT]');
             }
             catch (err) {
-                console.log('err', err);
                 Logger_1.logErrorResponse(err, '[JSFORCE.CONNECT]');
             }
         });
-    }
+    },
     sendTokens(tokens, instanceKey) {
         return __awaiter(this, void 0, void 0, function* () {
             const newSetting = {
@@ -60,7 +57,7 @@ class JsForce {
                 Logger_1.logErrorResponse(err, '[JSFORCE.SEND_TOKENS]');
             }
         });
-    }
+    },
     create(file, instanceKey) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -87,7 +84,7 @@ class JsForce {
                 Logger_1.logErrorResponse({ err }, '[JSFORCE.CREATE]');
             }
         });
-    }
+    },
     setupNamespace(instanceKey) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -102,7 +99,7 @@ class JsForce {
                 Logger_1.logErrorResponse(err, '[JSFORCE.SETUP_NAMESPACE]');
             }
         });
-    }
+    },
     addNamespace(customObject, instanceKey) {
         return __awaiter(this, void 0, void 0, function* () {
             let orgNamespace;
@@ -114,6 +111,4 @@ class JsForce {
             return customObject;
         });
     }
-}
-exports.JsForce = JsForce;
-exports.default = new JsForce();
+};

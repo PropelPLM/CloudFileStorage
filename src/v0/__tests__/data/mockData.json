@@ -1,24 +1,24 @@
 {
   "instanceKey1": "dummy_key1",
   "instanceKey2": "dummy_key2",
-  "accessToken": "dummy_accessToken",
-  "refreshToken": "dummy_refreshToken",
-  "expiryDate": "dummy_expiryDate",
   "instanceMap": {
     "dummy_key1": {
+      "accessToken": "dummy_accessToken1",
+      "refreshToken": "dummy_refreshToken1",
+      "expiryDate": "dummy_expiryDate1",
       "clientId": "dummyId1",
       "clientSecret": "dummySecret1",
       "connection": "connection1",
       "destinationFolderId": "folderDest1",
       "externalBytes": "externalBytes1",
       "file": {
-        "name": "fileName1",
         "webViewLink": "webViewLink1",
         "id": "fileId1",
         "fileExtension": "fileExtension1",
         "webContentLink": "webContentLink1"
       },
       "fileName": "dummyFileName1.png",
+      "mimeType": "mimeType1",
       "fileSize": 1000,
       "frontendBytes": "frontendBytes1",
       "isNew": false,
@@ -30,19 +30,23 @@
       "uploadStream": "uploadStream1"
     },
     "dummy_key2": {
+      "accessToken": "dummy_accessToken2",
+      "refreshToken": "dummy_refreshToken2",
+      "expiryDate": "dummy_expiryDate2",
       "clientId": "dummyId2",
       "clientSecret": "dummySecret2",
       "connection": "connection2",
       "destinationFolderId": "folderDest2",
       "externalBytes": "externalBytes2",
       "file": {
-        "name": "fileName2",
+        "filename": "fileName2",
         "webViewLink": "webViewLink2",
         "id": "fileId2",
         "fileExtension": "fileExtension2",
         "webContentLink": "webContentLink2"
       },
       "fileName": "dummyFileName2.png",
+      "mimeType": "mimeType2",
       "fileSize": 2000,
       "frontendBytes": "frontendBytes2",
       "isNew": true,

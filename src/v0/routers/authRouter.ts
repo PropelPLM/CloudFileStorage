@@ -22,21 +22,26 @@ router.post('/:instanceKey', async (req: any, res: any) => {
 
   InstanceManager.register(instanceKey);
   const instanceDetails = { salesforceUrl, clientId, clientSecret };
-  await Promise.all([
-    InstanceManager.upsert(instanceKey, instanceDetails),
-    JsForce.connect(sessionId, salesforceUrl, instanceKey)
-  ]);
 
-  if (clientId && clientSecret) {
-    const credentials: Record<string, string> = { clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google` }; //google can be swapped out
-    const url: string = GoogleDrive.createAuthUrl(credentials, instanceKey);
+  try {
+    await Promise.all([
+      InstanceManager.upsert(instanceKey, instanceDetails),
+      JsForce.connect(sessionId, salesforceUrl, instanceKey)
+    ]);
 
-    MessageEmitter.setAttribute(instanceKey, 'target-window', salesforceUrl);
-    logSuccessResponse(instanceKey, '[END_POINT.AUTH_REDIRECT]');
-    res.status(200).send({ url });
-  } else {
-    logErrorResponse({ clientId, clientSecret }, '[END_POINT.AUTH_REDIRECT]');
-    res.status(400).send('Authorization failed, please ensure client credentials are populated.');
+    if (clientId && clientSecret) {
+      const credentials: Record<string, string> = { clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google` }; //google can be swapped out
+      const url: string = GoogleDrive.createAuthUrl(credentials, instanceKey);
+
+      MessageEmitter.setAttribute(instanceKey, 'target-window', salesforceUrl);
+      logSuccessResponse(instanceKey, '[END_POINT.AUTH_REDIRECT]');
+      res.status(200).send({ url });
+    } else {
+      throw new Error('Client Id or secret is missing.')
+    }
+  } catch (err) {
+    logErrorResponse( err, '[END_POINT.AUTH_REDIRECT]');
+    res.status(400).send(`Authorization failed, please check your credentials: ${err}`);
   }
 });
 
@@ -44,16 +49,20 @@ router.get('/callback/google', async (req: any, res: any) => {
   const instanceKey = Buffer.from(req.query.state, 'base64').toString();
   const code = req.query.code;
   try {
-
     const token: Record<string, any> = await GoogleDrive.getTokens(code, instanceKey);
-  
     let clientId: string, clientSecret: string;
     ({ clientId, clientSecret } = InstanceManager.get(instanceKey, [MapKey.clientId, MapKey.clientSecret]));
-    await JsForce.sendTokens({ ...token.tokens, clientId, clientSecret }, instanceKey);
+
+    if (token.tokens) {
+      await JsForce.sendTokens({ ...token.tokens, clientId, clientSecret }, instanceKey);
+    } else {
+      throw new Error('No tokens found in Google Drive callback.')
+    }
     MessageEmitter.postTrigger(instanceKey, 'authComplete', {});
     logSuccessResponse('MessageEmitted', '[CALLBACK_GOOGLE');
     res.send('<script>window.close()</script>');
   } catch (err) {
+    res.status(500).send(`Callback from google has failed: ${err}`);
     logErrorResponse(err, '[CALLBACK_GOOGLE');
   }
 });
