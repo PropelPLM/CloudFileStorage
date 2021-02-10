@@ -6,7 +6,7 @@ export const JsConnection = {
     }
   }),
   query: jest.fn().mockResolvedValue({
-    records: 
+    records:
       [
         { NamespacePrefix: 'NAMESPACE' }
       ]

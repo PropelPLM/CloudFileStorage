@@ -30,7 +30,7 @@ describe ('GoogleDrive test suite', () => {
       const clientSecret = instanceMap[instanceKey1].clientSecret;
       const redirectUri = '/auth/callback/google';
       const url = GoogleDrive.createAuthUrl({ clientId, clientSecret, redirectUri }, instanceKey1);
-      
+
       expect(url).toBeType('string');
       expect(InstanceManager.upsert).toBeCalledTimes(1);
 
@@ -47,7 +47,7 @@ describe ('GoogleDrive test suite', () => {
       expect(InstanceManager.get).toBeCalledWith(instanceKey1, ['oAuth2Client']);
       expect(InstanceManager.get.mock.results[0].value.oAuth2Client.getToken).toBeCalledWith('code');
       expect(logSuccessResponse).toBeCalledTimes(1);
-      
+
       // exception simulated by only having getToken return value once
       GoogleDrive.getTokens('code', instanceKey2);
       expect(InstanceManager.get).toBeCalledWith(instanceKey2, ['oAuth2Client']);
@@ -94,7 +94,7 @@ describe ('GoogleDrive test suite', () => {
       expect(google.drive.mock.results[0].value.files.create.mock.calls[0][0].resource)
         .toMatchObject({
           name: fileName,
-          driveId: instanceMap[instanceKey1].destinationFolderId  
+          driveId: instanceMap[instanceKey1].destinationFolderId
         });
       expect(google.drive.mock.results[0].value.files.create.mock.calls[0][0].media)
         .toMatchObject({

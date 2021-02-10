@@ -34,7 +34,7 @@ describe ('JsForce test suite', () => {
       expect(InstanceManager.upsert).toHaveBeenCalledTimes(2);
       expect(logSuccessResponse).toHaveBeenCalledTimes(2);
     });
-    
+
     it('connect sets up namespace', () => {
       const sessionId = instanceMap[instanceKey1].sessionId;
       const salesforceUrl = instanceMap[instanceKey1].salesforceUrl;
@@ -105,7 +105,7 @@ describe ('JsForce test suite', () => {
 
       const namespace = instanceMap[instanceKey1].orgNamespace;
       expect(InstanceManager.get.mock.results[0].value.connection.sobject).toBeCalledWith(`${namespace}__Document__c`);
-      
+
       expect(InstanceManager.get.mock.results[0].value.connection.sobject.mock.results[0].value.create.mock.calls[0][0]).toBeType('object');
       const itemRev = {};
       itemRev[`${namespace}__Item_Revision__c`] = instanceMap[instanceKey1].revisionId;

@@ -12,7 +12,7 @@ class GoogleDrive implements IPlatform {
   public actions: Record<string, string> = { driveFiles: 'https://www.googleapis.com/auth/drive.file' };
 
   public constructor() {}
-  
+
   //TOKEN FLOW - INSTANCE MANAGER VARIABLES HERE DO NOT PERSIST TO UPLOAD FLOW
   public createAuthUrl(credentials: Record<string, string> , instanceKey: string): string {
     let clientId: string, clientSecret: string, redirect_uri: string;

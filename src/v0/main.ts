@@ -32,6 +32,7 @@ app.use('/upload', uploadRouter);
 
 app.get('/:instanceKey', (req: any, res: any) => {
   try {
+    console.log('@@@@@@@@@@@@@@@@@@@ SANITY CHECK @@@@@@@@@@@@@@@@@@@');
     const instanceKey = req.params.instanceKey;
     logSuccessResponse(instanceKey, '[END_POINT.INSTANCE_KEY]');
     res.sendFile('index.html', { root: path.join(__dirname, '../../public/') });

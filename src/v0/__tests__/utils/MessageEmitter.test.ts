@@ -29,7 +29,7 @@ describe ('MessageEmittertest suite', () => {
     const dummyTopic = 'dummyTopic';
     const dummyPayload = 'dummyPayload'
     MessageEmitter.postTrigger(instanceKey1, dummyTopic, dummyPayload);
-    
+
     expect(logSuccessResponse).toHaveBeenCalledTimes(1);
     expect(io.to).toHaveBeenCalledTimes(1);
     expect(io.to).toHaveBeenCalledWith(instanceKey1);

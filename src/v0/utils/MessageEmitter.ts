@@ -29,7 +29,7 @@ const setAttribute = (instanceKey: string, attribute: string, value: string) => 
 }
 
 export default {
-  init, 
+  init,
   postTrigger: (instanceKey: string, topic: string, payload: any) => {
     try {
       io.to(instanceKey).emit('trigger', { topic, payload });
@@ -38,7 +38,7 @@ export default {
       logErrorResponse(err, '[MESSAGE_EMITTER > POST_TRIGGER]')
     }
   },
-  
+
   postProgress: (instanceKey: string, src: string) => {
     let fileName: string, frontendBytes: number, externalBytes: number, fileSize: number;
     ({ fileName, frontendBytes, externalBytes, fileSize } = InstanceManager.get(instanceKey, [MapKey.fileName, MapKey.frontendBytes, MapKey.externalBytes, MapKey.fileSize]));

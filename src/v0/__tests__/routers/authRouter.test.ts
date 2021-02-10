@@ -33,7 +33,7 @@ describe("authRouter test suite", () => {
       .get(`${baseUrl}/${instanceKey1}`)
       .expect(200)
       .expect(res => '<!DOCTYPE html>' in res);
-      
+
     expect(InstanceManager.register).toBeCalledTimes(1);
     expect(InstanceManager.register).toBeCalledWith(instanceKey1);
   });
@@ -71,7 +71,7 @@ describe("authRouter test suite", () => {
 
       expect(logSuccessResponse).toBeCalledTimes(1);
     });
-    
+
     it('post fails as clientId and secret are not properly configured in SF Apex', async () => {
       const sessionId = instanceMap[instanceKey1].sessionId;
       const salesforceUrl = instanceMap[instanceKey1].salesforceUrl;
@@ -92,7 +92,7 @@ describe("authRouter test suite", () => {
       expect(JsForce.connect).toBeCalledWith(sessionId, salesforceUrl, instanceKey1);
 
       expect(GoogleDrive.createAuthUrl).not.toHaveBeenCalled();
-      
+
       expect(MessageEmitter.setAttribute).not.toHaveBeenCalled();
       expect(logSuccessResponse).not.toHaveBeenCalled();
 
@@ -118,7 +118,7 @@ describe("authRouter test suite", () => {
 
         expect(InstanceManager.get).toBeCalledTimes(1);
         expect(InstanceManager.get.mock.calls[0][0]).toBe(instanceKey1);
-        
+
         expect(JsForce.sendTokens).toBeCalledTimes(1);
         expect(JsForce.sendTokens).toBeCalledWith({
           clientId: instanceMap[instanceKey1].clientId,
@@ -146,7 +146,7 @@ describe("authRouter test suite", () => {
 
         expect(InstanceManager.get).toBeCalledTimes(1);
         expect(InstanceManager.get.mock.calls[0][0]).toBe(instanceKey1);
-        
+
         expect(JsForce.sendTokens).not.toHaveBeenCalled();
         expect(MessageEmitter.postTrigger).not.toHaveBeenCalled();
         expect(logSuccessResponse).not.toHaveBeenCalled();

@@ -46,10 +46,10 @@ describe("uploadRouter test suite", () => {
         .send(tokens)
         .expect(200)
         .expect(res => res.constructor === Object && res.access_token);
-        
+
         expect(InstanceManager.register).toBeCalledTimes(1);
         expect(InstanceManager.register).toBeCalledWith(instanceKey1);
-        
+
         expect(GoogleDrive.authorize).toBeCalledTimes(1);
         expect(GoogleDrive.authorize).toBeCalledWith(instanceKey1, client_id, client_secret,
             {
@@ -80,21 +80,21 @@ describe("uploadRouter test suite", () => {
       const sessionId = instanceMap[instanceKey1].sessionId;
       const salesforceUrl = instanceMap[instanceKey1].salesforceUrl;
       const tokens = { client_id, client_secret, access_token, refresh_token,expiry_date, sessionId, salesforceUrl };
-  
+
       await request
         .post(`${baseUrl}/token/${instanceKey1}`)
         .send(tokens)
         .expect(400)
-        
+
       expect(InstanceManager.register).toBeCalledTimes(1);
       expect(InstanceManager.register).toBeCalledWith(instanceKey1);
-      
+
       expect(GoogleDrive.authorize).toBeCalledTimes(1);
-  
+
       expect(InstanceManager.upsert).not.toHaveBeenCalled();
       expect(JsForce.connect).not.toHaveBeenCalled();
       expect(logSuccessResponse).not.toHaveBeenCalled();
-      
+
       expect(logErrorResponse).toHaveBeenCalledTimes(1);
     });
   });
@@ -104,7 +104,7 @@ describe("uploadRouter test suite", () => {
       const destinationFolderId = instanceMap[instanceKey1].destinationFolderId;
       const revisionId = instanceMap[instanceKey1].revisionId;
       const isNew = instanceMap[instanceKey1].isNew;
-      const instanceDetails = { revisionId, destinationFolderId, isNew }; 
+      const instanceDetails = { revisionId, destinationFolderId, isNew };
       await request
         .post(`${baseUrl}/uploadDetails/${instanceKey1}`)
         .send(instanceDetails)
@@ -116,7 +116,7 @@ describe("uploadRouter test suite", () => {
 
       expect(logSuccessResponse).toBeCalledTimes(1);
     });
-    
+
     it('post fails to update details of the upload', async () => {
       InstanceManager.upsert = jest.fn().mockImplementationOnce(() => {throw new Error()})
       await request
@@ -155,7 +155,7 @@ describe("uploadRouter test suite", () => {
      *  supertest is unable to mock the express objects and hence cannot touch req.pipe
      *  'normal' application flow here will eventually be thrown due to req.pipe
      *  saving the callbacks and rerunning them by invoking them manually with mockedEventMap helps test methods
-     *  hence both success and failure routes are tested here in this test case 
+     *  hence both success and failure routes are tested here in this test case
      **/
     it('post sends writes chunk of file into platform client\'s pipe', async () => {
       const salesforceUrl = instanceMap[instanceKey1].salesforceUrl;
@@ -178,7 +178,7 @@ describe("uploadRouter test suite", () => {
       expect(InstanceManager.upsert).toBeCalledWith(instanceKey1, { fileName, frontendBytes: 0, externalBytes: 0, fileSize});
 
       const mockFileData = new Array(10); //simulates file data
-      await mockedEventMap['data'](mockFileData); 
+      await mockedEventMap['data'](mockFileData);
       expect(InstanceManager.upsert).toBeCalledTimes(2);
       expect(InstanceManager.upsert).toBeCalledWith(instanceKey1, { frontendBytes: 10});
 
@@ -190,7 +190,7 @@ describe("uploadRouter test suite", () => {
 
       mockedEventMap['error']();
       expect(logErrorResponse).toBeCalledTimes(2); // error event and req.pipe catch
-      
+
       GoogleDrive.endUpload = jest.fn().mockResolvedValueOnce({data: 'dummyData', status: 200})
       JsForce.create = jest.fn().mockResolvedValueOnce({id: 'dummyId'});
       try {

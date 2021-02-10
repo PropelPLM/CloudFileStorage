@@ -6,7 +6,7 @@ import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
 import MessageEmitter from '../utils/MessageEmitter';
 
-export default {  
+export default {
   async connect(sessionId: string, salesforceUrl: string, instanceKey: string) {
     try {
       const connection = new jsConnect.Connection({
