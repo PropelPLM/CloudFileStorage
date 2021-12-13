@@ -3,6 +3,8 @@
   "instanceKey2": "dummy_key2",
   "instanceMap": {
     "dummy_key1": {
+      "tenantId": "tenantId",
+      "groupId": "groupId",
       "accessToken": "dummy_accessToken1",
       "refreshToken": "dummy_refreshToken1",
       "expiryDate": "dummy_expiryDate1",

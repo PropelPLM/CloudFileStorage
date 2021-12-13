@@ -1,11 +1,11 @@
 // @ts-nocheck
 // TODO: find another way to enforce type safety OR get ts to realise this is a jest file
 import { google } from 'googleapis';
-import GoogleDrive from '../../platforms/GoogleDrive';
-import InstanceManager from '../../utils/InstanceManager';
-import { logErrorResponse, logSuccessResponse } from '../../utils/Logger';
-import data from '../data/mockData.json';
-import "../../../../jest.extend";
+import GoogleDrive from '../../../platforms/GoogleDrive/GoogleDrive';
+import InstanceManager from '../../../utils/InstanceManager';
+import { logErrorResponse, logSuccessResponse } from '../../../utils/Logger';
+import data from '../../data/mockData.json';
+import "../../../../../../jest.extend";
 
 jest
   .mock('googleapis')

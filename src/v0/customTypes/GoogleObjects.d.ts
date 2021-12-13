@@ -21,4 +21,5 @@ interface OAuth2Client {
 
     getToken(code: string): Record<string, any>
     setCredentials(tokens: Record<string, any>): void
+    api(endpoint: string)
 }

@@ -3,9 +3,9 @@
 const { google } = require('googleapis');
 import { PassThrough } from 'stream';
 
-import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
-import MessageEmitter from '../utils/MessageEmitter';
-import InstanceManager from '../utils/InstanceManager';
+import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
+import MessageEmitter from '../../utils/MessageEmitter';
+import InstanceManager from '../../utils/InstanceManager';
 
 class GoogleDrive implements IPlatform {
   public redirect_uris: string[] = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];
@@ -54,9 +54,9 @@ class GoogleDrive implements IPlatform {
     }
   }
 
-  async initUpload(instanceKey: string, { fileName, mimeType, fileSize }: { fileName: string, mimeType: string, fileSize: number }): Promise<void> {
-    let destinationFolderId: string, oAuth2Client: OAuth2Client;
-    ({ destinationFolderId, oAuth2Client } = InstanceManager.get(instanceKey, [MapKey.destinationFolderId, MapKey.oAuth2Client]));
+  async initUpload(instanceKey: string, fileDetailKey: string, { fileName, mimeType }: { fileName: string, mimeType: string }): Promise<void> {
+    let destinationFolderId: string, oAuth2Client: OAuth2Client, fileDetails: Record<string, FileDetail>;
+    ({ destinationFolderId, oAuth2Client, fileDetails } = InstanceManager.get(instanceKey, [MapKey.destinationFolderId, MapKey.oAuth2Client, MapKey.fileDetails]));
     const drive = google.drive({ version: 'v3', auth: oAuth2Client });
     const uploadStream = new PassThrough();
     const fileMetadata = {
@@ -78,33 +78,44 @@ class GoogleDrive implements IPlatform {
       {
         onUploadProgress: (evt: Record<string, any>) => {
           const bytesRead: number = evt.bytesRead;
-          InstanceManager.upsert(instanceKey, { externalBytes: bytesRead }) //REVERT
-          MessageEmitter.postProgress(instanceKey, 'GOOGLE_DRIVE');
-          if (bytesRead == fileSize) {
+          let totalFileSize: number, totalExternalBytes: number;
+          ({ fileDetails } = InstanceManager.get(instanceKey, [MapKey.fileDetails]));
+          fileDetails[fileDetailKey].externalBytes = bytesRead;
+          InstanceManager.upsert(instanceKey, { fileDetails }) //REVERT
+          MessageEmitter.postProgress(instanceKey, fileDetailKey, 'GOOGLE_DRIVE');
+          totalFileSize = totalExternalBytes = 0;
+          for (const detail in fileDetails) {
+            totalFileSize += fileDetails[detail].fileSize;
+            totalExternalBytes += fileDetails[detail].externalBytes;
+          }
+          if (totalExternalBytes == totalFileSize) {
+            logSuccessResponse({fileName}, '[GOOGLE_DRIVE.FILE_UPLOAD_END]');
             //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
             uploadStream.emit('end');
           }
         }
       }
     )
-    InstanceManager.upsert(instanceKey, { uploadStream, file }); //REVERT
+    fileDetails[fileDetailKey].file = file;
+    fileDetails[fileDetailKey].uploadStream = uploadStream;
+    InstanceManager.upsert(instanceKey, { fileDetails }); //REVERT
   }
 
-  async uploadFile(instanceKey: string, payload: Record<string, any>): Promise<void> {
-    let uploadStream;
-    ({ uploadStream } = InstanceManager.get(instanceKey, [MapKey.uploadStream])); //REVERT
+  async uploadFile(instanceKey: string, fileDetailKey: string, payload: Record<string, any>): Promise<void> {
+    let fileDetails: Record<string, FileDetail>;
+    ({ fileDetails } = InstanceManager.get(instanceKey, [MapKey.fileDetails])); //REVERT
     try {
-      uploadStream.push(payload)
-      InstanceManager.upsert(instanceKey, { uploadStream });
+      fileDetails[fileDetailKey].uploadStream.push(payload);
+      InstanceManager.upsert(instanceKey, { fileDetails });
     } catch (err) {
       logErrorResponse(err, '[GOOGLE_DRIVE > UPLOAD_FILE]')
     }
   }
 
-  async endUpload(instanceKey: string): Promise<GoogleFile> {
-    let file: GoogleFile;
-    ({ file } = InstanceManager.get(instanceKey, [MapKey.file]));
-    return await file;
+  async endUpload(instanceKey: string, fileDetailKey: string): Promise<GoogleFile> {
+    let fileDetails: Record<string, FileDetail>;
+    ({ fileDetails } = InstanceManager.get(instanceKey, [MapKey.fileDetails]));
+    return await fileDetails[fileDetailKey].file;
   }
 }
 

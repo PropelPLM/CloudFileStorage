@@ -9,7 +9,9 @@ $(() => {
   const progressBarText = $('#progress-bar-text');
   const spinner = $('#spinner');
   const check = $('#check');
+  const overallFileProgress = $('#overall-file-progress');
   const socket = io();
+  let numFiles = 0;
 
   // INIT
   const resetIcons = () => {
@@ -44,9 +46,10 @@ $(() => {
 
   const trackProgress = async () => {
     await socket.on('progress', percent => {
-      progressBar.css('width', `${percent}%`);
-      progressBarText.text(`${percent}%`);
-      if (percent === 100) {
+      const displayPercent = Math.min(100, percent)
+      progressBar.css('width', `${displayPercent}%`);
+      progressBarText.text(`${displayPercent}%`);
+      if (displayPercent === 100) {
         spinner.css('visibility', 'visible');
       }
     });
@@ -59,36 +62,62 @@ $(() => {
   //   }
   // });
 
-  fileSelect.on('change', function (e) {
+  const setFilesUploaded = () => {
+    overallFileProgress.text(`${numFiles} uploaded!`);
+  };
+
+  const uploadFile = async (files) => {
+    const instanceKey = form.data(`instance-key`);
+    var data = new FormData();
+    let file;
+    for (var i = 0; i < numFiles; i++) {
+      file = files[i];
+      data.append('fileSize', `${file.name}__${instanceKey}__${file.size}`);
+      data.append('file', file);
+    }
+    await trackProgress();
+    const targetWindow = form.data(`target-window`);
+    const res = await axios.post(`/upload/${instanceKey}`, data)
+    socket.off('progress');
+    spinner.css('visibility', 'hidden');
+    check.css('visibility', 'visible');
+    const type = res.data.isNew ? 'uploadNew' : 'uploadExisting';
+    window.parent.postMessage({ type, ...res.data }, targetWindow);
+    setFilesUploaded();
+  };
+
+  const toggleButtonDisable = () => {
+    fileSelect.prop('disabled', !fileSelect.prop('disabled'));
+    fileSelect.toggleClass('disabled');
+  }
+
+  const uploadsCompleteResetState = () => {
+    const instanceKey = form.data(`instance-key`);
+    axios.post(`/upload/reset/${instanceKey}`);
+    numFiles = 0;
+    toggleButtonDisable();
+  }
+
+  fileSelect.on('change', async function (e) {
     e.preventDefault();
     resetIcons();
-    const file = fileSelect.prop('files')[0];
-    if (file) {
+
+    const files = fileSelect.prop('files');
+    numFiles = files.length;
+    overallFileProgress.text('');
+
+    const firstFile = fileSelect.prop('files')[0];
+    if (files.length > 0) {
+      toggleButtonDisable();
       progressBar.css('width', `0%`);
       progressBarText.text(`0%`);
-      fileName.text(file.name);
+      fileName.text(numFiles > 1 ? 'Multiple files are being uploaded...' : firstFile.name);
       progressContainer.css('visibility', 'visible');
-      uploadFile(file);
+      await uploadFile(files);
+      uploadsCompleteResetState();
     } else {
       fileName.text('');
       progressContainer.css('visibility', 'hidden');
     }
   });
-
-  const uploadFile = async (fileData) => {
-    var data = new FormData();
-    data.append('fileSize', fileData.size);
-    data.append('file', fileData);
-    await trackProgress();
-    const instanceKey = form.data(`instance-key`);
-    const targetWindow = form.data(`target-window`);
-    axios.post(`/upload/${instanceKey}`, data)
-      .then((res) => {
-        socket.off('progress');
-        spinner.css('visibility', 'hidden');
-        check.css('visibility', 'visible');
-        const type = res.data.isNew ? 'uploadNew' : 'uploadExisting';
-        window.parent.postMessage({ type, ...res.data }, targetWindow);
-      });
-  };
 });

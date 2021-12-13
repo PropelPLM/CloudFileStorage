@@ -7,7 +7,7 @@ import path from 'path';
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
 import MessageEmitter from '../utils/MessageEmitter';
-import GoogleDrive from '../platforms/GoogleDrive';
+import GoogleDrive from '../platforms/GoogleDrive/GoogleDrive';
 import JsForce from '../utils/JsForce';
 
 router.get('/:instanceKey', (req, res)=> {
@@ -15,13 +15,13 @@ router.get('/:instanceKey', (req, res)=> {
   res.sendFile('index.html', { root: path.join(__dirname, '../../../public/') });
 })
 
-router.post('/:instanceKey', async (req: any, res: any) => {
-  const instanceKey: string = req.params.instanceKey;
-  let sessionId: string, salesforceUrl: string, clientId: string, clientSecret: string;
-  ({ sessionId, salesforceUrl, clientId, clientSecret } = req.body);
+router.post('/:instanceKey/', async (req: any, res: any) => {
+  let instanceKey: string = req.params.instanceKey;
+  let sessionId: string, salesforceUrl: string, clientId: string, clientSecret: string, tenantId: string;
+  ({ sessionId, salesforceUrl, clientId, clientSecret, tenantId } = req.body);
 
   InstanceManager.register(instanceKey);
-  const instanceDetails = { salesforceUrl, clientId, clientSecret };
+  const instanceDetails = { salesforceUrl, clientId, clientSecret, tenantId };
 
   try {
     await Promise.all([
@@ -49,7 +49,7 @@ router.get('/callback/google', async (req: any, res: any) => {
   const instanceKey = Buffer.from(req.query.state, 'base64').toString();
   const code = req.query.code;
   try {
-    const token: Record<string, any> = await GoogleDrive.getTokens(code, instanceKey);
+    const token: Record<string, any> = await GoogleDrive.getTokens!(code, instanceKey);
     let clientId: string, clientSecret: string;
     ({ clientId, clientSecret } = InstanceManager.get(instanceKey, [MapKey.clientId, MapKey.clientSecret]));
 

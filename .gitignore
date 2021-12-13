@@ -3,3 +3,5 @@ credentials.json
 *.doc*
 node_modules
 build/
+.env
+.vscode

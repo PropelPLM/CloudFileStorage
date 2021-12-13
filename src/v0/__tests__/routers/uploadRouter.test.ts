@@ -1,7 +1,7 @@
 //@ts-nocheck
 'use strict';
 
-import GoogleDrive from '../../platforms/GoogleDrive';
+import GoogleDrive from '../../platforms/GoogleDrive/GoogleDrive';
 import InstanceManager from '../../utils/InstanceManager';
 import JsForce from '../../utils/JsForce';
 import { logErrorResponse, logSuccessResponse } from '../../utils/Logger';
@@ -14,7 +14,7 @@ const request = supertest(server);
 
 jest
   .mock('busboy')
-  .mock('../../platforms/GoogleDrive')
+  .mock('../../platforms/GoogleDrive/GoogleDrive')
   .mock('../../utils/InstanceManager')
   .mock('../../utils/JsForce')
   .mock('../../utils/Logger')

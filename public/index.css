@@ -53,6 +53,10 @@ input[type='file'] {
   padding: 8px;
 }
 
+.disabled {
+  background-color: gray;
+}
+
 .custom-file-upload:focus {
   background-color: #205fb2;
 }

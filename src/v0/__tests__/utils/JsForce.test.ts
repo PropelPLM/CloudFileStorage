@@ -17,11 +17,15 @@ const instanceMap: Record<string, Partial<IMap>> = data.instanceMap;
 const instanceKey1 = data.instanceKey1;
 const instanceKey2 = data.instanceKey2;
 
-describe ('JsForce test suite', () => {
+xdescribe ('JsForce test suite', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
+  afterAll(async () => {
+    await MessageEmitter.tearDown('Jsforce');
+  })
 
   describe('connection setup', () => {
     it('connect establishes connection to SF Apex', async () => {

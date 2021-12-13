@@ -2,20 +2,36 @@ type IMap = {
     [key in MapKey]: any;
   };
 
+type FileDetail = {
+  fileName: string;
+  externalBytes: number;
+  fileSize: number;
+  frontendBytes: number;
+  file?: any;
+  uploadStream?: any;
+};
+
 const enum MapKey {
+
+  // platform agnostic information
+  platform = "platform",
   clientId = "clientId",
   clientSecret = "clientSecret",
-  connection = "connection",
   destinationFolderId = "destinationFolderId",
-  externalBytes = "externalBytes",
-  file = "file",
-  fileName = "fileName",
-  fileSize = "fileSize",
-  frontendBytes = "frontendBytes",
-  isNew = "isNew",
   oAuth2Client = "oAuth2Client",
+
+  // jsforce
+  connection = "connection",
+  salesforceUrl = "salesforceUrl",
   orgNamespace = "orgNamespace",
   revisionId = "revisionId",
-  salesforceUrl = "salesforceUrl",
-  uploadStream = "uploadStream",
+
+  // operations
+  fileDetails = "fileDetails",
+  isNew = "isNew",
+
+  // office specific information
+  groupId = "groupId",
+  tenantId = "tenantId",
+
 }

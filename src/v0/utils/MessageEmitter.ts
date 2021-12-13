@@ -39,13 +39,24 @@ export default {
     }
   },
 
-  postProgress: (instanceKey: string, src: string) => {
-    let fileName: string, frontendBytes: number, externalBytes: number, fileSize: number;
-    ({ fileName, frontendBytes, externalBytes, fileSize } = InstanceManager.get(instanceKey, [MapKey.fileName, MapKey.frontendBytes, MapKey.externalBytes, MapKey.fileSize]));
-    const srcProgress: number = src == 'FRONTEND' ? frontendBytes/fileSize : externalBytes/fileSize;
+  postProgress: (instanceKey: string, fileDetailKey: string, src: string) => {
+    let fileName: string, fileDetails: Record<string, FileDetail>, totalFileSize: number, totalFrontendBytes: number, totalExternalBytes: number;
+    ({ fileDetails } = InstanceManager.get(instanceKey, [MapKey.fileDetails]));
+    totalFileSize = totalFrontendBytes = totalExternalBytes = 0;
+    for (const detail in fileDetails) {
+      totalFileSize += fileDetails[detail].fileSize;
+      totalFrontendBytes += fileDetails[detail].frontendBytes;
+      totalExternalBytes += fileDetails[detail].externalBytes;
+    }
+    ({ fileName } = fileDetails[fileDetailKey]);
+    const srcProgress: number = src == 'FRONTEND' ? totalFrontendBytes/totalFileSize : totalExternalBytes/totalFileSize;
     logProgressResponse(fileName, src, srcProgress);
-    const percentCompletion: number = Math.floor((100 * (frontendBytes + externalBytes)) / (fileSize * 2))
+    const percentCompletion: number = Math.floor(((totalFrontendBytes + totalExternalBytes) / (totalFileSize * 2)) * 100);
     io.to(instanceKey).emit('progress', percentCompletion);
   },
   setAttribute,
+  tearDown: async (test: string) => {
+    await server.close();
+    console.log(`closed from ${test}!`)
+  }
 };

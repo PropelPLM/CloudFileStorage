@@ -7,6 +7,10 @@ export default {
     instanceMap[instanceKey] = {};
   },
 
+  checkRegistration: (instanceKeyOrOrgUrl: string): boolean => {
+    return instanceMap.hasOwnProperty(instanceKeyOrOrgUrl);
+  },
+
   upsert: (instanceKey: string, keyValuePairs: Partial<Record<MapKey, any>>) => {
     Object.entries(keyValuePairs).forEach(([key, value]) => {
       instanceMap[instanceKey][<MapKey> key] = value;

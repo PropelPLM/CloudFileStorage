@@ -6,7 +6,7 @@
   <meta name='viewport' content='width=device-width, initial-scale=1' />
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js'></script>
-  <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js'></script>
+  <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js'></script>
   <base href='/' />
   <link rel='stylesheet' type='text/css'
@@ -22,7 +22,8 @@
         <div class='slds-file-selector'>
           <input type='file' class='slds-file-selector__input slds-assistive-text' id='file-select'
             aria-describedby='file-upload-drag-and-drop'
-            aria-labelledby='file-selector-primary-label file-selector-secondary-label' />
+            aria-labelledby='file-selector-primary-label file-selector-secondary-label'
+            multiple/>
           <label for='file-select' class='custom-file-upload buttons'>
             <svg class='slds-button__icon slds-button__icon_left' aria-hidden='true'>
               <use xlink:href='/assets/icons/utility-sprite/svg/symbols.svg#upload'></use>
@@ -53,6 +54,7 @@
               </svg>
             </div>
           </div>
+          <div id='overall-file-progress' class='slds-m-left_small slds-p-top_x-small'> </div>
         </div>
       </div>
     </div>

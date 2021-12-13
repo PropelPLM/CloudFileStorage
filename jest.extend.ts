@@ -1,12 +1,14 @@
 export default undefined;
 declare global {
-  interface Matchers<R> {
-    toBeType: (received: string) => object;
+  namespace jest {
+    interface Matchers<R> {
+      toBeType: (received: string) => object;
+    }
   }
 }
 
 expect.extend({
-  toBeType(received, argument) {
+  toBeType(received: any, argument: any) {
     const initialType = typeof received;
     const type = initialType === "object" ? Array.isArray(received) ? "array" : initialType : initialType;
     return type === argument ? {
