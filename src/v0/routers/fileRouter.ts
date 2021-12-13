@@ -32,6 +32,7 @@ router.post('/get', async (_: Request, res: Response) => {
       response[fileId] = result;
       logSuccessResponse(result, logMessage);
     } catch (error) {
+      console.log({error});
       logErrorResponse(error, logMessage);
       errorResults.push(fileId);
     }
@@ -172,6 +173,7 @@ router.post('/update', async (_: Request, res: Response) => {
         logSuccessResponse(result, logMessage);
       }
     } catch (error) {
+      console.log({error});
       logErrorResponse(error, logMessage);
       errorResults.push(fileId);
     }
