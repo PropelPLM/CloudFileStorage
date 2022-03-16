@@ -1,0 +1,12 @@
+{
+  "client_secret": "secret",
+  "client_id": "id",
+  "access_token": "atoken",
+  "refresh_token": "rtoken",
+  "expiry_date": "expire",
+  "file_name": "test_name.png",
+  "mime_type": "image/png",
+  "file_data": "hello_test_data",
+  "success_status": 200,
+  "version": "v3"
+}

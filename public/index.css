@@ -1,0 +1,79 @@
+html {
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.25;
+  position: absolute;
+  overflow: hidden;
+  width: 100%;
+}
+
+.slds-form-element,
+.slds-file-selector {
+  width: -webkit-fill-available;
+}
+
+#form {
+  display: inline-flex;
+  width: 100%;
+  padding: 1rem;
+}
+
+#completion-text {
+  min-inline-size: fit-content;
+  margin-right: 5px;
+}
+
+#file-name {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 2;
+  font-weight: bold;
+}
+
+.buttons {
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid #dddbda;
+  color: #fff;
+  border-radius: 0.25rem;
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  transition: background-color 0.5s, box-shadow 0.5s, color 0.5s;
+}
+
+input[type='file'] {
+  display: none;
+}
+
+.custom-file-upload {
+  display: block;
+  background-color: #0070d2;
+  padding: 8px;
+}
+
+.disabled {
+  background-color: gray;
+}
+
+.custom-file-upload:focus {
+  background-color: #205fb2;
+}
+
+.custom-file-upload:hover {
+  box-shadow: 0px 0px 0.2rem 0.2rem rgba(32, 95, 178, 0.5);
+  background-color: #205fb2;
+}
+
+#progress-container {
+  margin: 0 0 0 0;
+  transform: translateY(-15%);
+  width: 60%;
+  visibility: hidden;
+}
+
+#progress-bar-text {
+  margin-left: auto;
+  font-weight: bold;
+}
