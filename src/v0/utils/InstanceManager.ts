@@ -31,7 +31,9 @@ export default {
     } catch (err) {
       console.log(err);
       debug(instanceKey);
-      throw new Error('InstanceManager does not contain requested keys.');
+      throw new Error(`InstanceManager does not contain requested keys:
+        ${detailKeys.join(', ')}
+      `);
     }
   }
 };
