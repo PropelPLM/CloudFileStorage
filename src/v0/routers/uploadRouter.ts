@@ -72,8 +72,13 @@ router.post('/:instanceKey', async (req: any, res: any) => {
   const instanceKey = req.params.instanceKey;
   const form = new Busboy({ headers: req.headers });
   let salesforceUrl: string, isNew: string, fileDetails: Record<string, FileDetail>;
-  console.log(InstanceManager.debug(instanceKey));
-  ({ salesforceUrl, isNew } = InstanceManager.get(instanceKey, [MapKey.salesforceUrl, MapKey.isNew]));
+  try {
+    ({ salesforceUrl, isNew } = InstanceManager.get(instanceKey, [MapKey.salesforceUrl, MapKey.isNew]));
+  } catch (err) {
+    res.status(500).send(`Upload failed: ${err}`);
+    logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > INSTANCE_MANAGER_GET]');
+    console.log(InstanceManager.debug(instanceKey));
+  }
   const responses: Record<string,any>[] = [];
   const promises: any[] = [];
   try {
