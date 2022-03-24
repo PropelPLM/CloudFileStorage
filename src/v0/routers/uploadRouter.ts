@@ -115,40 +115,46 @@ router.post('/:instanceKey', async (req: any, res: any) => {
                   logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
                 })
                 .on('end', async () => {
-                  console.log(1)
-                  const file: GoogleFile = await GoogleDrive.endUpload(instanceKey, fileDetailKey);
-                  console.log(4)
-                  console.log('file created in google')
-                  let sfObject = await JsForce.create(file.data, instanceKey);
-                  const response = {
-                    status: parseInt(file.status),
-                    data: {
-                      ...file.data,
-                      sfId: sfObject.id,
-                      revisionId: sfObject.revisionId,
-                    }
-                  };
-                  responses.push(response);
-                  logSuccessResponse(response, '[END_UPLOAD]');
-                  resolve(file);
+                  let file: GoogleFile;
+                  try {
+                    file = await GoogleDrive.endUpload(instanceKey, fileDetailKey);
+                    let sfObject = await JsForce.create(file.data, instanceKey);
+                    const response = {
+                      status: parseInt(file.status),
+                      data: {
+                        ...file.data,
+                        sfId: sfObject.id,
+                        revisionId: sfObject.revisionId,
+                      }
+                    };
+                    responses.push(response);
+                    logSuccessResponse(response, '[END_UPLOAD]');
+                    resolve(file);
+                  } catch (err: any) {
+                    console.log(0);
+                    reject(err.message);
+                  }
                 });
               } catch (err) {
-                console.log('inner')
-                console.log('do clean up here')
                 reject(err);
               }
             })
           );
         })
       .on('finish', async () => {
-        await Promise.all(promises);
-        const response = {
-          salesforceUrl,
-          isNew,
-          responses
-        };
-        res.status(200).send(response);
-        logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
+        try {
+          await Promise.all(promises);
+          const response = {
+            salesforceUrl,
+            isNew,
+            responses
+          };
+          res.status(200).send(response);
+          logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
+        } catch (err: any) {
+          console.log(1);
+          throw new Error(err.message);
+        }
       });
     req.pipe(form);
   } catch (err) {
