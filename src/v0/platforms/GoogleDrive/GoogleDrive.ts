@@ -122,8 +122,11 @@ class GoogleDrive implements IPlatform {
     } catch (err: any) {
       console.log(5)
       console.log(err);
+      console.log(6)
       console.log(err.response);
+      console.log(7)
       console.log(err.response.data);
+      console.log(8)
       throw new Error('client error');
     }
   }
