@@ -75,15 +75,10 @@ router.post('/:instanceKey', async (req: any, res: any) => {
   let salesforceUrl: string, isNew: string, fileDetails: Record<string, FileDetail>;
   try {
     ({ salesforceUrl, isNew } = InstanceManager.get(instanceKey, [MapKey.salesforceUrl, MapKey.isNew]));
-  } catch (err) {
-    res.status(500).send(`Upload failed: ${err}`);
-    logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > INSTANCE_MANAGER_GET]');
-    console.log(InstanceManager.debug(instanceKey));
-  }
-  const responses: Record<string,any>[] = [];
-  const promises: any[] = [];
-  try {
+    const responses: Record<string,any>[] = [];
+    const promises: any[] = [];
     let fileSizes: Record<string, number> = {};
+
     form
       .on('field', (fieldName: string, value: string) => {
         if (fieldName == 'fileSize') {
