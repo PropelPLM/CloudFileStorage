@@ -154,13 +154,13 @@ router.post('/:instanceKey', async (req: any, res: any) => {
           res.status(200).send(response);
           logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
         } catch (err: any) {
-          console.log(3);
-          throw new Error(err.message);
+          console.log(err.message);
+          res.status(500).send(`Upload failed: ${err}`);
+          logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
         }
       });
     req.pipe(form);
   } catch (err) {
-    console.log('outer')
     res.status(500).send(`Upload failed: ${err}`);
     logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
   }
