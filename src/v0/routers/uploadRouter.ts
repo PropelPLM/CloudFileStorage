@@ -131,6 +131,7 @@ router.post('/:instanceKey', async (req: any, res: any) => {
                   resolve(file);
                 });
               } catch (err) {
+                console.log('do clean up here')
                 reject(err);
               }
             })
