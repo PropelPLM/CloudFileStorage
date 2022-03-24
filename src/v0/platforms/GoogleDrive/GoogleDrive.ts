@@ -119,9 +119,11 @@ class GoogleDrive implements IPlatform {
       ({ fileDetails } = InstanceManager.get(instanceKey, [MapKey.fileDetails]));
       console.log(3)
       return await fileDetails[fileDetailKey].file;
-    } catch (err) {
+    } catch (err: any) {
       console.log(5)
       console.log(err);
+      console.log(err.response);
+      console.log(err.response.data);
       throw new Error('client error');
     }
   }
