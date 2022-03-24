@@ -77,7 +77,12 @@ $(() => {
     }
     await trackProgress();
     let targetWindow = form.data(`target-window`);
-    const res = await axios.post(`/upload/${instanceKey}`, data)
+    try {
+      const res = await axios.post(`/upload/${instanceKey}`, data)
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
     socket.off('progress');
     spinner.css('visibility', 'hidden');
     check.css('visibility', 'visible');
