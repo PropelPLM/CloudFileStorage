@@ -62,6 +62,7 @@ router.post('/reset/:instanceKey/', async (req: any, res: any) => {
   try {
     const instanceKey = req.params.instanceKey;
     InstanceManager.upsert(instanceKey, {fileDetails: {}});
+    res.status(200).send();
   } catch (err) {
     res.status(400).send(`Failed to reset instance manager variables ${err}`);
     logErrorResponse(err , '[END_POINT.RESET]');
