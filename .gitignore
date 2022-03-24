@@ -1,0 +1,6 @@
+token.json
+credentials.json
+*.doc*
+node_modules
+.env
+build
