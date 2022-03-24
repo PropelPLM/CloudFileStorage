@@ -117,7 +117,9 @@ router.post('/:instanceKey', async (req: any, res: any) => {
                 .on('end', async () => {
                   let file: GoogleFile;
                   try {
+                    console.log(0);
                     file = await GoogleDrive.endUpload(instanceKey, fileDetailKey);
+                    console.log(1);
                     let sfObject = await JsForce.create(file.data, instanceKey);
                     const response = {
                       status: parseInt(file.status),
@@ -131,7 +133,7 @@ router.post('/:instanceKey', async (req: any, res: any) => {
                     logSuccessResponse(response, '[END_UPLOAD]');
                     resolve(file);
                   } catch (err: any) {
-                    console.log(0);
+                    console.log(2);
                     reject(err.message);
                   }
                 });
@@ -152,7 +154,7 @@ router.post('/:instanceKey', async (req: any, res: any) => {
           res.status(200).send(response);
           logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
         } catch (err: any) {
-          console.log(1);
+          console.log(3);
           throw new Error(err.message);
         }
       });
