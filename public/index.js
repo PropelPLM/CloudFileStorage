@@ -5,6 +5,7 @@ $(() => {
   const fileName = $('#file-name');
   const fileSelect = $('#file-select');
   const progressContainer = $('#progress-container');
+  const errorContainer = $('#error-container');
   const progressBar = $('#progress-bar');
   const progressBarText = $('#progress-bar-text');
   const spinner = $('#spinner');
@@ -95,7 +96,9 @@ $(() => {
       window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
       setFilesUploaded();
     } catch (err) {
-      console.log(err);
+      spinner.css('visibility', 'hidden');
+      errorContainer.css('visibility', 'visible');
+      errorContainer.text(`${error.response.data} Please refresh.`)
     }
   };
 
