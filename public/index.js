@@ -77,20 +77,26 @@ $(() => {
     }
     await trackProgress();
     let targetWindow = form.data(`target-window`);
+    let uploadResult;
     try {
-      const res = await axios.post(`/upload/${instanceKey}`, data)
-      console.log(res);
+      uploadResult = await axios.post(
+        `/upload/${instanceKey}`,
+        data,
+        {
+          headers: {'Content-Type': 'application/json'}
+        }
+      );
+      socket.off('progress');
+      spinner.css('visibility', 'hidden');
+      check.css('visibility', 'visible');
+      const type = uploadResult.data.isNew ? 'uploadNew' : 'uploadExisting';
+      window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
+      targetWindow = targetWindow.substring(0, targetWindow.indexOf('.')+ 1) + 'lightning.force.com'
+      window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
+      setFilesUploaded();
     } catch (err) {
       console.log(err);
     }
-    socket.off('progress');
-    spinner.css('visibility', 'hidden');
-    check.css('visibility', 'visible');
-    const type = res.data.isNew ? 'uploadNew' : 'uploadExisting';
-    window.parent.postMessage({ type, ...res.data }, targetWindow);
-    targetWindow = targetWindow.substring(0, targetWindow.indexOf('.')+ 1) + 'lightning.force.com'
-    window.parent.postMessage({ type, ...res.data }, targetWindow);
-    setFilesUploaded();
   };
 
   const toggleButtonDisable = () => {
