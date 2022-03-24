@@ -98,7 +98,7 @@ $(() => {
     } catch (err) {
       spinner.css('visibility', 'hidden');
       errorContainer.css('visibility', 'visible');
-      errorContainer.text(`${error.response.data} Please refresh.`)
+      errorContainer.text(`${err.response.data} Please refresh.`)
     }
   };
 
