@@ -131,6 +131,7 @@ router.post('/:instanceKey', async (req: any, res: any) => {
                   resolve(file);
                 });
               } catch (err) {
+                console.log('inner')
                 console.log('do clean up here')
                 reject(err);
               }
@@ -149,6 +150,7 @@ router.post('/:instanceKey', async (req: any, res: any) => {
       });
     req.pipe(form);
   } catch (err) {
+    console.log('outer')
     res.status(500).send(`Upload failed: ${err}`);
     logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
   }
