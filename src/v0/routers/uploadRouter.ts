@@ -115,7 +115,9 @@ router.post('/:instanceKey', async (req: any, res: any) => {
                   logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
                 })
                 .on('end', async () => {
+                  console.log(1)
                   const file: GoogleFile = await GoogleDrive.endUpload(instanceKey, fileDetailKey);
+                  console.log(4)
                   console.log('file created in google')
                   let sfObject = await JsForce.create(file.data, instanceKey);
                   const response = {
