@@ -116,6 +116,7 @@ router.post('/:instanceKey', async (req: any, res: any) => {
                 })
                 .on('end', async () => {
                   const file: GoogleFile = await GoogleDrive.endUpload(instanceKey, fileDetailKey);
+                  console.log('file created in google')
                   let sfObject = await JsForce.create(file.data, instanceKey);
                   const response = {
                     status: parseInt(file.status),
