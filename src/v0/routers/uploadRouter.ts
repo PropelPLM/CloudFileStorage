@@ -134,7 +134,10 @@ router.post('/:instanceKey', async (req: any, res: any) => {
                     reject(err.message);
                   }
                 });
-              } catch (err) {
+              } catch (err: any) {
+                console.log(0)
+                console.log(err)
+                console.log(err.message)
                 reject(err);
               }
             })
