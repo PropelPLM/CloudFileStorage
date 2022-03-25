@@ -19,8 +19,6 @@ router.post('/token/:instanceKey', async (req: any, res: any) => {
     let client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl;
     ({ client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl } = req.body);
 
-    console.log('prep upload')
-    console.log({ client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl })
 
     const tokensFromCredentials: Record<string, string> = {
         access_token,
@@ -136,10 +134,7 @@ router.post('/:instanceKey', async (req: any, res: any) => {
                     reject(err.message);
                   }
                 });
-              } catch (err: any) {
-                console.log(0)
-                console.log(err)
-                console.log(err.message)
+              } catch (err) {
                 reject(err);
               }
             })
