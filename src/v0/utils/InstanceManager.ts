@@ -1,6 +1,10 @@
 'use strict';
 
 const instanceMap: Record<string , Partial<IMap>> = {};
+function debug(instanceKey:string) {
+  console.log(instanceMap[instanceKey]);
+}
+
 
 export default {
   register: (instanceKey: string) => {
@@ -18,10 +22,18 @@ export default {
   },
 
   get: (instanceKey: string, detailKeys: MapKey[]) => {
-    const requestedDetails: Record<string ,any> = {};
-    detailKeys.forEach((key: MapKey) => {
-      requestedDetails[key] = instanceMap[instanceKey][key];
-    });
-    return requestedDetails;
+    try {
+      const requestedDetails: Record<string ,any> = {};
+      detailKeys.forEach((key: MapKey) => {
+        requestedDetails[key] = instanceMap[instanceKey][key];
+      });
+      return requestedDetails;
+    } catch (err) {
+      console.log(err);
+      debug(instanceKey);
+      throw new Error(`InstanceManager does not contain requested keys:
+        ${detailKeys.join(', ')}
+      `);
+    }
   }
 };

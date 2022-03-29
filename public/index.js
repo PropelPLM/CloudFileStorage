@@ -5,6 +5,7 @@ $(() => {
   const fileName = $('#file-name');
   const fileSelect = $('#file-select');
   const progressContainer = $('#progress-container');
+  const errorContainer = $('#error-container');
   const progressBar = $('#progress-bar');
   const progressBarText = $('#progress-bar-text');
   const spinner = $('#spinner');
@@ -77,15 +78,29 @@ $(() => {
     }
     await trackProgress();
     let targetWindow = form.data(`target-window`);
-    const res = await axios.post(`/upload/${instanceKey}`, data)
-    socket.off('progress');
-    spinner.css('visibility', 'hidden');
-    check.css('visibility', 'visible');
-    const type = res.data.isNew ? 'uploadNew' : 'uploadExisting';
-    window.parent.postMessage({ type, ...res.data }, targetWindow);
-    targetWindow = targetWindow.substring(0, targetWindow.indexOf('.')+ 1) + 'lightning.force.com'
-    window.parent.postMessage({ type, ...res.data }, targetWindow);
-    setFilesUploaded();
+    let uploadResult;
+    try {
+      uploadResult = await axios.post(
+        `/upload/${instanceKey}`,
+        data,
+        {
+          headers: {'Content-Type': 'application/json'}
+        }
+      );
+      socket.off('progress');
+      spinner.css('visibility', 'hidden');
+      check.css('visibility', 'visible');
+      const type = uploadResult.data.isNew ? 'uploadNew' : 'uploadExisting';
+      window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
+      targetWindow = targetWindow.substring(0, targetWindow.indexOf('.')+ 1) + 'lightning.force.com'
+      window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
+      setFilesUploaded();
+    } catch (err) {
+      spinner.css('visibility', 'hidden');
+      errorContainer.css('visibility', 'visible');
+      progressContainer.css('display', 'none');
+      errorContainer.text(`${err.response.data} Please fix appropriately and refresh.`)
+    }
   };
 
   const toggleButtonDisable = () => {

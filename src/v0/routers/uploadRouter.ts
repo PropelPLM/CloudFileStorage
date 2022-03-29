@@ -62,6 +62,7 @@ router.post('/reset/:instanceKey/', async (req: any, res: any) => {
   try {
     const instanceKey = req.params.instanceKey;
     InstanceManager.upsert(instanceKey, {fileDetails: {}});
+    res.status(200).send();
   } catch (err) {
     res.status(400).send(`Failed to reset instance manager variables ${err}`);
     logErrorResponse(err , '[END_POINT.RESET]');
@@ -72,11 +73,12 @@ router.post('/:instanceKey', async (req: any, res: any) => {
   const instanceKey = req.params.instanceKey;
   const form = new Busboy({ headers: req.headers });
   let salesforceUrl: string, isNew: string, fileDetails: Record<string, FileDetail>;
-  ({ salesforceUrl, isNew } = InstanceManager.get(instanceKey, [MapKey.salesforceUrl, MapKey.isNew]));
-  const responses: Record<string,any>[] = [];
-  const promises: any[] = [];
   try {
+    ({ salesforceUrl, isNew } = InstanceManager.get(instanceKey, [MapKey.salesforceUrl, MapKey.isNew]));
+    const responses: Record<string,any>[] = [];
+    const promises: any[] = [];
     let fileSizes: Record<string, number> = {};
+
     form
       .on('field', (fieldName: string, value: string) => {
         if (fieldName == 'fileSize') {
@@ -113,19 +115,24 @@ router.post('/:instanceKey', async (req: any, res: any) => {
                   logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
                 })
                 .on('end', async () => {
-                  const file: GoogleFile = await GoogleDrive.endUpload(instanceKey, fileDetailKey);
-                  let sfObject = await JsForce.create(file.data, instanceKey);
-                  const response = {
-                    status: parseInt(file.status),
-                    data: {
-                      ...file.data,
-                      sfId: sfObject.id,
-                      revisionId: sfObject.revisionId,
-                    }
-                  };
-                  responses.push(response);
-                  logSuccessResponse(response, '[END_UPLOAD]');
-                  resolve(file);
+                  let file: GoogleFile;
+                  try {
+                    file = await GoogleDrive.endUpload(instanceKey, fileDetailKey);
+                    let sfObject = await JsForce.create(file.data, instanceKey);
+                    const response = {
+                      status: parseInt(file.status),
+                      data: {
+                        ...file.data,
+                        sfId: sfObject.id,
+                        revisionId: sfObject.revisionId,
+                      }
+                    };
+                    responses.push(response);
+                    logSuccessResponse(response, '[END_UPLOAD]');
+                    resolve(file);
+                  } catch (err: any) {
+                    reject(err.message);
+                  }
                 });
               } catch (err) {
                 reject(err);
@@ -134,19 +141,24 @@ router.post('/:instanceKey', async (req: any, res: any) => {
           );
         })
       .on('finish', async () => {
-        await Promise.all(promises);
-        const response = {
-          salesforceUrl,
-          isNew,
-          responses
-        };
-        res.status(200).send(response);
-        logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
+        try {
+          await Promise.all(promises);
+          const response = {
+            salesforceUrl,
+            isNew,
+            responses
+          };
+          res.status(200).send(response);
+          logSuccessResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
+        } catch (err: any) {
+          res.status(500).send(`Upload failed: ${err}`);
+          logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
+        }
       });
     req.pipe(form);
   } catch (err) {
     res.status(500).send(`Upload failed: ${err}`);
-    logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
+    logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD FLOW]');
   }
 });
 

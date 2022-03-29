@@ -113,9 +113,15 @@ class GoogleDrive implements IPlatform {
   }
 
   async endUpload(instanceKey: string, fileDetailKey: string): Promise<GoogleFile> {
-    let fileDetails: Record<string, FileDetail>;
-    ({ fileDetails } = InstanceManager.get(instanceKey, [MapKey.fileDetails]));
-    return await fileDetails[fileDetailKey].file;
+    try {
+      let fileDetails: Record<string, FileDetail>;
+      ({ fileDetails } = InstanceManager.get(instanceKey, [MapKey.fileDetails]));
+      return await fileDetails[fileDetailKey].file;
+    } catch (err: any) {
+      let error: string, error_description: string;
+      ({ error, error_description } =err.response.data);
+      throw new Error(`${error}: ${error_description}`);
+    }
   }
 }
 
