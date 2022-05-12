@@ -79,8 +79,8 @@ class GoogleDrive implements IPlatform {
 
   async initUpload(instanceKey: string, oAuth2Client: CloudStorageProviderClient, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any> {
     let destinationFolderId: string, fileName: string, mimeType: string;
-    console.log('oAuth2Client')
-    console.log(oAuth2Client)
+    console.log('oAuth2Client');
+    console.log(oAuth2Client);
     ({ destinationFolderId } = await InstanceManager.get(instanceKey, [ MapKey.destinationFolderId ]));
     ({ fileName, mimeType } = fileDetailsMap[fileDetailKey]);
     const drive = google.drive({ version: 'v3', auth: oAuth2Client });
