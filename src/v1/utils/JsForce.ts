@@ -122,8 +122,6 @@ export default {
       );
       delete customObject[key];
     }
-    console.log('customObject')
-    console.log(customObject)
     return customObject;
   }
 }
