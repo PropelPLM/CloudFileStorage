@@ -95,7 +95,7 @@ class GoogleDrive implements IPlatform {
         fields: 'id, name, webViewLink, mimeType, fileExtension, webContentLink'
       },
       {
-        onUploadProgress: async (evt: Record<string, any>) => {
+        onUploadProgress: (evt: Record<string, any>) => {
           const bytesRead: number = evt.bytesRead;
           let totalFileSize: number, totalExternalBytes: number;
           fileDetailsMap[fileDetailKey].externalBytes = bytesRead;

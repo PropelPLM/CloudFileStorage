@@ -86,7 +86,7 @@ router.post('/:instanceKey', async (req: any, res: any) => {
               fileDetails = { fileName, fileSize, frontendBytes: 0, externalBytes: 0, mimeType, uploadStream };
               const fileDetailKey: string = createFileDetailKey(fileDetails.fileName);
               fileDetailsMap[fileDetailKey] = fileDetails;
-              fileDetailsMap[fileDetailKey].file = await GoogleDrive.initUpload(instanceKey, oAuth2Client, uploadStream, fileDetailsMap, fileDetailKey);
+              fileDetailsMap[fileDetailKey].file = GoogleDrive.initUpload(instanceKey, oAuth2Client, uploadStream, fileDetailsMap, fileDetailKey);
               let progress: number = 0;
               fileStream
                 .on('data', async (data: Record<string, any>) => {
