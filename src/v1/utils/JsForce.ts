@@ -10,7 +10,7 @@ const EXTERNAL_CONTENT_LOCATION = 'E';
 
 export default {
   async connect(sessionId: string, salesforceUrl: string, instanceKey: string) {
-    // console.log(sessionId, salesforceUrl, instanceKey);
+    console.log(sessionId, salesforceUrl, instanceKey);
     // try {
     //   const connection = new jsConnect.Connection({
     //     instanceUrl: salesforceUrl,
@@ -27,6 +27,13 @@ export default {
   },
 
   async sendTokens(tokens: Record<string, string>, instanceKey: string) {
+    let salesforceUrl: string, sessionId: string; //jsforce
+    ({ salesforceUrl, sessionId } = await InstanceManager.get(instanceKey, [ MapKey.salesforceUrl, MapKey.sessionId]));
+    const connection = new jsConnect.Connection({
+      instanceUrl: salesforceUrl,
+      sessionId
+    });
+    const orgNamespace: string = await this.setupNamespace(connection);
     const newSetting = {
       Name: 'GoogleDrive',
       Access_Token__c: tokens.access_token,
@@ -36,8 +43,6 @@ export default {
       Client_Secret__c: tokens.clientSecret
     };
 
-    let connection: any, orgNamespace: string;
-    ({ connection, orgNamespace } = await InstanceManager.get(instanceKey, [MapKey.connection, MapKey.orgNamespace]));
     try {
       const upsertedTokens = await connection
         .sobject(`${orgNamespace}__Cloud_File_Storage__c`)

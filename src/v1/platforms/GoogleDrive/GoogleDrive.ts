@@ -21,7 +21,6 @@ class GoogleDrive implements IPlatform {
     ({ clientId, clientSecret, redirect_uri } = credentials);
 
     const oAuth2Client: OAuth2Client  = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
-    InstanceManager.upsert(instanceKey, { oAuth2Client });
     return oAuth2Client.generateAuthUrl({
       access_type: 'offline',
       prompt: 'consent',
@@ -30,10 +29,11 @@ class GoogleDrive implements IPlatform {
     });
   }
 
-  public async getTokens(code: string, instanceKey: string): Promise<Record<string, any>> {
-    let oAuth2Client: OAuth2Client;
+  public async getTokens(code: string, instanceKey: string, hostName: string): Promise<Record<string, any>> {
     try {
-      ({ oAuth2Client } = await InstanceManager.get(instanceKey, [MapKey.oAuth2Client]));
+      let clientId: string, clientSecret: string;
+      ({ clientId, clientSecret } = await InstanceManager.get(instanceKey, [ MapKey.clientId, MapKey.clientSecret ]));
+      const oAuth2Client: OAuth2Client  = new google.auth.OAuth2(clientId, clientSecret, `https://${hostName}/auth/callback/google`);
       const token = oAuth2Client.getToken(code);
       logSuccessResponse({}, '[GOOGLE_DRIVE.GET_TOKENS]');
       return token;

@@ -49,7 +49,7 @@ router.get('/callback/google', async (req: any, res: any) => {
   const instanceKey = Buffer.from(req.query.state, 'base64').toString();
   const code = req.query.code;
   try {
-    const token: Record<string, any> = await GoogleDrive.getTokens!(code, instanceKey);
+    const token: Record<string, any> = await GoogleDrive.getTokens!(code, instanceKey, req.hostname);
     let clientId: string, clientSecret: string;
     ({ clientId, clientSecret } = await InstanceManager.get(instanceKey, [MapKey.clientId, MapKey.clientSecret]));
 

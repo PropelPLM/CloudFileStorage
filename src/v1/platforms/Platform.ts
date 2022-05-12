@@ -5,7 +5,7 @@ export interface IPlatform {
     readonly [index: string]: any;
     // Auth flow
     createAuthUrl? (credentials: Record<string, string>, instanceKey: string): string,
-    getTokens? (code: string, instanceKey: string): Record<string, any>;
+    getTokens? (code: string, instanceKey: string, hostName: string): Record<string, any>;
 
     // Upload flow
     authorize(instanceKey: string): Promise<CloudStorageProviderClient>;
