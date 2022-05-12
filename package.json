@@ -4,8 +4,8 @@
   "description": "Upload files from local storage onto Google Drive.",
   "main": "index.js",
   "scripts": {
-    "start": "node build/v0/main.js PRODUCTION",
-    "dev": "node build/v0/main.js",
+    "start": "node build/v1/main.js PRODUCTION",
+    "dev": "node build/v1/main.js",
     "postinstall": "tsc && rm -v -rf src",
     "test": "jest",
     "test:watch": "jest --watch --no-cache --verbose --detectOpenHandles --runInBand --colors"
