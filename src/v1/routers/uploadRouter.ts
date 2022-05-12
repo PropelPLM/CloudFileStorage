@@ -20,6 +20,8 @@ router.post('/token/:instanceKey', async (req: any, res: any) => {
     let clientId, clientSecret, accessToken, refreshToken, expiryDate, sessionId, salesforceUrl;
     ({ clientId, clientSecret, accessToken, refreshToken, expiryDate, sessionId, salesforceUrl } = req.body);
     const instanceDetails = { clientId, clientSecret, accessToken, refreshToken, expiryDate, sessionId, salesforceUrl };
+    console.log('instanceDetails')
+    console.log(instanceDetails)
     await InstanceManager.upsert(instanceKey, instanceDetails);
     logSuccessResponse({instanceKey}, '[END_POINT.TOKEN]');
     res.status(200).send({ instanceKey });
@@ -35,7 +37,7 @@ router.post('/uploadDetails/:instanceKey', async (req: any, res: any) => {
     let revisionId, destinationFolderId, isNew;
     ({ revisionId, destinationFolderId, isNew } = req.body);
     const instanceDetails = { revisionId, destinationFolderId, isNew };
-    InstanceManager.upsert(instanceKey, instanceDetails);
+    await InstanceManager.upsert(instanceKey, instanceDetails);
     logSuccessResponse({ instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
     res.status(200).send({ instanceKey });
   } catch (err) {
