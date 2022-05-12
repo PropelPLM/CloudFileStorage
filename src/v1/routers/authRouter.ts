@@ -20,7 +20,7 @@ router.post('/:instanceKey/', async (req: any, res: any) => {
   let sessionId: string, salesforceUrl: string, clientId: string, clientSecret: string, tenantId: string;
   ({ sessionId, salesforceUrl, clientId, clientSecret, tenantId } = req.body);
 
-  const instanceDetails = { salesforceUrl, clientId, clientSecret, tenantId };
+  const instanceDetails = { salesforceUrl, clientId, clientSecret, tenantId, sessionId };
 
   try {
     await InstanceManager.upsert(instanceKey, instanceDetails);
