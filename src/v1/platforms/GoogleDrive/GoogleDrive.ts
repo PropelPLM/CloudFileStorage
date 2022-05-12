@@ -46,7 +46,6 @@ class GoogleDrive implements IPlatform {
   //UPLOAD FLOW- INSTANCE MANAGER VARIABLES HERE DFO NOT PERSIST FROM TOKEN FLOW
   public async authorize(instanceKey: string): Promise<CloudStorageProviderClient> {
     try {
-      console.log('in auth#$%^&*')
       let clientId, clientSecret, accessToken, refreshToken, expiryDate;
       ({ clientId, clientSecret, accessToken, refreshToken, expiryDate } = await InstanceManager.get(instanceKey,
         [
@@ -57,17 +56,14 @@ class GoogleDrive implements IPlatform {
           MapKey.expiryDate
         ]
       ));
-      console.log({ clientId, clientSecret, accessToken, refreshToken, expiryDate })
       const oAuth2Client: OAuth2Client = new google.auth.OAuth2(clientId, clientSecret, this.redirect_uris[0]);
       const tokens: Record<string, string> = {
-        accessToken,
-        refreshToken,
-        expiryDate,
+        access_token: accessToken,
+        refresh_token: refreshToken,
         scope: this.actions.driveFiles,
         token_type: 'Bearer',
+        expiry_date: expiryDate
       };
-      console.log('tokens')
-      console.log(tokens)
       oAuth2Client.setCredentials(tokens);
       logSuccessResponse({}, '[GOOGLE_DRIVE.AUTHORIZE]');
       return oAuth2Client;
@@ -79,8 +75,6 @@ class GoogleDrive implements IPlatform {
 
   async initUpload(instanceKey: string, oAuth2Client: CloudStorageProviderClient, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any> {
     let destinationFolderId: string, fileName: string, mimeType: string;
-    console.log('oAuth2Client');
-    console.log(oAuth2Client);
     ({ destinationFolderId } = await InstanceManager.get(instanceKey, [ MapKey.destinationFolderId ]));
     ({ fileName, mimeType } = fileDetailsMap[fileDetailKey]);
     const drive = google.drive({ version: 'v3', auth: oAuth2Client });
