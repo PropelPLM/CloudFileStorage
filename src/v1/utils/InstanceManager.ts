@@ -2,7 +2,6 @@
 
 import { createClient, RedisClientType } from 'redis';
 
-const instanceMap: Record<string , Partial<IMap>> = {};
 let redisClient: RedisClientType;
 
 function removeEmpty(obj: Partial<Record<MapKey, any>>) {
