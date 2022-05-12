@@ -76,7 +76,7 @@ export default {
         Content_Location__c: EXTERNAL_CONTENT_LOCATION
       };
 
-      if (!isNew) {
+      if (isNew === 'false') { //redis values are stringified.
         newAttachment['Item_Revision__c'] = revisionId;
       }
 
@@ -122,6 +122,8 @@ export default {
       );
       delete customObject[key];
     }
+    console.log('customObject')
+    console.log(customObject)
     return customObject;
   }
 }
