@@ -44,16 +44,16 @@ router.post('/uploadDetails/:instanceKey', async (req: any, res: any) => {
   }
 });
 
-router.post('/reset/:instanceKey/', async (req: any, res: any) => {
-  try {
-    const instanceKey = req.params.instanceKey;
-    InstanceManager.upsert(instanceKey, {fileDetails: {}});
-    res.status(200).send();
-  } catch (err) {
-    res.status(400).send(`Failed to reset instance manager variables ${err}`);
-    logErrorResponse(err , '[END_POINT.RESET]');
-  }
-});
+// router.post('/reset/:instanceKey/', async (req: any, res: any) => {
+//   try {
+//     const instanceKey = req.params.instanceKey;
+//     InstanceManager.upsert(instanceKey, {});
+//     res.status(200).send();
+//   } catch (err) {
+//     res.status(400).send(`Failed to reset instance manager variables ${err}`);
+//     logErrorResponse(err , '[END_POINT.RESET]');
+//   }
+// });
 
 router.post('/:instanceKey', async (req: any, res: any) => {
   const instanceKey = req.params.instanceKey;
