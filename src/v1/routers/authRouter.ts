@@ -20,14 +20,10 @@ router.post('/:instanceKey/', async (req: any, res: any) => {
   let sessionId: string, salesforceUrl: string, clientId: string, clientSecret: string, tenantId: string;
   ({ sessionId, salesforceUrl, clientId, clientSecret, tenantId } = req.body);
 
-  InstanceManager.register(instanceKey);
   const instanceDetails = { salesforceUrl, clientId, clientSecret, tenantId };
 
   try {
-    await Promise.all([
-      InstanceManager.upsert(instanceKey, instanceDetails),
-      JsForce.connect(sessionId, salesforceUrl, instanceKey)
-    ]);
+    await InstanceManager.upsert(instanceKey, instanceDetails);
 
     if (clientId && clientSecret) {
       const credentials: Record<string, string> = { clientId, clientSecret, redirect_uri: `https://${req.hostname}/auth/callback/google` }; //google can be swapped out

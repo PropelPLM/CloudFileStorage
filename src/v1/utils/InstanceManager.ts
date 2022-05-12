@@ -4,9 +4,6 @@ import { createClient, RedisClientType } from 'redis';
 
 const instanceMap: Record<string , Partial<IMap>> = {};
 let redisClient: RedisClientType;
-function debug(instanceKey: string) {
-  console.log(instanceMap[instanceKey]);
-}
 
 function removeEmpty(obj: Partial<Record<MapKey, any>>) {
   return Object.entries(obj)
@@ -26,7 +23,8 @@ export default {
   },
 
   register: (instanceKey: string) => {
-    redisClient.hSet(instanceKey, {});
+    console.log(`register ${instanceKey}`);
+    // redisClient.hSet(instanceKey, {});
   },
 
   checkRegistration: async (instanceKeyOrOrgUrl: string): Promise<boolean> => {
@@ -37,7 +35,6 @@ export default {
     try {
       await redisClient.hSet(instanceKey, removeEmpty(keyValuePairs));
     } catch (err) {
-      debug(instanceKey);
       throw new Error(`Failed to update InstanceManager: ${JSON.stringify(keyValuePairs)}`);
     }
   },
@@ -57,7 +54,6 @@ export default {
       return requestedDetails;
     } catch (err) {
       console.log(err);
-      debug(instanceKey);
       throw new Error(`InstanceManager does not contain requested keys:
         ${detailKeys.join(', ')}
       `);
