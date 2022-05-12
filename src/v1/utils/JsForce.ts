@@ -44,14 +44,14 @@ export default {
     };
 
     try {
-      const upsertedTokens = await connection
+      await connection
         .sobject(`${orgNamespace}__Cloud_File_Storage__c`)
         .upsert({ ...(await this.addNamespace(newSetting, orgNamespace)) }, 'Name');
 
-      logSuccessResponse(upsertedTokens, '[JSFORCE.SEND_TOKENS]');
-      MessageEmitter.postTrigger(instanceKey, 'authComplete', {});
+      logSuccessResponse({}, '[JSFORCE.SEND_TOKENS]');
     } catch (err) {
       logErrorResponse(err, '[JSFORCE.SEND_TOKENS]');
+      throw(err);
     }
   },
 

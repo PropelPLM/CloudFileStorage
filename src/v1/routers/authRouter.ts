@@ -58,6 +58,7 @@ router.get('/callback/google', async (req: any, res: any) => {
     logSuccessResponse('MessageEmitted', '[CALLBACK_GOOGLE');
     res.send('<script>window.close()</script>');
   } catch (err) {
+    MessageEmitter.postTrigger(instanceKey, 'authFailed', {});
     res.status(500).send(`Callback from google has failed: ${err}`);
     logErrorResponse(err, '[CALLBACK_GOOGLE');
   }
