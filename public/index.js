@@ -109,8 +109,8 @@ $(() => {
   }
 
   const uploadsCompleteResetState = () => {
-    const instanceKey = form.data(`instance-key`);
-    axios.post(`/upload/reset/${instanceKey}`);
+    // const instanceKey = form.data(`instance-key`);
+    // axios.post(`/upload/reset/${instanceKey}`);
     numFiles = 0;
     toggleButtonDisable();
   }

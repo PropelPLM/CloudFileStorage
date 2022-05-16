@@ -1,6 +1,6 @@
 'use strict';
 
-import { Stream } from "stream";
+import { PassThrough, Stream } from "stream";
 
 import * as express from 'express';
 const router = express.Router();
@@ -11,32 +11,18 @@ import InstanceManager from '../utils/InstanceManager';
 import MessageEmitter from '../utils/MessageEmitter';
 import JsForce from '../utils/JsForce';
 import GoogleDrive from '../platforms/GoogleDrive/GoogleDrive';
+import { CloudStorageProviderClient } from "../customTypes/GoogleObjects";
 
-// all endpoints are hit by the react frontend
+// all endpoints are hit by the react frontend (DEPRECATE)
 router.post('/token/:instanceKey', async (req: any, res: any) => {
   const instanceKey = req.params.instanceKey;
   try {
-    let client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl;
-    ({ client_secret, client_id, access_token, refresh_token, expiry_date, sessionId, salesforceUrl } = req.body);
-
-
-    const tokensFromCredentials: Record<string, string> = {
-        access_token,
-        refresh_token,
-        scope: GoogleDrive.actions.driveFiles,
-        token_type: 'Bearer',
-        expiry_date
-    };
-
-    InstanceManager.register(instanceKey);
-    GoogleDrive.authorize(instanceKey, client_id, client_secret, tokensFromCredentials); //getAdapter().authorize(...)
-    const instanceDetails: Partial<Record<MapKey, any>> = { salesforceUrl };
-    await Promise.all([
-        InstanceManager.upsert(instanceKey, instanceDetails),
-        JsForce.connect(sessionId, salesforceUrl, instanceKey)
-    ]);
-    logSuccessResponse({...tokensFromCredentials, instanceKey}, '[END_POINT.TOKEN]');
-    res.status(200).send({ ...tokensFromCredentials, instanceKey });
+    let clientId, clientSecret, accessToken, refreshToken, expiryDate, sessionId, salesforceUrl;
+    ({ clientId, clientSecret, accessToken, refreshToken, expiryDate, sessionId, salesforceUrl } = req.body);
+    const instanceDetails = { clientId, clientSecret, accessToken, refreshToken, expiryDate, sessionId, salesforceUrl };
+    await InstanceManager.upsert(instanceKey, instanceDetails);
+    logSuccessResponse({instanceKey}, '[END_POINT.TOKEN]');
+    res.status(200).send({ instanceKey });
   } catch (err) {
     logErrorResponse(err, '[END_POINT.TOKEN]');
     res.status(400).send(`Failed to receive tokens: ${err}`);
@@ -49,7 +35,7 @@ router.post('/uploadDetails/:instanceKey', async (req: any, res: any) => {
     let revisionId, destinationFolderId, isNew;
     ({ revisionId, destinationFolderId, isNew } = req.body);
     const instanceDetails = { revisionId, destinationFolderId, isNew };
-    InstanceManager.upsert(instanceKey, instanceDetails);
+    await InstanceManager.upsert(instanceKey, instanceDetails);
     logSuccessResponse({ instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
     res.status(200).send({ instanceKey });
   } catch (err) {
@@ -58,23 +44,27 @@ router.post('/uploadDetails/:instanceKey', async (req: any, res: any) => {
   }
 });
 
-router.post('/reset/:instanceKey/', async (req: any, res: any) => {
-  try {
-    const instanceKey = req.params.instanceKey;
-    InstanceManager.upsert(instanceKey, {fileDetails: {}});
-    res.status(200).send();
-  } catch (err) {
-    res.status(400).send(`Failed to reset instance manager variables ${err}`);
-    logErrorResponse(err , '[END_POINT.RESET]');
-  }
-});
+// router.post('/reset/:instanceKey/', async (req: any, res: any) => {
+//   try {
+//     const instanceKey = req.params.instanceKey;
+//     InstanceManager.upsert(instanceKey, {});
+//     res.status(200).send();
+//   } catch (err) {
+//     res.status(400).send(`Failed to reset instance manager variables ${err}`);
+//     logErrorResponse(err , '[END_POINT.RESET]');
+//   }
+// });
 
 router.post('/:instanceKey', async (req: any, res: any) => {
   const instanceKey = req.params.instanceKey;
+  const oAuth2Client: CloudStorageProviderClient = await GoogleDrive.authorize(instanceKey);
+
   const form = new Busboy({ headers: req.headers });
-  let salesforceUrl: string, isNew: string, fileDetails: Record<string, FileDetail>;
+  let salesforceUrl: string, isNew: string
+  const fileDetailsMap = {} as Record<string, FileDetail>;
+  let fileDetails: FileDetail;
   try {
-    ({ salesforceUrl, isNew } = InstanceManager.get(instanceKey, [MapKey.salesforceUrl, MapKey.isNew]));
+    ({ salesforceUrl, isNew } = await InstanceManager.get(instanceKey, [MapKey.salesforceUrl, MapKey.isNew]));
     const responses: Record<string,any>[] = [];
     const promises: any[] = [];
     let fileSizes: Record<string, number> = {};
@@ -92,24 +82,18 @@ router.post('/:instanceKey', async (req: any, res: any) => {
         promises.push(
           new Promise(async (resolve, reject) => {
             try {
-              let fileDetailKey: string = Math.random().toString();
-              fileDetailKey = `${fileName}_${fileDetailKey.substring(2)}`;
-              const newFileDetails: FileDetail = {fileName, fileSize, frontendBytes: 0, externalBytes: 0, mimeType};
-
-              ({ fileDetails } = InstanceManager.get(instanceKey, [MapKey.fileDetails]));
-              fileDetails = fileDetails ? fileDetails : {} as Record<string, FileDetail> ;
-              fileDetails[fileDetailKey] = newFileDetails;
-              InstanceManager.upsert(instanceKey, {fileDetails})
-              await GoogleDrive.initUpload(instanceKey, fileDetailKey, { fileName, mimeType });
+              const uploadStream = new PassThrough();
+              fileDetails = { fileName, fileSize, frontendBytes: 0, externalBytes: 0, mimeType, uploadStream };
+              const fileDetailKey: string = createFileDetailKey(fileDetails.fileName);
+              fileDetailsMap[fileDetailKey] = fileDetails;
+              fileDetailsMap[fileDetailKey].file = GoogleDrive.initUpload(instanceKey, oAuth2Client, uploadStream, fileDetailsMap, fileDetailKey);
               let progress: number = 0;
               fileStream
-                .on('data', async (data: Record<string, any>) => { //added async
+                .on('data', async (data: Record<string, any>) => {
                   progress = progress + data.length;
-                  ({ fileDetails } = InstanceManager.get(instanceKey, [MapKey.fileDetails]));
-                  fileDetails[fileDetailKey].frontendBytes = progress;
-                  InstanceManager.upsert(instanceKey, { fileDetails })
-                  MessageEmitter.postProgress(instanceKey, fileDetailKey, 'FRONTEND');
-                  await GoogleDrive.uploadFile(instanceKey, fileDetailKey, data);
+                  fileDetails.frontendBytes = progress;
+                  MessageEmitter.postProgress(instanceKey, fileDetailsMap, fileDetailKey, 'FRONTEND');
+                  await GoogleDrive.uploadFile(fileDetailsMap[fileDetailKey], data);
                 })
                 .on('error', err => {
                   logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
@@ -117,7 +101,7 @@ router.post('/:instanceKey', async (req: any, res: any) => {
                 .on('end', async () => {
                   let file: GoogleFile;
                   try {
-                    file = await GoogleDrive.endUpload(instanceKey, fileDetailKey);
+                    file = await GoogleDrive.endUpload(fileDetailsMap[fileDetailKey]);
                     let sfObject = await JsForce.create(file.data, instanceKey);
                     const response = {
                       status: parseInt(file.status),
@@ -161,5 +145,10 @@ router.post('/:instanceKey', async (req: any, res: any) => {
     logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD FLOW]');
   }
 });
+
+function createFileDetailKey(fileName: string): string {
+  let fileDetailKey: string = Math.random().toString(); //use uuid nextt time
+  return `${fileName}_${fileDetailKey.substring(2)}`;
+}
 
 export default router;

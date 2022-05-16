@@ -1,1 +1,1 @@
-web: node build/v0/main.js PRODUCTION
+web: node build/v1/main.js PRODUCTION

@@ -1,15 +1,15 @@
 type IMap = {
-    [key in MapKey]: any;
-  };
+  [key in MapKey]: any;
+};
 
 type FileDetail = {
   fileName: string;
   externalBytes: number;
   fileSize: number;
   frontendBytes: number;
-  file?: any;
-  uploadStream?: any;
   mimeType: string;
+  uploadStream: any;
+  file?: any;
 };
 
 const enum MapKey {
@@ -22,6 +22,7 @@ const enum MapKey {
   oAuth2Client = "oAuth2Client",
 
   // jsforce
+  sessionId = "sessionId",
   connection = "connection",
   salesforceUrl = "salesforceUrl",
   orgNamespace = "orgNamespace",
@@ -34,5 +35,10 @@ const enum MapKey {
   // office specific information
   groupId = "groupId",
   tenantId = "tenantId",
+
+  //v1
+  accessToken = "accessToken",
+  refreshToken = "refreshToken",
+  expiryDate = "expiryDate",
 
 }
