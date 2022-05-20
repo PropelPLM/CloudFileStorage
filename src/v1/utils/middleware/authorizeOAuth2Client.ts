@@ -16,8 +16,8 @@ export const authorizeOAuth2Client = async (req: Request, res: Response, next: N
   }
   if (!InstanceManager.checkRegistration(salesforceUrl)) {
     await InstanceManager.register(salesforceUrl);
-    InstanceManager.upsert(salesforceUrl, { destinationFolderId, tenantId });
   }
+  await InstanceManager.upsert(salesforceUrl, { destinationFolderId, tenantId, clientId, clientSecret });
   res.locals.oAuth = await getPlatform(platform).authorize(salesforceUrl);
   console.log(res.locals.oAuth);
   next();
