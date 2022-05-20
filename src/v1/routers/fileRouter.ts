@@ -72,6 +72,7 @@ router.post('/search', async (_: Request, res: Response) => {
 
   /** Iterate through list of strings (file names) and retrieve search results */
   for (const searchString of searchStrings) {
+    console.log(searchString);
     try {
       const result: Record<string, string>[] = await getPlatform(platform).searchFile!(salesforceUrl, searchString);
       logSuccessResponse(result, `[${platform}.SEARCH_FILE]`);
