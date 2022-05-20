@@ -73,10 +73,13 @@ class Office365 implements IPlatform {
   public async searchFile(instanceKeyOrOrgUrl: string, searchString: string, oAuth2Client: any): Promise<Record<string, string>[]> {
     let groupId: string;
     ({ groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.groupId]));
-
+    console.log(groupId);
+    console.log(oAuth2Client);
+    
     if (groupId == undefined) {
       groupId = await this.getGroupId(instanceKeyOrOrgUrl, oAuth2Client);
     }
+    console.log(groupId);
 
     const retFiles: Record<string, string>[] = [];
     const results: Record<string, any> = await oAuth2Client
