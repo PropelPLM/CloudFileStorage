@@ -75,6 +75,7 @@ class Office365 implements IPlatform {
     ({ groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.groupId]));
     console.log(groupId);
     console.log(oAuth2Client);
+    console.log(instanceKeyOrOrgUrl);
     
     if (groupId == undefined) {
       groupId = await this.getGroupId(instanceKeyOrOrgUrl, oAuth2Client);
