@@ -4,7 +4,7 @@ import jsConnect from 'jsforce';
 
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
-import MessageEmitter from '../utils/MessageEmitter';
+// import MessageEmitter from '../utils/MessageEmitter';
 const CUSTOM_SUFFIX = '__c';
 const EXTERNAL_CONTENT_LOCATION = 'E';
 
