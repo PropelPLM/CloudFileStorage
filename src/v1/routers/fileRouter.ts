@@ -189,7 +189,7 @@ router.post('/update', async (_: Request, res: Response) => {
     try {
       if (fileOptions.hasOwnProperty(fileId)) {
         const options: Record<string, any> = fileOptions[fileId];
-        const result = await getPlatform(platform).updateFile!(salesforceUrl, fileId, options);
+        const result = await getPlatform(platform).updateFile!(salesforceUrl, fileId, options, res.locals.oAuth);
         logSuccessResponse(result, logMessage);
       }
     } catch (error) {

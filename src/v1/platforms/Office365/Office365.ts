@@ -187,9 +187,12 @@ class Office365 implements IPlatform {
     return fileObject.url;
   }
 
-  async updateFile(instanceKey: string, fileId: string, fileOptions: Record<string, any>): Promise<Record<string, string>> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKey, [MapKey.oAuth2Client, MapKey.groupId]));
+  async updateFile(instanceKey: string, fileId: string, fileOptions: Record<string, any>, oAuth2Client: any): Promise<Record<string, string>> {
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKey, [MapKey.groupId]));
+    console.log(groupId);
+    console.log(oAuth2Client);
+    console.log(instanceKey);
 
     if (groupId == undefined) {
       groupId = await this.getGroupId(instanceKey, oAuth2Client);
@@ -508,7 +511,7 @@ class Office365 implements IPlatform {
           originalName :
           NAME_LOCK_MUTATION + originalName
       };
-      fileUpdatePromises.push(this.updateFile(instanceKeyOrOrgUrl, fileId, fileOptions));
+      fileUpdatePromises.push(this.updateFile(instanceKeyOrOrgUrl, fileId, fileOptions, null));
     });
     return fileUpdatePromises;
   }

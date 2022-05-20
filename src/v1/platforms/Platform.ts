@@ -21,7 +21,7 @@ export interface IPlatform {
     deleteFile?(instanceKey: string, docId: string): Promise<Record<string, string>>;
     downloadFile?(instanceKeyOrOrgUrl: string, fileId: string): Promise<string>;
     supersedeFile?(instanceKey: string, fileType: string, fileName: string, docId: string): Promise<string>;
-    updateFile?(instanceKey: string, fileId: string, fileOptions: Record<string, any>): Promise<Record<string, string>>;
+    updateFile?(instanceKey: string, fileId: string, fileOptions: Record<string, any>, oAuth2Client: any): Promise<Record<string, string>>;
     searchFile?(instanceKey: string, searchString: string, oAuth2Client: any): Promise<Record<string, string>[]>;
 
     // permissions
