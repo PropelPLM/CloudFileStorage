@@ -74,7 +74,7 @@ router.post('/search', async (_: Request, res: Response) => {
   for (const searchString of searchStrings) {
     console.log(searchString);
     try {
-      const result: Record<string, string>[] = await getPlatform(platform).searchFile!(salesforceUrl, searchString);
+      const result: Record<string, string>[] = await getPlatform(platform).searchFile!(salesforceUrl, searchString, res.locals.oAuth);
       logSuccessResponse(result, `[${platform}.SEARCH_FILE]`);
       response[searchString] = result;
     } catch (err) {

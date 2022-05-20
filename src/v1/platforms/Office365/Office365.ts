@@ -70,9 +70,9 @@ class Office365 implements IPlatform {
     return this.constructDriveItem(fileObject);
   }
 
-  public async searchFile(instanceKeyOrOrgUrl: string, searchString: string): Promise<Record<string, string>[]> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.oAuth2Client, MapKey.groupId]));
+  public async searchFile(instanceKeyOrOrgUrl: string, searchString: string, oAuth2Client: any): Promise<Record<string, string>[]> {
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.groupId]));
 
     if (groupId == undefined) {
       groupId = await this.getGroupId(instanceKeyOrOrgUrl, oAuth2Client);
