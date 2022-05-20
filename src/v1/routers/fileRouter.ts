@@ -199,7 +199,7 @@ router.post('/update', async (_: Request, res: Response) => {
   }
 
   if (errorResults.length > 0) {
-    res.status(400).send([`Could not update all files: ${errorResults.join(',')}`]);
+    res.status(400).send({error: {message: `Could not update all files: ${errorResults.join(',')}`}});
   } else {
     res.status(200).send({});
   }
