@@ -1,6 +1,6 @@
-import express from 'express';
-const router = express.Router();
-import { Request, Response } from 'express';
+import { Request, Response, Router } from 'express';
+const router = Router();
+
 import { logSuccessResponse, logErrorResponse, getPlatform } from '../utils/Logger';
 import { IPlatform } from '../platforms/Platform';
 
@@ -205,10 +205,7 @@ router.post('/update', async (_: Request, res: Response) => {
 
 /** Miscellaneous endpoints */
 
-/**
- * getCurrentUser
- */
- router.post('/getCurrentUser', async (_: Request, res: Response) => {
+router.post('/getCurrentUser', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string;
   ({ platform, salesforceUrl } = res.locals);
 
