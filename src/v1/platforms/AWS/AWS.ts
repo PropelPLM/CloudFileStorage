@@ -17,7 +17,7 @@ class AWS implements IPlatform {
     try {
       await this.S3Client.createBucket({Bucket: salesforceUrl}).promise();
       return true;
-    } catch (error) {
+    } catch (error: any) {
       logErrorResponse(error.stack, '[AWS.CREATE_BUCKET]');
       return false;
     }
@@ -28,7 +28,7 @@ class AWS implements IPlatform {
     try {
       await this.S3Client.headBucket(options).promise();
       return true;
-    } catch (error) {
+    } catch (error: any) {
       if (error.statusCode === 403) {
         logErrorResponse('Forbidden (most likely due to permissions)', '[AWS.CHECK_BUCKET]');
         return false;
