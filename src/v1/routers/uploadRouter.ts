@@ -32,9 +32,9 @@ router.post('/token/:instanceKey', async (req: any, res: any) => {
 router.post('/details/:instanceKey', async (req: any, res: any) => {
   try {
     const instanceKey = req.params.instanceKey;
-    let revisionId, destinationFolderId, isNew;
-    ({ revisionId, destinationFolderId, isNew } = req.body);
-    const instanceDetails = { revisionId, destinationFolderId, isNew };
+    let revisionId, destinationFolderId, isNew, platform;
+    ({ revisionId, destinationFolderId, isNew, platform } = req.body);
+    const instanceDetails = { revisionId, destinationFolderId, isNew, platform };
     await InstanceManager.upsert(instanceKey, instanceDetails);
     logSuccessResponse({ instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
     res.status(200).send({ instanceKey });
@@ -44,31 +44,20 @@ router.post('/details/:instanceKey', async (req: any, res: any) => {
   }
 });
 
-// router.post('/reset/:instanceKey/', async (req: any, res: any) => {
-//   try {
-//     const instanceKey = req.params.instanceKey;
-//     InstanceManager.upsert(instanceKey, {});
-//     res.status(200).send();
-//   } catch (err) {
-//     res.status(400).send(`Failed to reset instance manager variables ${err}`);
-//     logErrorResponse(err , '[END_POINT.RESET]');
-//   }
-// });
-
 router.post('/:instanceKey', async (req: Request, res: Response) => {
   const instanceKey = req.params.instanceKey;
 
   const form = new Busboy({ headers: req.headers });
-  let salesforceUrl: string, isNew: string, platformString: string;
+  let salesforceUrl: string, isNew: string, platform: string;
   const fileDetailsMap = {} as Record<string, FileDetail>;
   let fileDetails: FileDetail;
   try {
-    ({ salesforceUrl, isNew, platformString } = await InstanceManager.get(instanceKey, [MapKey.salesforceUrl, MapKey.isNew, MapKey.platform]));
-    const platform: IPlatform = getPlatform(platformString);
+    ({ salesforceUrl, isNew, platform } = await InstanceManager.get(instanceKey, [MapKey.salesforceUrl, MapKey.isNew, MapKey.platform]));
+    const configuredPlatform: IPlatform = getPlatform(platform);
     const responses: Record<string,any>[] = [];
     const promises: any[] = [];
     let fileSizes: Record<string, number> = {};
-    const oAuth2Client: CloudStorageProviderClient = await platform.authorize(instanceKey);
+    const oAuth2Client: CloudStorageProviderClient = await configuredPlatform.authorize(instanceKey);
 
     form
       .on('field', (fieldName: string, value: string) => {
@@ -86,14 +75,14 @@ router.post('/:instanceKey', async (req: Request, res: Response) => {
             fileDetails = { fileName, fileSize, frontendBytes: 0, externalBytes: 0, mimeType, uploadStream };
             const fileDetailKey: string = createFileDetailKey(fileDetails.fileName);
             fileDetailsMap[fileDetailKey] = fileDetails;
-            fileDetailsMap[fileDetailKey].file = platform.initUpload(instanceKey, oAuth2Client, uploadStream, fileDetailsMap, fileDetailKey);
+            fileDetailsMap[fileDetailKey].file = configuredPlatform.initUpload(instanceKey, oAuth2Client, uploadStream, fileDetailsMap, fileDetailKey);
             let progress: number = 0;
             fileStream
               .on('data', async (data: Record<string, any>) => {
                 progress = progress + data.length;
                 fileDetails.frontendBytes = progress;
                 MessageEmitter.postProgress(instanceKey, fileDetailsMap, fileDetailKey, 'FRONTEND');
-                await platform.uploadFile(fileDetailsMap[fileDetailKey], data);
+                await configuredPlatform.uploadFile(fileDetailsMap[fileDetailKey], data);
               })
               .on('error', err => {
                 logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
@@ -101,7 +90,7 @@ router.post('/:instanceKey', async (req: Request, res: Response) => {
               })
               .on('end', async () => {
                 let file: GoogleFile;
-                file = await platform.endUpload(fileDetailsMap[fileDetailKey]);
+                file = await configuredPlatform.endUpload(fileDetailsMap[fileDetailKey]);
                 let sfObject = await JsForce.create(file.data, instanceKey);
                 const response = {
                   status: parseInt(file.status),
