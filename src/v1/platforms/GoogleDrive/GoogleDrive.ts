@@ -9,27 +9,27 @@ import InstanceManager from '../../utils/InstanceManager';
 import { CloudStorageProviderClient } from '../../customTypes/GoogleObjects';
 import { IPlatform } from '../Platform';
 
-class GoogleDrive implements IPlatform {
-  public redirect_uris: string[] = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];
-  public actions: Record<string, string> = { driveFiles: 'https://www.googleapis.com/auth/drive.file' };
+export class GoogleDrive implements IPlatform {
+  public static redirect_uris: string[] = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];
+  public static actions: Record<string, string> = { driveFiles: 'https://www.googleapis.com/auth/drive.file' };
 
   public constructor() {}
 
   //TOKEN FLOW - INSTANCE MANAGER VARIABLES HERE DO NOT PERSIST TO UPLOAD FLOW
-  public createAuthUrl(credentials: Record<string, string> , instanceKey: string): string {
+  public static createAuthUrl(credentials: Record<string, string> , instanceKey: string): string {
     let clientId: string, clientSecret: string, redirect_uri: string;
     ({ clientId, clientSecret, redirect_uri } = credentials);
 
-    const oAuth2Client: OAuth2Client  = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
+    const oAuth2Client: OAuth2Client = new google.auth.OAuth2(clientId, clientSecret, redirect_uri);
     return oAuth2Client.generateAuthUrl({
       access_type: 'offline',
       prompt: 'consent',
-      scope: this.actions.driveFiles,
+      scope: GoogleDrive.actions.driveFiles,
       state: Buffer.from(instanceKey).toString('base64')
     });
   }
 
-  public async getTokens(code: string, instanceKey: string, hostName: string): Promise<Record<string, any>> {
+  public static async getTokens(code: string, instanceKey: string, hostName: string): Promise<Record<string, any>> {
     try {
       let clientId: string, clientSecret: string;
       ({ clientId, clientSecret } = await InstanceManager.get(instanceKey, [ MapKey.clientId, MapKey.clientSecret ]));
@@ -44,7 +44,7 @@ class GoogleDrive implements IPlatform {
   }
 
   //UPLOAD FLOW- INSTANCE MANAGER VARIABLES HERE DFO NOT PERSIST FROM TOKEN FLOW
-  public async authorize(instanceKey: string): Promise<CloudStorageProviderClient> {
+  static async authorize(instanceKey: string): Promise<CloudStorageProviderClient> {
     try {
       let clientId, clientSecret, accessToken, refreshToken, expiryDate;
       ({ clientId, clientSecret, accessToken, refreshToken, expiryDate } = await InstanceManager.get(instanceKey,
@@ -56,11 +56,11 @@ class GoogleDrive implements IPlatform {
           MapKey.expiryDate
         ]
       ));
-      const oAuth2Client: OAuth2Client = new google.auth.OAuth2(clientId, clientSecret, this.redirect_uris[0]);
+      const oAuth2Client: OAuth2Client = new google.auth.OAuth2(clientId, clientSecret, GoogleDrive.redirect_uris[0]);
       const tokens: Record<string, string> = {
         access_token: accessToken,
         refresh_token: refreshToken,
-        scope: this.actions.driveFiles,
+        scope: GoogleDrive.actions.driveFiles,
         token_type: 'Bearer',
         expiry_date: expiryDate
       };
@@ -134,4 +134,4 @@ class GoogleDrive implements IPlatform {
   }
 }
 
-export default new GoogleDrive();
+export default GoogleDrive;

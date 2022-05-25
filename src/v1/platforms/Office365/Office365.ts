@@ -12,12 +12,10 @@ import AuthProvider from './AuthProvider';
 import { IPlatform } from '../Platform';
 import { PassThrough } from 'stream';
 
-class Office365 implements IPlatform {
-
-  public constructor() {}
-
-  public async authorize(instanceKey: string): Promise<CloudStorageProviderClient> {
+export class Office365 implements IPlatform {
+  static async authorize(instanceKey: string): Promise<IPlatform> {
     try {
+      const officeInstance = new Office365();
       let clientId: string, clientSecret: string, tenantId: string;
       ({ clientId, clientSecret, tenantId } = await InstanceManager.get(instanceKey, [
         MapKey.clientId,
@@ -25,24 +23,27 @@ class Office365 implements IPlatform {
         MapKey.tenantId
       ]));
       // client should handle refreshing of access token
-      const oAuth2Client: CloudStorageProviderClient = Client.initWithMiddleware({ authProvider: new AuthProvider(clientId, clientSecret, tenantId) });
+      officeInstance.oAuth2Client = Client.initWithMiddleware({ authProvider: new AuthProvider(clientId, clientSecret, tenantId) });
       logSuccessResponse({}, '[OFFICE365.AUTHORIZE]');
-      return oAuth2Client;
+      return officeInstance;
     } catch (err) {
       logErrorResponse(err, '[OFFICE365.AUTHORIZE]');
       throw(err);
     }
   }
 
+  private constructor() {}
+  private oAuth2Client: CloudStorageProviderClient;
+
   public async getFile(instanceKey: string, fileId: string): Promise<Record<string, string>> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKey, [MapKey.oAuth2Client, MapKey.groupId]));
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKey, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKey, oAuth2Client);
+      groupId = await this.getGroupId(instanceKey);
     }
 
-    return await this.getDriveItem(oAuth2Client, groupId, fileId);
+    return await this.getDriveItem(groupId, fileId);
   }
 
   public async testLock(instanceKeyOrOrgUrl: string, resourcesToTestLock: string[]): Promise<Record<string, any>> {
@@ -52,14 +53,14 @@ class Office365 implements IPlatform {
   }
 
   public async createFile(instanceKeyOrOrgUrl: string, type: string, fileName: string, destinationFolderId: string): Promise<Record<string, string>> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.oAuth2Client, MapKey.groupId]));
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKeyOrOrgUrl, oAuth2Client);
+      groupId = await this.getGroupId(instanceKeyOrOrgUrl);
     }
 
-    const fileObject: Record<string, string> = await oAuth2Client
+    const fileObject: Record<string, string> = await this.oAuth2Client
       .api(`/groups/${groupId}/drive/items/root:/${destinationFolderId}/${fileName}.${type}:/content`)
       .put(type == 'xlsx' ? await this.createXlsxFileBuffer() : '');
 
@@ -71,15 +72,15 @@ class Office365 implements IPlatform {
   }
 
   public async searchFile(instanceKeyOrOrgUrl: string, searchString: string): Promise<Record<string, string>[]> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.oAuth2Client, MapKey.groupId]));
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKeyOrOrgUrl, oAuth2Client);
+      groupId = await this.getGroupId(instanceKeyOrOrgUrl);
     }
 
     const retFiles: Record<string, string>[] = [];
-    const results: Record<string, any> = await oAuth2Client
+    const results: Record<string, any> = await this.oAuth2Client
       .api(`/groups/${groupId}/drive/root/search(q='${searchString}')`)
       .get();
 
@@ -99,15 +100,15 @@ class Office365 implements IPlatform {
   }
 
   public async cloneFile(instanceKeyOrOrgUrl: string, fileId: string, fileName: string, folderName: string): Promise<Record<string, string>> {
-    let oAuth2Client: OAuth2Client, groupId: string, folderId: string, driveId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.oAuth2Client, MapKey.groupId]));
+    let groupId: string, folderId: string, driveId: string;
+    ({ groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKeyOrOrgUrl, oAuth2Client);
+      groupId = await this.getGroupId(instanceKeyOrOrgUrl);
     }
-    ({ folderId, driveId } = await this.getFolderAndDriveId(oAuth2Client, groupId, folderName));
+    ({ folderId, driveId } = await this.getFolderAndDriveId(groupId, folderName));
 
-    const monitorResponse: Record<string, any> = await oAuth2Client
+    const monitorResponse: Record<string, any> = await this.oAuth2Client
       .api(`/groups/${groupId}/drive/items/${fileId}/copy`)
       .responseType(ResponseType.RAW)
       .post({
@@ -118,15 +119,15 @@ class Office365 implements IPlatform {
         "name": fileName
       });
       const itemId = await this.getItemIdFromMonitorURL(monitorResponse.headers.get("location"));
-      return this.getDriveItem(oAuth2Client, groupId, itemId);
+      return this.getDriveItem(groupId, itemId);
   }
 
   public async supersedeFile(instanceKeyOrOrgUrl: string, fileType:string, fileName: string, docId: string): Promise<string> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.oAuth2Client, MapKey.groupId]));
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKeyOrOrgUrl, oAuth2Client);
+      groupId = await this.getGroupId(instanceKeyOrOrgUrl);
     }
 
     const nameWithoutExtension: string = fileName.split(`.${fileType}`)[0]
@@ -134,7 +135,7 @@ class Office365 implements IPlatform {
       name: nameWithoutExtension + "_Superseded." + fileType
     };
 
-    const fileObject: Record<string, string> = await oAuth2Client
+    const fileObject: Record<string, string> = await this.oAuth2Client
       .api(`/groups/${groupId}/drive/items/${docId}`)
       .update(driveItem);
 
@@ -142,14 +143,14 @@ class Office365 implements IPlatform {
   }
 
   public async deleteFile(instanceKeyOrOrgUrl: string, docId: string): Promise<Record<string, string>> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.oAuth2Client, MapKey.groupId]));
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKeyOrOrgUrl, oAuth2Client);
+      groupId = await this.getGroupId(instanceKeyOrOrgUrl);
     }
 
-    await oAuth2Client
+    await this.oAuth2Client
       .api(`/groups/${groupId}/drive/items/${docId}`)
       .delete(); // returns undefined object
 
@@ -159,14 +160,14 @@ class Office365 implements IPlatform {
   }
 
   public async downloadFile(instanceKeyOrOrgUrl: string, fileId: string): Promise<string> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.oAuth2Client, MapKey.groupId]));
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKeyOrOrgUrl, oAuth2Client);
+      groupId = await this.getGroupId(instanceKeyOrOrgUrl);
     }
 
-    const fileObject: Record<string, any> = await oAuth2Client
+    const fileObject: Record<string, any> = await this.oAuth2Client
       .api(`/groups/${groupId}/drive/items/${fileId}/content?format=pdf`)
       .responseType(ResponseType.RAW)
       .get();
@@ -182,23 +183,23 @@ class Office365 implements IPlatform {
   }
 
   async updateFile(instanceKey: string, fileId: string, fileOptions: Record<string, any>): Promise<Record<string, string>> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKey, [MapKey.oAuth2Client, MapKey.groupId]));
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKey, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKey, oAuth2Client);
+      groupId = await this.getGroupId(instanceKey);
     }
 
     /** Convert parent folder name into an id, if moving file to another folder */
     if ('parentReference' in fileOptions) {
-      await this.retrieveParentFolderId(oAuth2Client, groupId, fileOptions);
+      await this.retrieveParentFolderId(groupId, fileOptions);
     }
 
     /** Need deep copy to provide to api */
     const fileToUpdate = JSON.parse(JSON.stringify(fileOptions));
 
     /** Send request to update file */
-    const res: Record<string, any> = await oAuth2Client
+    const res: Record<string, any> = await this.oAuth2Client
       .api(`/groups/${groupId}/drive/items/${fileId}`)
       .update(fileToUpdate);
 
@@ -211,11 +212,11 @@ class Office365 implements IPlatform {
    */
 
   async permissionCreate(instanceKey: string, fileId: string, newPermission: Record<string, string>): Promise<Record<string, string>> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKey, [MapKey.oAuth2Client, MapKey.groupId]));
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKey, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKey, oAuth2Client);
+      groupId = await this.getGroupId(instanceKey);
     }
 
     /** Construct new permission to create */
@@ -230,10 +231,10 @@ class Office365 implements IPlatform {
 
     /** Send request to create permission */
     const res: Record<string, any> = await Promise.all([
-      oAuth2Client
+      this.oAuth2Client
         .api(`/groups/${groupId}/drive/items/${fileId}/invite`)
         .post(permission),
-      oAuth2Client
+      this.oAuth2Client
         .api(`/groups/${groupId}/drive/items/${fileId}`)
         .get()
     ]);
@@ -248,7 +249,7 @@ class Office365 implements IPlatform {
 
     /** Get user email addres if creating permission for internal user */
     if (!('email' in user)) {
-      user.email = await this.getUserEmail(oAuth2Client, user.id);
+      user.email = await this.getUserEmail(user.id);
     }
 
     user.viewLink = res[1]?.webUrl;
@@ -265,18 +266,18 @@ class Office365 implements IPlatform {
    * @param permissionId {string} file permission id
    */
   async permissionGet(instanceKey: string, fileId: string, permissionId: string): Promise<Record<string, string>[]> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKey, [MapKey.oAuth2Client, MapKey.groupId]));
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKey, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKey, oAuth2Client);
+      groupId = await this.getGroupId(instanceKey);
     }
 
-    const res: Record<string, any> = await oAuth2Client
+    const res: Record<string, any> = await this.oAuth2Client
       .api(`/groups/${groupId}/drive/items/${fileId}/permissions/${permissionId}`)
       .get();
     const permissions = res.value || [];
-    return await this.retrievePermissionsList(oAuth2Client, permissions);
+    return await this.retrievePermissionsList(permissions);
   }
 
   /**
@@ -286,15 +287,15 @@ class Office365 implements IPlatform {
    * @param permissionId {string} permission to delete
    */
   async permissionDelete(instanceKey: string, fileId: string, permissionId: string): Promise<void> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKey, [MapKey.oAuth2Client, MapKey.groupId]));
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKey, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKey, oAuth2Client);
+      groupId = await this.getGroupId(instanceKey);
     }
 
     /** Send request to delete permission */
-    await oAuth2Client
+    await this.oAuth2Client
       .api(`/groups/${groupId}/drive/items/${fileId}/permissions/${permissionId}`)
       .delete();
   }
@@ -306,20 +307,20 @@ class Office365 implements IPlatform {
    * @param fileId {string} external file id
    */
   async permissionList(instanceKey: string, fileId: string): Promise<Record<string, string>[]> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKey, [MapKey.oAuth2Client, MapKey.groupId]));
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKey, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKey, oAuth2Client);
+      groupId = await this.getGroupId(instanceKey);
     }
 
     /** Send request to retrieve list of permissions */
-    const res: Record<string, any> = await oAuth2Client
+    const res: Record<string, any> = await this.oAuth2Client
       .api(`/groups/${groupId}/drive/items/${fileId}/permissions`)
       .get();
 
     const permissions = res.value || [];
-    return await this.retrievePermissionsList(oAuth2Client, permissions);
+    return await this.retrievePermissionsList(permissions);
   }
 
   /**
@@ -341,18 +342,18 @@ class Office365 implements IPlatform {
    *  Simple update of permission roles for each file and permission ids given.
    */
   async permissionUpdate(instanceKey: string, fileId: string, permissionId: string, permissionRole: string): Promise<Record<string, string>> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKey, [MapKey.oAuth2Client, MapKey.groupId]));
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKey, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKey, oAuth2Client);
+      groupId = await this.getGroupId(instanceKey);
     }
 
     const updatedPermission = {
       roles: [permissionRole]
     }
 
-    const res: Record<string, any> = await oAuth2Client
+    const res: Record<string, any> = await this.oAuth2Client
       .api(`/groups/${groupId}/drive/items/${fileId}/permissions/${permissionId}`)
       .update(updatedPermission);
 
@@ -376,13 +377,13 @@ class Office365 implements IPlatform {
 
   // helper SDK calls
   // returns driveItem object by calling sdk with driveItem Id
-  async getDriveItem(oAuth2Client: OAuth2Client, groupId: string, driveItemId: string): Promise<Record<string, string>> {
-    const driveItem = await oAuth2Client.api(`/groups/${groupId}/drive/items/${driveItemId}`).get();
+  async getDriveItem(groupId: string, driveItemId: string): Promise<Record<string, string>> {
+    const driveItem = await this.oAuth2Client.api(`/groups/${groupId}/drive/items/${driveItemId}`).get();
     return this.constructDriveItem(driveItem);
   }
 
-  async getGroupId(instanceKeyOrOrgUrl: string, oAuth2Client: OAuth2Client): Promise<string> {
-    const getGroups = await oAuth2Client.api('groups').get();
+  async getGroupId(instanceKeyOrOrgUrl: string): Promise<string> {
+    const getGroups = await this.oAuth2Client.api('groups').get();
     const group = getGroups.value.filter((group: Record<string, any>) => group.displayName === 'PropelPLM');
     if (group.length > 1) {
       throw new Error('[Office365.getGroupId] Please ensure that there are no duplicate group names.')
@@ -393,9 +394,9 @@ class Office365 implements IPlatform {
   }
 
   // returns folder and driveId by calling sdk with folderName
-  async getFolderAndDriveId(oAuth2Client: OAuth2Client, groupId: string, folderName: string): Promise<Record<string, string>> {
+  async getFolderAndDriveId(groupId: string, folderName: string): Promise<Record<string, string>> {
     try {
-      const folderQueryResult: Record<string, any> = await oAuth2Client.api(`/groups/${groupId}/drive/root:/${folderName}`).get();
+      const folderQueryResult: Record<string, any> = await this.oAuth2Client.api(`/groups/${groupId}/drive/root:/${folderName}`).get();
       return {
         folderId: folderQueryResult.id,
         driveId: folderQueryResult.parentReference.driveId
@@ -422,8 +423,8 @@ class Office365 implements IPlatform {
    * @param userId {string} User Id to retrieve email for, should be internal user
    * @returns Email address of user
    */
-  async getUserEmail(oAuth2Client: OAuth2Client, userId: string): Promise<string> {
-    const user = await oAuth2Client
+  async getUserEmail(userId: string): Promise<string> {
+    const user = await this.oAuth2Client
       .api(`/users/${userId}`)
       .get();
 
@@ -525,11 +526,11 @@ class Office365 implements IPlatform {
    * @param groupId: {string} String containing group Id
    * @param fileOptions: {<string, any>} Map of file options for updating
    */
-  private retrieveParentFolderId(oAuth2Client: OAuth2Client, groupId: string, fileOptions: Record<string, any>): Promise<void> {
+  private retrieveParentFolderId(groupId: string, fileOptions: Record<string, any>): Promise<void> {
     return new Promise(async (resolve) => {
       const parentReference: Record<string, string> = fileOptions.parentReference;
       /** Fetch folder Id for provided folder name */
-      const { folderId } = await this.getFolderAndDriveId(oAuth2Client, groupId, parentReference.id);
+      const { folderId } = await this.getFolderAndDriveId(groupId, parentReference.id);
       parentReference.id = folderId;
       resolve();
     });
@@ -542,7 +543,7 @@ class Office365 implements IPlatform {
    * @param permissions {<string, any>[]}
    * @return List of permissions
    */
-  private async retrievePermissionsList(oAuth2Client: OAuth2Client, permissions: Record<string, any>[]): Promise<Record<string, string>[]> {
+  private async retrievePermissionsList(permissions: Record<string, any>[]): Promise<Record<string, string>[]> {
     const permissionList: Record<string, string>[] = [{}];
 
     /** Iterate through all the listed permissions */
@@ -568,7 +569,7 @@ class Office365 implements IPlatform {
             /** Get user email address if creating permission for internal user */
               if (!('email' in user)) {
                 try {
-                  if (user.id) user.email = await this.getUserEmail(oAuth2Client, user.id);
+                  if (user.id) user.email = await this.getUserEmail(user.id);
                 } catch (error) {
                   logErrorResponse(error, '[OFFICE365_RETRIEVE_PERMISSIONS_LIST');
                 }
@@ -588,17 +589,15 @@ class Office365 implements IPlatform {
 
 
   public async getCurrentUser(instanceKey: string): Promise<Record<string, string>> {
-    let oAuth2Client: OAuth2Client, groupId: string;
-    ({ oAuth2Client, groupId } = await InstanceManager.get(instanceKey, [MapKey.oAuth2Client, MapKey.groupId]));
+    let groupId: string;
+    ({ groupId } = await InstanceManager.get(instanceKey, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKey, oAuth2Client);
+      groupId = await this.getGroupId(instanceKey);
     }
 
-    return await oAuth2Client
+    return await this.oAuth2Client
       .api(`/me`)
       .get();
   }
 }
-
-export default new Office365();
