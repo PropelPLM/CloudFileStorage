@@ -7,7 +7,7 @@ export const authorizeOAuth2Client = async (req: Request, res: Response, next: N
     clientId: string, clientSecret: string, tenantId: string,
     PLATFORM_CONFIG: string;
   if (process.argv[2] == 'PRODUCTION') {
-    ({ platform, destinationFolderId, tenantId } = req.body);
+    ({ platform, salesforceUrl, clientId, clientSecret, destinationFolderId, tenantId } = req.body);
     res.locals = { ...req.body };
   } else {
     //  local dev
@@ -17,10 +17,8 @@ export const authorizeOAuth2Client = async (req: Request, res: Response, next: N
     res.locals = { ...res.locals, ...req.body, platform, salesforceUrl, clientId, clientSecret, destinationFolderId, tenantId };
   }
   const requestSourceIdentifier = req.body.instanceKey || req.body.salesforceUrl;
-  const [_, oAuth2Client] = await Promise.all([
-    InstanceManager.upsert(requestSourceIdentifier, { destinationFolderId, tenantId }),
-    getPlatform(platform).authorize(requestSourceIdentifier)
-  ]);
-  res.locals.oAuth2Client = oAuth2Client;
+  await InstanceManager.upsert(requestSourceIdentifier, { destinationFolderId, tenantId, salesforceUrl, clientId, clientSecret });
+  res.locals.oAuth2Client = await getPlatform(platform).authorize(requestSourceIdentifier);
+
   next();
 }
