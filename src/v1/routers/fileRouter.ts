@@ -1,18 +1,17 @@
 import { Request, Response, Router } from 'express';
 const router = Router();
 
-import { logSuccessResponse, logErrorResponse, getPlatform } from '../utils/Logger';
-import { IPlatform } from '../platforms/Platform';
+import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 
 const OFFICE_365 = 'office365';
 // the check only applies to Office365 due to Sharepoint limitations
 router.post('/testLock', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string, resourcesToTestLock: string[];
   ({ platform, salesforceUrl, resourcesToTestLock } = res.locals);
-
+  const configuredPlatform = res.locals.platformInstance;
   try {
     if (platform.toLowerCase() == OFFICE_365) {
-      const result: any = await getPlatform(platform).testLock!(salesforceUrl, resourcesToTestLock);
+      const result: any = await configuredPlatform.testLock!(salesforceUrl, resourcesToTestLock);
       logSuccessResponse(result, `[${platform}.TEST_LOCK]`);
       res.status(200).send(result);
     }
@@ -25,9 +24,10 @@ router.post('/testLock', async (_: Request, res: Response) => {
 router.post('/create', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string, type: string, fileName: string, destinationFolderId: string;
   ({ platform, salesforceUrl, type, fileName, destinationFolderId } = res.locals);
+  const configuredPlatform = res.locals.platformInstance;
 
   try {
-    const result: any = await getPlatform(platform).createFile!(salesforceUrl, type, fileName, destinationFolderId);
+    const result: any = await configuredPlatform.createFile!(salesforceUrl, type, fileName, destinationFolderId);
     logSuccessResponse(result, `[${platform}.CREATE_FILE]`);
     res.status(200).send(result);
   } catch (err) {
@@ -41,13 +41,14 @@ router.post('/get', async (_: Request, res: Response) => {
   ({ platform, salesforceUrl, fileOptions} = res.locals);
   const logMessage = `[${platform}.GET_FILE]`;
   const response: Record<string, Record<string, string>> = {};
+  const configuredPlatform = res.locals.platformInstance;
 
   /** TODO: Batch requests instead of iterating and sending 1 request per file update */
   const errorResults: string[] = [];
   let fileIds: string[] = fileOptions['fileIds'];
   for (const fileId of fileIds) {
     try {
-      const result = await getPlatform(platform).getFile!(salesforceUrl, fileId);
+      const result = await configuredPlatform.getFile!(salesforceUrl, fileId);
       response[fileId] = result;
       logSuccessResponse(result, logMessage);
     } catch (error) {
@@ -66,6 +67,7 @@ router.post('/get', async (_: Request, res: Response) => {
 router.post('/search', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string, searchStrings: string[];
   ({ platform, salesforceUrl, searchStrings } = res.locals);
+  const configuredPlatform = res.locals.platformInstance;
 
   const errorResults: string[] = [];
   const response: Record<string, any> = {};
@@ -73,7 +75,7 @@ router.post('/search', async (_: Request, res: Response) => {
   /** Iterate through list of strings (file names) and retrieve search results */
   for (const searchString of searchStrings) {
     try {
-      const result: Record<string, string>[] = await getPlatform(platform).searchFile!(salesforceUrl, searchString);
+      const result: Record<string, string>[] = await configuredPlatform.searchFile!(salesforceUrl, searchString);
       logSuccessResponse(result, `[${platform}.SEARCH_FILE]`);
       response[searchString] = result;
     } catch (err) {
@@ -94,14 +96,14 @@ router.post('/search', async (_: Request, res: Response) => {
 router.post('/supersede', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string, fileTypes: string[], fileNames: string[], docIds: string[], numSuperseded: number;
   ({ platform, salesforceUrl, fileTypes, fileNames, docIds, numSuperseded } = res.locals);
+  const configuredPlatform = res.locals.platformInstance;
 
-  const platformType: IPlatform = await getPlatform(platform)
   let resultArray: string[] = [];
   var i = 0;
 
   while (i < numSuperseded) {
     try {
-      const result = await platformType.supersedeFile!(salesforceUrl, fileTypes[i], fileNames[i], docIds[i]);
+      const result = await configuredPlatform.supersedeFile!(salesforceUrl, fileTypes[i], fileNames[i], docIds[i]);
       logSuccessResponse(result, `[${platform}.SUPERSEDE_FILE] at index ${i}`);
       resultArray.push(result);
     } catch (err) {
@@ -124,13 +126,14 @@ router.post('/clone', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string, fileOptions: Record<string, Record<string, any>>;
   ({ platform, salesforceUrl, fileOptions} = res.locals);
 
+  const configuredPlatform = res.locals.platformInstance;
   const errorResults: string[] = [];
   const response: Record<string, Record<string, string>> = {};
   for (const fileId in fileOptions) {
     try {
       if (fileOptions.hasOwnProperty(fileId)) {
         const options: Record<string, any> = fileOptions[fileId];
-        const result: Record<string, string> = await getPlatform(platform).cloneFile!(salesforceUrl, fileId, options.fileName, options.folderName);
+        const result: Record<string, string> = await configuredPlatform.cloneFile!(salesforceUrl, fileId, options.fileName, options.folderName);
         logSuccessResponse(result, `[${platform}.CLONE_FILE]`);
         response[fileId] = result;
       }
@@ -150,9 +153,10 @@ router.post('/clone', async (_: Request, res: Response) => {
 router.post('/download', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string, fileId: string;
   ({ platform, salesforceUrl, fileId} = res.locals);
+  const configuredPlatform = res.locals.platformInstance;
 
   try {
-    const downloadLink: any = await getPlatform(platform).downloadFile!(salesforceUrl, fileId);
+    const downloadLink: any = await configuredPlatform.downloadFile!(salesforceUrl, fileId);
     logSuccessResponse(`downloadLink: ${downloadLink}`, `[${platform}.DOWNLOAD_FILE]`);
     res.status(200).send({downloadLink});
   } catch (err: any) {
@@ -164,9 +168,10 @@ router.post('/download', async (_: Request, res: Response) => {
 router.post('/delete', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string, fileId: string;
   ({ platform, salesforceUrl, fileId} = res.locals);
+  const configuredPlatform = res.locals.platformInstance;
 
   try {
-    const result: any = await getPlatform(platform).deleteFile!(salesforceUrl, fileId);
+    const result: any = await configuredPlatform.deleteFile!(salesforceUrl, fileId);
     logSuccessResponse(result, `[${platform}.DELETE_FILE]`);
     res.status(200).send(result);
   } catch (err: any) {
@@ -180,6 +185,7 @@ router.post('/update', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string, fileOptions: Record<string, Record<string, any>>;
   ({ platform, salesforceUrl, fileOptions} = res.locals);
   const logMessage = `[${platform}.FILES_UPDATE]`;
+  const configuredPlatform = res.locals.platformInstance;
 
   /** TODO: Batch requests instead of iterating and sending 1 request per file update */
   const errorResults: string[] = [];
@@ -187,7 +193,7 @@ router.post('/update', async (_: Request, res: Response) => {
     try {
       if (fileOptions.hasOwnProperty(fileId)) {
         const options: Record<string, any> = fileOptions[fileId];
-        const result = await getPlatform(platform).updateFile!(salesforceUrl, fileId, options);
+        const result = await configuredPlatform.updateFile!(salesforceUrl, fileId, options);
         logSuccessResponse(result, logMessage);
       }
     } catch (error) {
@@ -208,9 +214,10 @@ router.post('/update', async (_: Request, res: Response) => {
 router.post('/getCurrentUser', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string;
   ({ platform, salesforceUrl } = res.locals);
+  const configuredPlatform = res.locals.platformInstance;
 
   try {
-    const result: any = await getPlatform(platform).getCurrentUser!(salesforceUrl);
+    const result: any = await configuredPlatform.getCurrentUser!(salesforceUrl);
     logSuccessResponse(result, `[${platform}.GET_CURRENT_USER]`);
     res.status(200).send(result);
   } catch (err) {

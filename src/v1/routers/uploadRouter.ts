@@ -53,7 +53,7 @@ router.post('/:instanceKey', async (req: Request, res: Response) => {
   let fileDetails: FileDetail;
   try {
     ({ salesforceUrl, isNew, platform } = await InstanceManager.get(instanceKey, [MapKey.salesforceUrl, MapKey.isNew, MapKey.platform]));
-    const configuredPlatform: IPlatform = getPlatform(platform);
+    const configuredPlatform: IPlatform = await getPlatform(platform, instanceKey);
     const responses: Record<string,any>[] = [];
     const promises: any[] = [];
     let fileSizes: Record<string, number> = {};
