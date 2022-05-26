@@ -15,7 +15,7 @@ class AWS implements IPlatform {
 
   private async createBucket(salesforceUrl: string) {
     try {
-      await this.S3Client.createBucket({Bucket: salesforceUrl}).promise();
+      await this.S3Client.createBucket({ Bucket: salesforceUrl }).promise();
       return true;
     } catch (error: any) {
       logErrorResponse(error.stack, '[AWS.CREATE_BUCKET]');
@@ -24,9 +24,8 @@ class AWS implements IPlatform {
   }
 
   private async bucketExists(bucket: string) {
-    const options = { Bucket: bucket };
     try {
-      await this.S3Client.headBucket(options).promise();
+      await this.S3Client.headBucket({ Bucket: bucket }).promise();
       return true;
     } catch (error: any) {
       if (error.statusCode === 403) {
@@ -43,10 +42,10 @@ class AWS implements IPlatform {
 
   public async authorize(instanceKey: string): Promise<CloudStorageProviderClient> {
     try {
-      if (this.S3Client) return;
-
-      this.S3Client = new aws.S3();
-      logSuccessResponse(instanceKey, '[AWS.AUTHORIZE]');
+      if (!this.S3Client) {
+        this.S3Client = new aws.S3();
+        logSuccessResponse(instanceKey, '[AWS.AUTHORIZE]');
+      }
       return this.S3Client;
     } catch (err) {
       logErrorResponse(err, '[AWS.AUTHORIZE]');
