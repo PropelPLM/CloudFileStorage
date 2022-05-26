@@ -190,9 +190,7 @@ class Office365 implements IPlatform {
   async updateFile(instanceKey: string, fileId: string, fileOptions: Record<string, any>, oAuth2Client: any): Promise<Record<string, string>> {
     let groupId: string;
     ({ groupId } = await InstanceManager.get(instanceKey, [MapKey.groupId]));
-    // console.log(groupId);
-    // console.log(oAuth2Client);
-    // console.log(instanceKey);
+    console.log(fileOptions);
 
     if (groupId == undefined) {
       groupId = await this.getGroupId(instanceKey, oAuth2Client);
