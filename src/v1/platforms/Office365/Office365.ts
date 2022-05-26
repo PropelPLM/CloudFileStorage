@@ -83,7 +83,6 @@ class Office365 implements IPlatform {
       .api(`/groups/${groupId}/drive/root/search(q='${searchString}')`)
       .get();
 
-
     /** Filter out results which do not match the file name exactly */
     const files: Record<string, any>[] = results.value || [];
     for (const file of files) {
