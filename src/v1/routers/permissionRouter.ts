@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import { Request, Response } from 'express';
-import { logSuccessResponse, logErrorResponse, getPlatform } from '../utils/Logger';
+import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 
 /**
  * permissions/create
@@ -14,6 +14,7 @@ router.post('/create', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string, fileId: string, email: string, role: string, type: string;
   ({ platform, salesforceUrl, fileId, email, role, type } = res.locals);
   const logMessage = `[${platform}.PERMISSION_CREATE]`;
+  const configuredPlatform = res.locals.platformInstance;
 
   const permission: Record<string, string> = {
     fileId: fileId,
@@ -28,7 +29,7 @@ router.post('/create', async (_: Request, res: Response) => {
    */
   try {
     /** Create new permission */
-    const permissionId = await getPlatform(platform).permissionCreate!(salesforceUrl, fileId, permission);
+    const permissionId = await configuredPlatform.permissionCreate!(salesforceUrl, fileId, permission);
     logSuccessResponse(permissionId, logMessage);
     res.status(200).send(permissionId);
   } catch (error) {
@@ -46,9 +47,10 @@ router.post('/delete', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string, fileId: string, permissionId: string;
   ({ platform, salesforceUrl, fileId, permissionId } = res.locals);
   const logMessage = `[${platform}.PERMISSION_DELETE]`;
+  const configuredPlatform = res.locals.platformInstance;
 
   try {
-    await getPlatform(platform).permissionDelete!(salesforceUrl, fileId, permissionId);
+    await configuredPlatform.permissionDelete!(salesforceUrl, fileId, permissionId);
     logSuccessResponse(null, logMessage);
     res.status(200).send({});
   } catch (error) {
@@ -65,12 +67,13 @@ router.post('/list', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string, fileIds: string[];
   ({ platform, salesforceUrl, fileIds } = res.locals);
   const logMessage = `[${platform}.PERMISSION_LIST]`;
+  const configuredPlatform = res.locals.platformInstance;
 
   const filePermissionMap: Record<string, Record<string, string>[]> = {};
   const errorResults: string[] = [];
   for (const fileId of fileIds) {
     try {
-      const permissionsList: Record<string, string>[] = await getPlatform(platform).permissionList!(salesforceUrl, fileId);
+      const permissionsList: Record<string, string>[] = await configuredPlatform.permissionList!(salesforceUrl, fileId);
       filePermissionMap[fileId] = permissionsList;
       logSuccessResponse(permissionsList, logMessage);
     } catch (error) {
@@ -97,6 +100,7 @@ router.post('/list', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string, permissionMap: Record<string, Record<string, string>>;
   ({ platform, salesforceUrl, permissionMap } = res.locals);
   const logMessage = `[${platform}.PERMISSION_UPDATE]`;
+  const configuredPlatform = res.locals.platformInstance;
 
   const returnMap: Record<string, Record<string, string>> = {};
   const errorResults: string[] = [];
@@ -108,7 +112,7 @@ router.post('/list', async (_: Request, res: Response) => {
       const fileId: string = contentId.split(":")[0];
       const newPermission: Record<string, string> = permissionMap[contentId];
 
-      const permissionsUpdate: Record<string, string> = await getPlatform(platform).permissionUpdate!(salesforceUrl, fileId, newPermission.permId, newPermission.role);
+      const permissionsUpdate: Record<string, string> = await configuredPlatform.permissionUpdate!(salesforceUrl, fileId, newPermission.permId, newPermission.role);
       returnMap[contentId] = permissionsUpdate;
       logSuccessResponse(permissionsUpdate, logMessage);
     } catch (error) {

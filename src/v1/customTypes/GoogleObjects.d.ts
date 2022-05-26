@@ -32,4 +32,4 @@ type OAuth2Client = {
     api(endpoint: string)
 }
 
-type CloudStorageProviderClient = MicrosoftClient | OAuth2Client
+type CloudStorageProviderClient = MicrosoftClient | OAuth2Client | S3

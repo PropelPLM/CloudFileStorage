@@ -18,11 +18,11 @@ router.get('/:instanceKey', async (req, res)=> {
 router.post('/:instanceKey/', async (req: any, res: any) => {
   let instanceKey: string = req.params.instanceKey;
   let sessionId: string, salesforceUrl: string, clientId: string, clientSecret: string, tenantId: string;
-  ({ sessionId, salesforceUrl, clientId, clientSecret, tenantId } = req.body);
 
-  const instanceDetails = { salesforceUrl, clientId, clientSecret, tenantId, sessionId };
 
   try {
+    ({ sessionId, salesforceUrl, clientId, clientSecret, tenantId } = req.body);
+    const instanceDetails = { salesforceUrl, clientId, clientSecret, tenantId, sessionId };
     await InstanceManager.upsert(instanceKey, instanceDetails);
 
     if (clientId && clientSecret) {
@@ -42,9 +42,10 @@ router.post('/:instanceKey/', async (req: any, res: any) => {
 });
 
 router.get('/callback/google', async (req: any, res: any) => {
-  const instanceKey = Buffer.from(req.query.state, 'base64').toString();
-  const code = req.query.code;
+  let instanceKey: string;
   try {
+    instanceKey = Buffer.from(req.query.state, 'base64').toString();
+    const code = req.query.code;
     const token: Record<string, any> = await GoogleDrive.getTokens!(code, instanceKey, req.hostname);
     let clientId: string, clientSecret: string;
     ({ clientId, clientSecret } = await InstanceManager.get(instanceKey, [MapKey.clientId, MapKey.clientSecret]));
@@ -58,7 +59,7 @@ router.get('/callback/google', async (req: any, res: any) => {
     logSuccessResponse('MessageEmitted', '[CALLBACK_GOOGLE');
     res.send('<script>window.close()</script>');
   } catch (err) {
-    MessageEmitter.postTrigger(instanceKey, 'authFailed', {});
+    MessageEmitter.postTrigger(JSON.stringify(req.query.state), 'authFailed', {});
     res.status(500).send(`Callback from google has failed: ${err}`);
     logErrorResponse(err, '[CALLBACK_GOOGLE');
   }

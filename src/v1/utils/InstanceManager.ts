@@ -17,6 +17,7 @@ export default {
     const client: RedisClientType = createClient({
       url: process.env.REDIS_URL,
     });
+    client.on('error', err => console.error('Redis client error:', err));
     redisClient = client;
     await redisClient.connect();
   },
@@ -33,8 +34,8 @@ export default {
   upsert: async (instanceKey: string, keyValuePairs: Partial<Record<MapKey, any>>) => {
     try {
       await redisClient.hSet(instanceKey, removeEmpty(keyValuePairs));
-    } catch (err) {
-      throw new Error(`Failed to update InstanceManager: ${JSON.stringify(keyValuePairs)}`);
+    } catch (error) {
+      throw new Error(`Failed to update ${instanceKey} in InstanceManager: ${JSON.stringify(keyValuePairs)}. Error: ${error}`);
     }
   },
 
