@@ -72,7 +72,6 @@ router.post('/search', async (_: Request, res: Response) => {
 
   /** Iterate through list of strings (file names) and retrieve search results */
   for (const searchString of searchStrings) {
-    console.log(searchString);
     try {
       const result: Record<string, string>[] = await getPlatform(platform).searchFile!(salesforceUrl, searchString, res.locals.oAuth);
       logSuccessResponse(result, `[${platform}.SEARCH_FILE]`);
@@ -181,8 +180,6 @@ router.post('/update', async (_: Request, res: Response) => {
   let platform: string, salesforceUrl: string, fileOptions: Record<string, Record<string, any>>;
   ({ platform, salesforceUrl, fileOptions} = res.locals);
   const logMessage = `[${platform}.FILES_UPDATE]`;
-  console.log('------fileOptions------')
-  console.log({fileOptions});
 
   /** TODO: Batch requests instead of iterating and sending 1 request per file update */
   const errorResults: string[] = [];

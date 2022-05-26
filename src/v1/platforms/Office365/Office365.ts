@@ -73,21 +73,16 @@ class Office365 implements IPlatform {
   public async searchFile(instanceKeyOrOrgUrl: string, searchString: string, oAuth2Client: any): Promise<Record<string, string>[]> {
     let groupId: string;
     ({ groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.groupId]));
-    console.log(groupId);
-    console.log(oAuth2Client);
-    console.log(instanceKeyOrOrgUrl);
     
     if (groupId == undefined) {
       groupId = await this.getGroupId(instanceKeyOrOrgUrl, oAuth2Client);
     }
-    console.log(groupId);
 
     const retFiles: Record<string, string>[] = [];
     const results: Record<string, any> = await oAuth2Client
       .api(`/groups/${groupId}/drive/root/search(q='${searchString}')`)
       .get();
 
-      console.log(results);
 
     /** Filter out results which do not match the file name exactly */
     const files: Record<string, any>[] = results.value || [];
@@ -190,11 +185,6 @@ class Office365 implements IPlatform {
   async updateFile(instanceKey: string, fileId: string, fileOptions: Record<string, any>, oAuth2Client: any): Promise<Record<string, string>> {
     let groupId: string;
     ({ groupId } = await InstanceManager.get(instanceKey, [MapKey.groupId]));
-    console.log('------update File-----');
-    console.log({
-      fileId,
-      fileOptions
-    });
 
     if (groupId == undefined) {
       groupId = await this.getGroupId(instanceKey, oAuth2Client);
