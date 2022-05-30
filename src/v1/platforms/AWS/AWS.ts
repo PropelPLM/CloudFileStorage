@@ -80,7 +80,7 @@ class AWS implements IPlatform {
           totalExternalBytes += fileDetailsMap[detail].externalBytes;
         }
         if (totalExternalBytes == totalFileSize) {
-          logSuccessResponse({fileName}, '[GOOGLE_DRIVE.FILE_UPLOAD_END]');
+          logSuccessResponse({fileName}, '[AWS.FILE_UPLOAD_END]');
           //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
           uploadStream.emit('end');
         }
