@@ -40,13 +40,13 @@ export class AWS implements IPlatform {
       await this.S3Client.headBucket({ Bucket: bucketName }).promise();
       return true;
     } catch (error: any) {
-      if (error.statusCode === 403) {
-        logErrorResponse('Forbidden (most likely due to permissions)', '[AWS.CHECK_BUCKET]');
+      if (error.statusCode === 404) {
+        logErrorResponse('No such bucket exists', '[AWS.CHECK_BUCKET]');
         return false;
       } else {
-        throw new Error(error.statusCode === 404 ?
-          'No such bucket exists' :
-          error.stack
+        throw new Error(error.statusCode === 403 ?
+          'Forbidden (most likely due to permissions)' :
+          error.code
         );
       }
     }
