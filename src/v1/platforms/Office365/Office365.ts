@@ -13,6 +13,9 @@ import { IPlatform } from '../Platform';
 import { PassThrough } from 'stream';
 
 export class Office365 implements IPlatform {
+  private constructor() {}
+  private oAuth2Client: CloudStorageProviderClient;
+
   static async authorize(instanceKey: string): Promise<IPlatform> {
     try {
       const officeInstance = new Office365();
@@ -24,16 +27,13 @@ export class Office365 implements IPlatform {
       ]));
       // client should handle refreshing of access token
       officeInstance.oAuth2Client = Client.initWithMiddleware({ authProvider: new AuthProvider(clientId, clientSecret, tenantId) });
-      logSuccessResponse({}, '[OFFICE365.AUTHORIZE]');
+      logSuccessResponse(instanceKey, '[OFFICE365.AUTHORIZE]');
       return officeInstance;
     } catch (err) {
       logErrorResponse(err, '[OFFICE365.AUTHORIZE]');
       throw(err);
     }
   }
-
-  private constructor() {}
-  private oAuth2Client: CloudStorageProviderClient;
 
   public async getFile(instanceKey: string, fileId: string): Promise<Record<string, string>> {
     let groupId: string;

@@ -9,9 +9,21 @@ import MessageEmitter from '../../utils/MessageEmitter';
 import InstanceManager from '../../utils/InstanceManager';
 import { CloudStorageProviderClient } from '../../customTypes/GoogleObjects';
 
-class AWS implements IPlatform {
+export class AWS implements IPlatform {
   private S3Client: CloudStorageProviderClient;
   public constructor() {}
+
+  static async authorize(instanceKey: string): Promise<CloudStorageProviderClient> {
+    try {
+      const awsInstance = new AWS();
+      awsInstance.S3Client = new aws.S3();
+      logSuccessResponse(instanceKey, '[AWS.AUTHORIZE]');
+      return awsInstance;
+    } catch (err) {
+      logErrorResponse(err, '[AWS.AUTHORIZE]');
+      throw(err);
+    }
+  }
 
   private async createBucket(salesforceUrl: string) {
     try {
@@ -40,20 +52,7 @@ class AWS implements IPlatform {
     }
   };
 
-  public async authorize(instanceKey: string): Promise<CloudStorageProviderClient> {
-    try {
-      if (!this.S3Client) {
-        this.S3Client = new aws.S3();
-        logSuccessResponse(instanceKey, '[AWS.AUTHORIZE]');
-      }
-      return this.S3Client;
-    } catch (err) {
-      logErrorResponse(err, '[AWS.AUTHORIZE]');
-      throw(err);
-    }
-  }
-
-  async initUpload(instanceKey: string, oAuth2Client: CloudStorageProviderClient, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any> {
+  async initUpload(instanceKey: string, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any> {
     let destinationFolderId: string, fileName: string, mimeType: string, salesforceUrl: string;
     ({ destinationFolderId, salesforceUrl } = await InstanceManager.get(instanceKey, [ MapKey.destinationFolderId, MapKey.salesforceUrl ]));
     ({ fileName, mimeType } = fileDetailsMap[fileDetailKey]);
@@ -67,7 +66,7 @@ class AWS implements IPlatform {
       ContentType: mimeType,
       ACL: 'public-read'
     };
-    return oAuth2Client
+    return this.S3Client
       .upload(params)
       .on('httpUploadProgress', (evt: Record<string, any>) => {
         const bytesRead: number = evt.loaded;
@@ -107,4 +106,3 @@ class AWS implements IPlatform {
   }
 }
 
-export default new AWS();

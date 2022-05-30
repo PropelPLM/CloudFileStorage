@@ -2,6 +2,7 @@
 import { IPlatform } from '../platforms/Platform';
 import { GoogleDrive } from '../platforms/GoogleDrive/GoogleDrive';
 import { Office365 } from '../platforms/Office365/Office365';
+import { AWS } from '../platforms/AWS/AWS';
 
 export const logSuccessResponse = (response: any, functionName: string) => {
   const logEnding =
@@ -29,6 +30,9 @@ export const getPlatform = async (platform: string, instanceKey: string): Promis
       break;
     case 'office365':
       returnPlatform = await Office365.authorize(instanceKey);
+      break;
+    case 'aws':
+      returnPlatform = await AWS.authorize(instanceKey);
       break;
     default:
       throw new Error('Platform not specified.')

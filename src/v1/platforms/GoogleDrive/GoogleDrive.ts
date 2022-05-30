@@ -68,7 +68,7 @@ export class GoogleDrive implements IPlatform {
       };
       oAuth2Client.setCredentials(tokens);
       driveInstance.oAuth2Client = oAuth2Client;
-      logSuccessResponse({}, '[GOOGLE_DRIVE.AUTHORIZE]');
+      logSuccessResponse(instanceKey, '[GOOGLE_DRIVE.AUTHORIZE]');
       return driveInstance;
     } catch (err) {
       logErrorResponse(err, '[GOOGLE_DRIVE.AUTHORIZE]');
