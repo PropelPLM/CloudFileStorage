@@ -12,10 +12,11 @@ import MessageEmitter from '../utils/MessageEmitter';
 import JsForce from '../utils/JsForce';
 import { IPlatform } from '../platforms/Platform';
 import { CloudStorageProviderClient } from "../customTypes/GoogleObjects";
+import { v4 as uuidv4 } from 'uuid';
 
 // all endpoints are hit by the react frontend (DEPRECATE)
-router.post('/token/:instanceKey', async (req: any, res: any) => {
-  const instanceKey = req.params.instanceKey;
+router.post('/token', async (req: any, res: any) => {
+  const instanceKey = uuidv4();
   try {
     let clientId, clientSecret, accessToken, refreshToken, expiryDate, platform, sessionId, salesforceUrl;
     ({ clientId, clientSecret, accessToken, refreshToken, expiryDate, platform, sessionId, salesforceUrl } = req.body);
