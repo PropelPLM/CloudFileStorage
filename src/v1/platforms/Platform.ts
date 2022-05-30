@@ -1,4 +1,3 @@
-import { CloudStorageProviderClient } from '../customTypes/GoogleObjects';
 import { PassThrough } from 'stream';
 
 export interface IPlatform {
@@ -8,7 +7,7 @@ export interface IPlatform {
     getTokens? (code: string, instanceKey: string, hostName: string): Record<string, any>;
 
     // Upload flow
-    initUpload(instanceKey: string, oAuth2Client: CloudStorageProviderClient, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any>;
+    initUpload(instanceKey: string, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any>;
     uploadFile(fileDetails: FileDetail, payload: Record<string, any>): Promise<void>;
     endUpload(fileDetails: FileDetail): Promise<GoogleFile>;
 

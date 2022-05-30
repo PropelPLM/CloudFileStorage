@@ -11,7 +11,6 @@ import { logSuccessResponse, logErrorResponse, getPlatform } from '../utils/Logg
 import MessageEmitter from '../utils/MessageEmitter';
 import JsForce from '../utils/JsForce';
 import { IPlatform } from '../platforms/Platform';
-import { CloudStorageProviderClient } from "../customTypes/GoogleObjects";
 import { v4 as uuidv4 } from 'uuid';
 
 // all endpoints are hit by the react frontend (DEPRECATE)
@@ -58,7 +57,6 @@ router.post('/:instanceKey', async (req: Request, res: Response) => {
     const responses: Record<string,any>[] = [];
     const promises: any[] = [];
     let fileSizes: Record<string, number> = {};
-    const oAuth2Client: CloudStorageProviderClient = await configuredPlatform.authorize(instanceKey);
 
     form
       .on('field', (fieldName: string, value: string) => {
@@ -76,7 +74,7 @@ router.post('/:instanceKey', async (req: Request, res: Response) => {
             fileDetails = { fileName, fileSize, frontendBytes: 0, externalBytes: 0, mimeType, uploadStream };
             const fileDetailKey: string = createFileDetailKey(fileDetails.fileName);
             fileDetailsMap[fileDetailKey] = fileDetails;
-            fileDetailsMap[fileDetailKey].file = configuredPlatform.initUpload(instanceKey, oAuth2Client, uploadStream, fileDetailsMap, fileDetailKey);
+            fileDetailsMap[fileDetailKey].file = configuredPlatform.initUpload(instanceKey, uploadStream, fileDetailsMap, fileDetailKey);
             let progress: number = 0;
             fileStream
               .on('data', async (data: Record<string, any>) => {

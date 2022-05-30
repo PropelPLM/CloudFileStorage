@@ -362,8 +362,8 @@ export class Office365 implements IPlatform {
 
 
   // TODO: below methods' "implementation" are placeholders to prevent tsc errors
-  async initUpload(instanceKey: string, oAuth2Client: CloudStorageProviderClient, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any> {
-    console.log(instanceKey, oAuth2Client, uploadStream, fileDetailsMap, fileDetailKey);
+  async initUpload(instanceKey: string, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any> {
+    console.log(instanceKey, uploadStream, fileDetailsMap, fileDetailKey);
   }
 
   async uploadFile(fileDetails: FileDetail, payload: Record<string, any>): Promise<void> {

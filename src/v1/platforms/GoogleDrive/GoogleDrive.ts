@@ -14,6 +14,7 @@ export class GoogleDrive implements IPlatform {
   public static actions: Record<string, string> = { driveFiles: 'https://www.googleapis.com/auth/drive.file' };
 
   public constructor() {}
+  private oAuth2Client: CloudStorageProviderClient;
 
   //TOKEN FLOW - INSTANCE MANAGER VARIABLES HERE DO NOT PERSIST TO UPLOAD FLOW
   public static createAuthUrl(credentials: Record<string, string> , instanceKey: string): string {
@@ -46,6 +47,7 @@ export class GoogleDrive implements IPlatform {
   //UPLOAD FLOW- INSTANCE MANAGER VARIABLES HERE DFO NOT PERSIST FROM TOKEN FLOW
   static async authorize(instanceKey: string): Promise<CloudStorageProviderClient> {
     try {
+      const driveInstance = new GoogleDrive();
       let clientId, clientSecret, accessToken, refreshToken, expiryDate;
       ({ clientId, clientSecret, accessToken, refreshToken, expiryDate } = await InstanceManager.get(instanceKey,
         [
@@ -65,19 +67,20 @@ export class GoogleDrive implements IPlatform {
         expiry_date: expiryDate
       };
       oAuth2Client.setCredentials(tokens);
+      driveInstance.oAuth2Client = oAuth2Client;
       logSuccessResponse({}, '[GOOGLE_DRIVE.AUTHORIZE]');
-      return oAuth2Client;
+      return driveInstance;
     } catch (err) {
       logErrorResponse(err, '[GOOGLE_DRIVE.AUTHORIZE]');
       throw(err);
     }
   }
 
-  async initUpload(instanceKey: string, oAuth2Client: CloudStorageProviderClient, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any> {
+  async initUpload(instanceKey: string, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any> {
     let destinationFolderId: string, fileName: string, mimeType: string;
     ({ destinationFolderId } = await InstanceManager.get(instanceKey, [ MapKey.destinationFolderId ]));
     ({ fileName, mimeType } = fileDetailsMap[fileDetailKey]);
-    const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+    const drive = google.drive({ version: 'v3', auth: this.oAuth2Client });
     const fileMetadata = {
       name: fileName,
       driveId: destinationFolderId,
