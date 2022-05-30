@@ -25,9 +25,9 @@ export class AWS implements IPlatform {
     }
   }
 
-  private async createBucket(salesforceUrl: string) {
+  private async createBucket(bucketName: string) {
     try {
-      await this.S3Client.createBucket({ Bucket: salesforceUrl }).promise();
+      await this.S3Client.createBucket({ Bucket: bucketName }).promise();
       return true;
     } catch (error: any) {
       logErrorResponse(error.stack, '[AWS.CREATE_BUCKET]');
@@ -35,9 +35,9 @@ export class AWS implements IPlatform {
     }
   }
 
-  private async bucketExists(bucket: string) {
+  private async bucketExists(bucketName: string) {
     try {
-      await this.S3Client.headBucket({ Bucket: bucket }).promise();
+      await this.S3Client.headBucket({ Bucket: bucketName }).promise();
       return true;
     } catch (error: any) {
       if (error.statusCode === 403) {
@@ -56,12 +56,14 @@ export class AWS implements IPlatform {
     let destinationFolderId: string, fileName: string, mimeType: string, salesforceUrl: string;
     ({ destinationFolderId, salesforceUrl } = await InstanceManager.get(instanceKey, [ MapKey.destinationFolderId, MapKey.salesforceUrl ]));
     ({ fileName, mimeType } = fileDetailsMap[fileDetailKey]);
-    if (! await this.bucketExists(salesforceUrl)) {
-      await this.createBucket(salesforceUrl);
+
+    const sanitisedName = AWS.sanitiseBucketName(salesforceUrl);
+    if (! await this.bucketExists(sanitisedName)) {
+      await this.createBucket(sanitisedName);
     }
     const params = {
-      Bucket: salesforceUrl,
-      Key: `${destinationFolderId}${fileName}`,
+      Bucket: sanitisedName,
+      Key: `${destinationFolderId}/${fileName}`,
       Body: uploadStream,
       ContentType: mimeType,
       ACL: 'public-read'
@@ -100,9 +102,13 @@ export class AWS implements IPlatform {
       return await fileDetails.file;
     } catch (err: any) {
       let error: string, error_description: string;
-      ({ error, error_description } =err.response.data);
+      ({ error, error_description } = err.response.data);
       throw new Error(`${error}: ${error_description}`);
     }
+  }
+
+  private static sanitiseBucketName(bucketName: string): string {
+    return bucketName.replace(/((^\w+:|^)\/\/)|\/|:/g, '');
   }
 }
 
