@@ -18,9 +18,9 @@ import { v4 as uuidv4 } from 'uuid';
 router.post('/token', async (req: any, res: any) => {
   const instanceKey = uuidv4();
   try {
-    let clientId, clientSecret, accessToken, refreshToken, expiryDate, platform, sessionId, salesforceUrl;
-    ({ clientId, clientSecret, accessToken, refreshToken, expiryDate, platform, sessionId, salesforceUrl } = req.body);
-    const instanceDetails = { clientId, clientSecret, accessToken, refreshToken, expiryDate, platform, sessionId, salesforceUrl };
+    // let clientId, clientSecret, accessToken, refreshToken, expiryDate, platform, sessionId, salesforceUrl;
+    // ({ clientId, clientSecret, accessToken, refreshToken, expiryDate, platform, sessionId, salesforceUrl } = req.body);
+    const instanceDetails = req.body;
     await InstanceManager.upsert(instanceKey, instanceDetails);
     logSuccessResponse({instanceKey}, '[END_POINT.TOKEN]');
     res.status(200).send({ instanceKey });
