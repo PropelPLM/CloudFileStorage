@@ -32,6 +32,7 @@
     "socket.io": "^2.3.0",
     "socketio": "^1.0.0",
     "typescript": "^4.5.5",
+    "uuid": "^8.3.2",
     "xlsx-populate": "^1.21.0"
   },
   "devDependencies": {
@@ -52,6 +53,7 @@
     "@types/redis": "^4.0.11",
     "@types/socket.io": "^2.1.8",
     "@types/supertest": "^2.0.9",
+    "@types/uuid": "^8.3.4",
     "@types/xlsx-populate": "git+https://github.com/JanLoebel/types-xlsx-populate.git",
     "babel-jest": "^26.0.1",
     "jest": "^26.0.0",
