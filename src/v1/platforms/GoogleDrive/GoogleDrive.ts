@@ -119,21 +119,11 @@ export class GoogleDrive implements IPlatform {
   }
 
   async uploadFile(fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string, payload: Record<string, any>): Promise<void> {
-    try {
-      fileDetailsMap[fileDetailKey].uploadStream.push(payload);
-    } catch (err) {
-      logErrorResponse(err, '[GOOGLE_DRIVE > UPLOAD_FILE]')
-    }
+    fileDetailsMap[fileDetailKey].uploadStream.push(payload);
   }
 
   async endUpload(fileDetails: FileDetail): Promise<GoogleFile> {
-    try {
-      return await fileDetails.file;
-    } catch (err: any) {
-      let error: string, error_description: string;
-      ({ error, error_description } =err.response.data);
-      throw new Error(`${error}: ${error_description}`);
-    }
+    return await fileDetails.file;
   }
 }
 

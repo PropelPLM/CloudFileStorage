@@ -80,28 +80,24 @@ export class AWS implements IPlatform {
   }
 
   async uploadFile(fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string, payload: Record<string, any>): Promise<void> {
-    try {
-      const bytesRead: number = payload.length;
-      this.bytesRead += bytesRead;
-      const stream = fileDetailsMap[fileDetailKey].uploadStream;
-      fileDetailsMap[fileDetailKey].externalBytes = this.bytesRead;
-      stream.push(payload);
-      MessageEmitter.postProgress(this.instanceKey, fileDetailsMap, fileDetailKey, 'AWS');
+    const bytesRead: number = payload.length;
+    this.bytesRead += bytesRead;
+    const stream = fileDetailsMap[fileDetailKey].uploadStream;
+    fileDetailsMap[fileDetailKey].externalBytes = this.bytesRead;
+    stream.push(payload);
+    MessageEmitter.postProgress(this.instanceKey, fileDetailsMap, fileDetailKey, 'AWS');
 
-      let totalFileSize: number, totalExternalBytes: number;
-      totalFileSize = totalExternalBytes = 0;
-      for (const detail in fileDetailsMap) {
-        totalFileSize += fileDetailsMap[detail].fileSize;
-        totalExternalBytes += fileDetailsMap[detail].externalBytes;
-      }
-      if (totalExternalBytes == totalFileSize) {
-        logSuccessResponse(fileDetailsMap[fileDetailKey].fileName, '[AWS.FILE_UPLOAD_END]');
-        //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
-        stream.end();
-        stream.emit('end');
-      }
-    } catch (err) {
-      logErrorResponse(err, '[AWS > UPLOAD_FILE]')
+    let totalFileSize: number, totalExternalBytes: number;
+    totalFileSize = totalExternalBytes = 0;
+    for (const detail in fileDetailsMap) {
+      totalFileSize += fileDetailsMap[detail].fileSize;
+      totalExternalBytes += fileDetailsMap[detail].externalBytes;
+    }
+    if (totalExternalBytes == totalFileSize) {
+      logSuccessResponse(fileDetailsMap[fileDetailKey].fileName, '[AWS.FILE_UPLOAD_END]');
+      //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
+      stream.end();
+      stream.emit('end');
     }
   }
 
