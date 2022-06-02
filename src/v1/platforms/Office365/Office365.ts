@@ -366,8 +366,8 @@ export class Office365 implements IPlatform {
     console.log(instanceKey, uploadStream, fileDetailsMap, fileDetailKey);
   }
 
-  async uploadFile(fileDetails: FileDetail, payload: Record<string, any>): Promise<void> {
-    console.log(fileDetails, payload);
+  async uploadFile(fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string, payload: Record<string, any>): Promise<void> {
+    console.log(fileDetailsMap, fileDetailKey, payload);
    }
 
   async endUpload(fileDetails: FileDetail): Promise<GoogleFile> {

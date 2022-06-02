@@ -8,7 +8,7 @@ export interface IPlatform {
 
     // Upload flow
     initUpload(instanceKey: string, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any>;
-    uploadFile(fileDetails: FileDetail, payload: Record<string, any>): Promise<void>;
+    uploadFile(fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string, payload: Record<string, any>): Promise<void>;
     endUpload(fileDetails: FileDetail): Promise<GoogleFile>;
 
     // fileop

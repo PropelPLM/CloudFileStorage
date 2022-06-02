@@ -118,9 +118,9 @@ export class GoogleDrive implements IPlatform {
     );
   }
 
-  async uploadFile(fileDetails: FileDetail, payload: Record<string, any>): Promise<void> {
+  async uploadFile(fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string, payload: Record<string, any>): Promise<void> {
     try {
-      fileDetails.uploadStream.push(payload);
+      fileDetailsMap[fileDetailKey].uploadStream.push(payload);
     } catch (err) {
       logErrorResponse(err, '[GOOGLE_DRIVE > UPLOAD_FILE]')
     }
