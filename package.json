@@ -13,8 +13,9 @@
   "author": "clinton",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.100.0",
+    "@aws-sdk/lib-storage": "^3.100.0",
     "@microsoft/microsoft-graph-client": "^2.2.1",
-    "aws-sdk": "^2.1134.0",
     "axios": "^0.21.1",
     "busboy": "^0.3.1",
     "cors": "^2.8.5",
