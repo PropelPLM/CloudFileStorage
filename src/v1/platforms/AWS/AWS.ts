@@ -1,6 +1,7 @@
 'use strict';
 
-import aws from 'aws-sdk';
+import { HeadBucketCommand, S3Client } from "@aws-sdk/client-s3";
+import { Upload } from "@aws-sdk/lib-storage";
 import { IPlatform } from '../Platform'
 import { PassThrough } from 'stream';
 
@@ -10,13 +11,15 @@ import InstanceManager from '../../utils/InstanceManager';
 import { CloudStorageProviderClient } from '../../customTypes/GoogleObjects';
 
 export class AWS implements IPlatform {
-  private S3Client: CloudStorageProviderClient;
-  public constructor() {}
+  private s3Client: CloudStorageProviderClient;
+  private bytesRead = 0;
+
+  public constructor(public instanceKey: string) {}
 
   static async authorize(instanceKey: string): Promise<CloudStorageProviderClient> {
     try {
-      const awsInstance = new AWS();
-      awsInstance.S3Client = new aws.S3();
+      const awsInstance = new AWS(instanceKey);
+      awsInstance.s3Client = new S3Client({region: 'us-east-1'});
       logSuccessResponse(instanceKey, '[AWS.AUTHORIZE]');
       return awsInstance;
     } catch (err) {
@@ -27,7 +30,7 @@ export class AWS implements IPlatform {
 
   private async createBucket(bucketName: string) {
     try {
-      await this.S3Client.createBucket({ Bucket: bucketName }).promise();
+      await this.s3Client.createBucket({ Bucket: bucketName }).promise();
       return true;
     } catch (error: any) {
       logErrorResponse(error.stack, '[AWS.CREATE_BUCKET]');
@@ -37,7 +40,7 @@ export class AWS implements IPlatform {
 
   private async bucketExists(bucketName: string) {
     try {
-      await this.S3Client.headBucket({ Bucket: bucketName }).promise();
+      await this.s3Client.send(new HeadBucketCommand({ Bucket: bucketName }));
       return true;
     } catch (error: any) {
       if (error.statusCode === 404) {
@@ -58,57 +61,56 @@ export class AWS implements IPlatform {
     ({ fileName, mimeType } = fileDetailsMap[fileDetailKey]);
 
     const sanitisedName = AWS.sanitiseBucketName(salesforceUrl);
+    const fileNameKey = `${destinationFolderId ? destinationFolderId + '/' : ''}${fileName}`;
     if (! await this.bucketExists(sanitisedName)) {
       await this.createBucket(sanitisedName);
     }
-    const params = {
-      Bucket: sanitisedName,
-      Key: `${destinationFolderId}/${fileName}`,
-      Body: uploadStream,
-      ContentType: mimeType,
-      ACL: 'public-read'
-    };
-    return this.S3Client
-      .upload(params)
-      .on('httpUploadProgress', (evt: Record<string, any>) => {
-        const bytesRead: number = evt.loaded;
-        let totalFileSize: number, totalExternalBytes: number;
-        fileDetailsMap[fileDetailKey].externalBytes = bytesRead;
-        MessageEmitter.postProgress(instanceKey, fileDetailsMap, fileDetailKey, 'AWS');
-        totalFileSize = totalExternalBytes = 0;
-        for (const detail in fileDetailsMap) {
-          totalFileSize += fileDetailsMap[detail].fileSize;
-          totalExternalBytes += fileDetailsMap[detail].externalBytes;
-        }
-        if (totalExternalBytes == totalFileSize) {
-          logSuccessResponse({fileName}, '[AWS.FILE_UPLOAD_END]');
-          //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
-          uploadStream.emit('end');
-        }
-      })
-      .promise();
+    const s3Upload = new Upload({
+      client: this.s3Client,
+      leavePartsOnError: false, // optional manually handle dropped parts
+      params: {
+        Bucket: sanitisedName,
+        Key: fileNameKey,
+        Body: uploadStream,
+        ContentType: mimeType,
+        ACL: 'public-read'
+      }
+    });
+    return s3Upload;
   }
 
-  async uploadFile(fileDetails: FileDetail, payload: Record<string, any>): Promise<void> {
+  async uploadFile(fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string, payload: Record<string, any>): Promise<void> {
     try {
-      fileDetails.uploadStream.push(payload);
+      const bytesRead: number = payload.length;
+      this.bytesRead += bytesRead;
+      const stream = fileDetailsMap[fileDetailKey].uploadStream;
+      fileDetailsMap[fileDetailKey].externalBytes = this.bytesRead;
+      stream.push(payload);
+      MessageEmitter.postProgress(this.instanceKey, fileDetailsMap, fileDetailKey, 'AWS');
+
+      let totalFileSize: number, totalExternalBytes: number;
+      totalFileSize = totalExternalBytes = 0;
+      for (const detail in fileDetailsMap) {
+        totalFileSize += fileDetailsMap[detail].fileSize;
+        totalExternalBytes += fileDetailsMap[detail].externalBytes;
+      }
+      if (totalExternalBytes == totalFileSize) {
+        logSuccessResponse(fileDetailsMap[fileDetailKey].fileName, '[AWS.FILE_UPLOAD_END]');
+        //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
+        stream.end();
+        stream.emit('end');
+      }
     } catch (err) {
       logErrorResponse(err, '[AWS > UPLOAD_FILE]')
     }
   }
 
   async endUpload(fileDetails: FileDetail): Promise<GoogleFile> {
-    try {
-      return await fileDetails.file;
-    } catch (err: any) {
-      let error: string, error_description: string;
-      ({ error, error_description } = err.response.data);
-      throw new Error(`${error}: ${error_description}`);
-    }
+    const file = await (await fileDetails.file).done();
+    return file;
   }
 
   private static sanitiseBucketName(bucketName: string): string {
     return bucketName.replace(/((^\w+:|^)\/\/)|\/|:/g, '');
   }
 }
-

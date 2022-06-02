@@ -17,9 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 router.post('/token', async (req: any, res: any) => {
   const instanceKey = uuidv4();
   try {
-    // let clientId, clientSecret, accessToken, refreshToken, expiryDate, platform, sessionId, salesforceUrl;
-    // ({ clientId, clientSecret, accessToken, refreshToken, expiryDate, platform, sessionId, salesforceUrl } = req.body);
-    const instanceDetails = req.body;
+    const instanceDetails = { ...req.body };
     await InstanceManager.upsert(instanceKey, instanceDetails);
     logSuccessResponse({instanceKey}, '[END_POINT.TOKEN]');
     res.status(200).send({ instanceKey });
@@ -32,9 +30,7 @@ router.post('/token', async (req: any, res: any) => {
 router.post('/details/:instanceKey', async (req: any, res: any) => {
   try {
     const instanceKey = req.params.instanceKey;
-    let revisionId, destinationFolderId, isNew, platform;
-    ({ revisionId, destinationFolderId, isNew, platform } = req.body);
-    const instanceDetails = { revisionId, destinationFolderId, isNew, platform };
+    const instanceDetails = { ...req.body };
     await InstanceManager.upsert(instanceKey, instanceDetails);
     logSuccessResponse({ instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
     res.status(200).send({ instanceKey });
@@ -81,7 +77,7 @@ router.post('/:instanceKey', async (req: Request, res: Response) => {
                 progress = progress + data.length;
                 fileDetails.frontendBytes = progress;
                 MessageEmitter.postProgress(instanceKey, fileDetailsMap, fileDetailKey, 'FRONTEND');
-                await configuredPlatform.uploadFile(fileDetailsMap[fileDetailKey], data);
+                configuredPlatform.uploadFile(fileDetailsMap, fileDetailKey, data);
               })
               .on('error', err => {
                 logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
