@@ -1,6 +1,6 @@
 'use strict';
 
-import { HeadBucketCommand, S3Client } from "@aws-sdk/client-s3";
+import { HeadBucketCommand, S3Client, CompleteMultipartUploadCommandOutput } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { IPlatform } from '../Platform'
 import { PassThrough } from 'stream';
@@ -102,8 +102,14 @@ export class AWS implements IPlatform {
   }
 
   async endUpload(fileDetails: FileDetail): Promise<CreatedFileDetails> {
-    const file = await (await fileDetails.file).done();
-    return file;
+    const awsFileCreationResult: CompleteMultipartUploadCommandOutput = await (await fileDetails.file).done();
+    return new CreatedFileDetails(
+      awsFileCreationResult.$metadata.httpStatusCode!,
+      awsFileCreationResult.VersionId!,
+      awsFileCreationResult.Key!,
+      awsFileCreationResult.Location!,
+      fileDetails.mimeType
+    )
   }
 
   private static sanitiseBucketName(bucketName: string): string {

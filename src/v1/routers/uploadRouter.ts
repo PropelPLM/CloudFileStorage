@@ -86,13 +86,13 @@ router.post('/:instanceKey', async (req: Request, res: Response) => {
               })
               .on('end', async () => {
                 try {
-                  let file: CreatedFileDetails;
-                  file = await configuredPlatform.endUpload(fileDetailsMap[fileDetailKey]);
-                  let sfObject = await JsForce.create(file.data, instanceKey);
+                  const file: CreatedFileDetails =
+                    await configuredPlatform.endUpload(fileDetailsMap[fileDetailKey]);
+                  const sfObject = await JsForce.create(file, instanceKey);
                   const response = {
-                    status: parseInt(file.status),
+                    status: file.status,
                     data: {
-                      ...file.data,
+                      ...file,
                       sfId: sfObject.id,
                       revisionId: sfObject.revisionId,
                     }

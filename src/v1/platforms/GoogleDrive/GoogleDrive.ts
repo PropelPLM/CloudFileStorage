@@ -123,7 +123,17 @@ export class GoogleDrive implements IPlatform {
   }
 
   async endUpload(fileDetails: FileDetail): Promise<CreatedFileDetails> {
-    return await fileDetails.file;
+    const googleFileCreationResult = await fileDetails.file;
+    const { name, webViewLink, id, fileExtension, webContentLink } = googleFileCreationResult.data;
+
+    return new CreatedFileDetails(
+      googleFileCreationResult.status,
+      id,
+      name,
+      webViewLink,
+      fileExtension,
+      webContentLink
+    );
   }
 }
 

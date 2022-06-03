@@ -2,13 +2,12 @@ import { Client } from "@microsoft/microsoft-graph-client";
 
 class CreatedFileDetails {
     constructor(
-        status: string,
-        id: string,
-        name: string,
-        webViewLink: string,
-        mimeType: string,
-        fileExtension: string,
-        webContentLink: string
+        public status: number,
+        public id?: string,
+        public name?: string,
+        public webViewLink?: string,
+        public fileExtension?: string,
+        public webContentLink?: string
     ) {}
 }
 
