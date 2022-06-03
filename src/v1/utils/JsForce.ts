@@ -73,11 +73,11 @@ export default {
       } else {
         sObjectWithNamespace = `${orgNamespace}__Digital_Asset__c`;
         newAttachment = {
-          View_Link__c: webViewLink,
           Content_Location__c: platform,
           External_File_Id__c: id,
           Mime_Type__c: fileExtension,
-          Size__c: fileSize!
+          Size__c: fileSize!,
+          View_Link__c: webViewLink
         };
       }
 
