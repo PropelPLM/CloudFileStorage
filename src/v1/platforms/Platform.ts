@@ -1,5 +1,4 @@
 import { PassThrough } from 'stream';
-import { CreatedFileDetails } from '../customTypes/3PStorage';
 
 export interface IPlatform {
     readonly [index: string]: any;

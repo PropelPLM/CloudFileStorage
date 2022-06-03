@@ -1,6 +1,5 @@
-import { Client } from "@microsoft/microsoft-graph-client";
-
 type Platform = 'googledrive' | 'aws' | 'office365';
+
 class CreatedFileDetails {
     constructor(
         public status: number,

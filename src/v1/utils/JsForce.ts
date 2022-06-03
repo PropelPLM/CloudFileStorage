@@ -4,7 +4,6 @@ import jsConnect from 'jsforce';
 
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
-import { CreatedFileDetails, Platform } from '../customTypes/3PStorage';
 
 const CUSTOM_SUFFIX = '__c';
 const EXTERNAL_CONTENT_LOCATION = 'E';

@@ -2,6 +2,7 @@
 
 import { Request, Response, Router } from 'express';
 import { PassThrough, Stream } from "stream";
+import { v4 as uuidv4 } from 'uuid';
 
 const Busboy = require('busboy');
 const router = Router();
@@ -11,8 +12,6 @@ import { logSuccessResponse, logErrorResponse, getPlatform } from '../utils/Logg
 import MessageEmitter from '../utils/MessageEmitter';
 import JsForce from '../utils/JsForce';
 import { IPlatform } from '../platforms/Platform';
-import { v4 as uuidv4 } from 'uuid';
-import { CreatedFileDetails } from '../customTypes/3PStorage';
 
 // all endpoints are hit by the react frontend (DEPRECATE)
 router.post('/token', async (req: any, res: any) => {
