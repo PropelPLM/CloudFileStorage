@@ -1,6 +1,6 @@
 'use strict';
 
-import { HeadBucketCommand, S3Client, CompleteMultipartUploadCommandOutput } from "@aws-sdk/client-s3";
+import { CompleteMultipartUploadCommandOutput, HeadBucketCommand, S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { IPlatform } from '../Platform'
 import { PassThrough } from 'stream';
