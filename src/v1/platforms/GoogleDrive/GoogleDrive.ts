@@ -6,7 +6,8 @@ import { PassThrough } from 'stream';
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
 import MessageEmitter from '../../utils/MessageEmitter';
 import InstanceManager from '../../utils/InstanceManager';
-import { CloudStorageProviderClient, CreatedFileDetails, Platform } from '../../customTypes/3PStorage';
+import type { CloudStorageProviderClient, Platform } from '../../customTypes/3PStorage';
+import { CreatedFileDetails } from '../../customTypes/3PStorage';
 import { IPlatform } from '../Platform';
 
 export class GoogleDrive implements IPlatform {

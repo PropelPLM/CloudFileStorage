@@ -2,13 +2,14 @@
 
 import { CompleteMultipartUploadCommandOutput, HeadBucketCommand, S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
-import { IPlatform } from '../Platform'
 import { PassThrough } from 'stream';
 
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
 import MessageEmitter from '../../utils/MessageEmitter';
 import InstanceManager from '../../utils/InstanceManager';
-import { CloudStorageProviderClient, CreatedFileDetails, Platform } from '../../customTypes/3PStorage';
+import type { CloudStorageProviderClient, Platform } from '../../customTypes/3PStorage';
+import { CreatedFileDetails } from '../../customTypes/3PStorage';
+import { IPlatform } from '../Platform'
 
 export class AWS implements IPlatform {
   private s3Client: CloudStorageProviderClient;
