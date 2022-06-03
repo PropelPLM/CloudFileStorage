@@ -6,7 +6,7 @@ import { PassThrough } from 'stream';
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
 import MessageEmitter from '../../utils/MessageEmitter';
 import InstanceManager from '../../utils/InstanceManager';
-import { CloudStorageProviderClient } from '../../customTypes/GoogleObjects';
+import { CloudStorageProviderClient, CreatedFileDetails } from '../../customTypes/3PStorage';
 import { IPlatform } from '../Platform';
 
 export class GoogleDrive implements IPlatform {
@@ -122,7 +122,7 @@ export class GoogleDrive implements IPlatform {
     fileDetailsMap[fileDetailKey].uploadStream.push(payload);
   }
 
-  async endUpload(fileDetails: FileDetail): Promise<GoogleFile> {
+  async endUpload(fileDetails: FileDetail): Promise<CreatedFileDetails> {
     return await fileDetails.file;
   }
 }

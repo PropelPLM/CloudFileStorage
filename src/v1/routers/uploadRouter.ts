@@ -12,6 +12,7 @@ import MessageEmitter from '../utils/MessageEmitter';
 import JsForce from '../utils/JsForce';
 import { IPlatform } from '../platforms/Platform';
 import { v4 as uuidv4 } from 'uuid';
+import { CreatedFileDetails } from '../customTypes/3PStorage';
 
 // all endpoints are hit by the react frontend (DEPRECATE)
 router.post('/token', async (req: any, res: any) => {
@@ -84,7 +85,7 @@ router.post('/:instanceKey', async (req: Request, res: Response) => {
                 reject(err);
               })
               .on('end', async () => {
-                let file: GoogleFile;
+                let file: CreatedFileDetails;
                 file = await configuredPlatform.endUpload(fileDetailsMap[fileDetailKey]);
                 let sfObject = await JsForce.create(file.data, instanceKey);
                 const response = {

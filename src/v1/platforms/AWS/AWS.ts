@@ -8,7 +8,7 @@ import { PassThrough } from 'stream';
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
 import MessageEmitter from '../../utils/MessageEmitter';
 import InstanceManager from '../../utils/InstanceManager';
-import { CloudStorageProviderClient } from '../../customTypes/GoogleObjects';
+import { CloudStorageProviderClient, CreatedFileDetails } from '../../customTypes/3PStorage';
 
 export class AWS implements IPlatform {
   private s3Client: CloudStorageProviderClient;
@@ -101,7 +101,7 @@ export class AWS implements IPlatform {
     }
   }
 
-  async endUpload(fileDetails: FileDetail): Promise<GoogleFile> {
+  async endUpload(fileDetails: FileDetail): Promise<CreatedFileDetails> {
     const file = await (await fileDetails.file).done();
     return file;
   }

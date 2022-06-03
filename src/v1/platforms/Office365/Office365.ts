@@ -4,7 +4,7 @@ import 'isomorphic-fetch';
 import { Client, ResponseType } from '@microsoft/microsoft-graph-client';
 import axios from 'axios';
 import XlsxPopulate from 'xlsx-populate';
-import { CloudStorageProviderClient, GoogleFile } from '../../customTypes/GoogleObjects';
+import { CloudStorageProviderClient, CreatedFileDetails } from '../../customTypes/3PStorage';
 
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
 import InstanceManager from '../../utils/InstanceManager';
@@ -370,7 +370,7 @@ export class Office365 implements IPlatform {
     console.log(fileDetailsMap, fileDetailKey, payload);
    }
 
-  async endUpload(fileDetails: FileDetail): Promise<GoogleFile> {
+  async endUpload(fileDetails: FileDetail): Promise<CreatedFileDetails> {
     ({ fileDetails } = await InstanceManager.get('instanceKeyOrOrgUrl', [MapKey.fileDetails]));
     return await fileDetails.file;
   }

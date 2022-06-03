@@ -1,4 +1,5 @@
 import { PassThrough } from 'stream';
+import { CreatedFileDetails } from '../customTypes/3PStorage';
 
 export interface IPlatform {
     readonly [index: string]: any;
@@ -9,7 +10,7 @@ export interface IPlatform {
     // Upload flow
     initUpload(instanceKey: string, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any>;
     uploadFile(fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string, payload: Record<string, any>): Promise<void>;
-    endUpload(fileDetails: FileDetail): Promise<GoogleFile>;
+    endUpload(fileDetails: FileDetail): Promise<CreatedFileDetails>;
 
     // fileop
     // methods are marked optional (?) as Google has yet to implement these methods
