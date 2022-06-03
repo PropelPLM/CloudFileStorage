@@ -6,12 +6,12 @@ import { PassThrough } from 'stream';
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
 import MessageEmitter from '../../utils/MessageEmitter';
 import InstanceManager from '../../utils/InstanceManager';
-import { IPlatform } from '../Platform';
+import { CreatedFileDetails, PlatformIdentifier, StoragePlatform } from '../StoragePlatform';
 
-export class GoogleDrive implements IPlatform {
+export class GoogleDrive implements StoragePlatform {
   public static redirect_uris: string[] = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];
   public static actions: Record<string, string> = { driveFiles: 'https://www.googleapis.com/auth/drive.file' };
-  private static className = 'googledrive';
+  private static className: PlatformIdentifier = 'googledrive';
 
   public constructor() {}
   private oAuth2Client: CloudStorageProviderClient;
@@ -132,7 +132,7 @@ export class GoogleDrive implements IPlatform {
       name,
       webViewLink,
       fileExtension,
-      GoogleDrive.className as Platform
+      GoogleDrive.className
       );
       createdFileDetails.webContentLink = webContentLink;
       return createdFileDetails;

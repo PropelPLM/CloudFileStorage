@@ -4,6 +4,7 @@ import jsConnect from 'jsforce';
 
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
+import { CreatedFileDetails, PlatformIdentifier } from '../platforms/StoragePlatform';
 
 const CUSTOM_SUFFIX = '__c';
 const EXTERNAL_CONTENT_LOCATION = 'E';
@@ -45,7 +46,7 @@ export default {
   async create(file: CreatedFileDetails, instanceKey: string) {
     try {
       let salesforceUrl: string, sessionId: string, //jsforce
-          revisionId: string, isNew: string, isPLM: string, name: string, platform: Platform, // SF file creation
+          revisionId: string, isNew: string, isPLM: string, name: string, platform: PlatformIdentifier, // SF file creation
           webViewLink: string, id: string, fileExtension: string, fileSize: number | undefined, webContentLink: string | undefined; // newly created file
           ({ revisionId, isNew, isPLM, salesforceUrl, sessionId } = await InstanceManager.get(instanceKey, [ MapKey.revisionId, MapKey.isNew, MapKey.isPLM, MapKey.salesforceUrl, MapKey.sessionId]));
 

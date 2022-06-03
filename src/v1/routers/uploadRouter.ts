@@ -11,7 +11,7 @@ import InstanceManager from '../utils/InstanceManager';
 import { logSuccessResponse, logErrorResponse, getPlatform } from '../utils/Logger';
 import MessageEmitter from '../utils/MessageEmitter';
 import JsForce from '../utils/JsForce';
-import { IPlatform } from '../platforms/Platform';
+import { CreatedFileDetails, StoragePlatform } from '../platforms/StoragePlatform';
 
 // all endpoints are hit by the react frontend (DEPRECATE)
 router.post('/token', async (req: any, res: any) => {
@@ -49,7 +49,7 @@ router.post('/:instanceKey', async (req: Request, res: Response) => {
   let fileDetails: FileDetail;
   try {
     ({ salesforceUrl, isNew, platform } = await InstanceManager.get(instanceKey, [MapKey.salesforceUrl, MapKey.isNew, MapKey.platform]));
-    const configuredPlatform: IPlatform = await getPlatform(platform, instanceKey);
+    const configuredPlatform: StoragePlatform = await getPlatform(platform, instanceKey);
     const responses: Record<string,any>[] = [];
     const promises: any[] = [];
     let fileSizes: Record<string, number> = {};

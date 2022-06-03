@@ -8,15 +8,15 @@ import XlsxPopulate from 'xlsx-populate';
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
 import InstanceManager from '../../utils/InstanceManager';
 import AuthProvider from './AuthProvider';
-import { IPlatform } from '../Platform';
+import { CreatedFileDetails, StoragePlatform } from '../StoragePlatform';
 import { PassThrough } from 'stream';
 
-export class Office365 implements IPlatform {
+export class Office365 implements StoragePlatform {
   private constructor() {}
   private oAuth2Client: CloudStorageProviderClient;
   // private static className: string = 'office365';
 
-  static async authorize(instanceKey: string): Promise<IPlatform> {
+  static async authorize(instanceKey: string): Promise<StoragePlatform> {
     try {
       const officeInstance = new Office365();
       let clientId: string, clientSecret: string, tenantId: string;

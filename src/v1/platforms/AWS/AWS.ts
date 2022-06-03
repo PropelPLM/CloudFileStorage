@@ -7,12 +7,12 @@ import { PassThrough } from 'stream';
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
 import MessageEmitter from '../../utils/MessageEmitter';
 import InstanceManager from '../../utils/InstanceManager';
-import { IPlatform } from '../Platform'
+import { CreatedFileDetails, StoragePlatform, PlatformIdentifier } from '../StoragePlatform'
 
-export class AWS implements IPlatform {
+export class AWS implements StoragePlatform {
   private s3Client: CloudStorageProviderClient;
   private bytesRead = 0;
-  private static className: string = 'aws';
+  private static className: PlatformIdentifier = 'aws';
 
   public constructor(public instanceKey: string) {}
 
@@ -109,7 +109,7 @@ export class AWS implements IPlatform {
       awsFileCreationResult.Key!,
       awsFileCreationResult.Location!,
       fileDetails.mimeType,
-      AWS.className as Platform
+      AWS.className
     );
     createdFileDetails.fileSize = fileDetails.fileSize;
     return createdFileDetails;

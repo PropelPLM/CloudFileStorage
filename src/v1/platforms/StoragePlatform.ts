@@ -1,6 +1,6 @@
 import { PassThrough } from 'stream';
 
-export interface IPlatform {
+export interface StoragePlatform {
     readonly [index: string]: any;
     // Auth flow
     createAuthUrl? (credentials: Record<string, string>, instanceKey: string): string,
@@ -30,4 +30,19 @@ export interface IPlatform {
 
     // miscellaneous
     getCurrentUser?(instanceKey: string): Promise<Record<string, string>>;
+}
+
+export type PlatformIdentifier = 'googledrive' | 'aws' | 'office365';
+
+export class CreatedFileDetails {
+    constructor(
+        public status: number,
+        public id: string,
+        public name: string,
+        public webViewLink: string,
+        public fileExtension: string,
+        public platform: PlatformIdentifier,
+    ) {}
+    public webContentLink?: string
+    public fileSize?: number
 }

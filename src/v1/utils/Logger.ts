@@ -1,5 +1,5 @@
 'use strict';
-import { IPlatform } from '../platforms/Platform';
+import { StoragePlatform } from '../platforms/StoragePlatform';
 import { GoogleDrive } from '../platforms/GoogleDrive/GoogleDrive';
 import { Office365 } from '../platforms/Office365/Office365';
 import { AWS } from '../platforms/AWS/AWS';
@@ -22,8 +22,8 @@ export const logProgressResponse = (fileName: string, src: string, progress: num
   console.log(`[${fileName}][${src}_UPLOAD]: ${progress}`);
 }
 
-export const getPlatform = async (platform: string, instanceKey: string): Promise<IPlatform> => {
-  let returnPlatform: IPlatform;
+export const getPlatform = async (platform: string, instanceKey: string): Promise<StoragePlatform> => {
+  let returnPlatform: StoragePlatform;
   switch (platform.toLowerCase()) {
     case 'googledrive':
       returnPlatform = await GoogleDrive.authorize(instanceKey);
