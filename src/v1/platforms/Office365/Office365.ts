@@ -15,6 +15,7 @@ import { PassThrough } from 'stream';
 export class Office365 implements IPlatform {
   private constructor() {}
   private oAuth2Client: CloudStorageProviderClient;
+  // private static className: string = 'office365';
 
   static async authorize(instanceKey: string): Promise<IPlatform> {
     try {

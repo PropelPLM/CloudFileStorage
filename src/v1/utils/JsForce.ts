@@ -4,6 +4,7 @@ import jsConnect from 'jsforce';
 
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
+import { CreatedFileDetails, Platform } from '../customTypes/3PStorage';
 
 const CUSTOM_SUFFIX = '__c';
 const EXTERNAL_CONTENT_LOCATION = 'E';
@@ -11,22 +12,9 @@ const EXTERNAL_CONTENT_LOCATION = 'E';
 export default {
   async connect(sessionId: string, salesforceUrl: string, instanceKey: string) {
     console.log(sessionId, salesforceUrl, instanceKey);
-    // try {
-    //   const connection = new jsConnect.Connection({
-    //     instanceUrl: salesforceUrl,
-    //     sessionId
-    //   });
-    //   await Promise.all([
-    //     InstanceManager.upsert(instanceKey, { connection }),
-    //     this.setupNamespace(instanceKey)
-    //   ]);
-    //   logSuccessResponse({}, '[JSFORCE.CONNECT]');
-    // } catch (err) {
-    //   logErrorResponse(err, '[JSFORCE.CONNECT]');
-    // }
   },
 
-  async sendTokens(tokens: Record<string, string>, instanceKey: string) {
+  async sendTokens(tokens: Record<string, string|number>, instanceKey: string) {
     let salesforceUrl: string, sessionId: string; //jsforce
     ({ salesforceUrl, sessionId } = await InstanceManager.get(instanceKey, [ MapKey.salesforceUrl, MapKey.sessionId]));
     const connection = new jsConnect.Connection({
@@ -55,33 +43,47 @@ export default {
     }
   },
 
-  async create(file: any, instanceKey: string) {
+  async create(file: CreatedFileDetails, instanceKey: string) {
     try {
       let salesforceUrl: string, sessionId: string, //jsforce
-          revisionId: string, isNew: string, name: string, // SF file creation
-          webViewLink: string, id: string, fileExtension: string, webContentLink: string; // newly created file
-      ({ revisionId, isNew, salesforceUrl, sessionId } = await InstanceManager.get(instanceKey, [ MapKey.revisionId, MapKey.isNew, MapKey.salesforceUrl, MapKey.sessionId]));
+          revisionId: string, isNew: string, isPLM: string, name: string, platform: Platform, // SF file creation
+          webViewLink: string, id: string, fileExtension: string, fileSize: number | undefined, webContentLink: string | undefined; // newly created file
+          ({ revisionId, isNew, isPLM, salesforceUrl, sessionId } = await InstanceManager.get(instanceKey, [ MapKey.revisionId, MapKey.isNew, MapKey.isPLM, MapKey.salesforceUrl, MapKey.sessionId]));
+
       const connection = new jsConnect.Connection({
         instanceUrl: salesforceUrl,
         sessionId
       });
       const orgNamespace: string = await this.setupNamespace(connection);
+      let sObjectWithNamespace: string, newAttachment: Record<string, string | number>;
+      ({ name, webViewLink, id, fileExtension, fileSize, webContentLink, platform } = file);
 
-      ({ name, webViewLink, id, fileExtension, webContentLink } = file);
-      const newAttachment: Record<string, string> = {
-        External_Attachment_URL__c: webViewLink,
-        File_Extension__c: fileExtension,
-        Google_File_Id__c: id,
-        External_Attachment_Download_URL__c: webContentLink,
-        Content_Location__c: EXTERNAL_CONTENT_LOCATION
-      };
-
-      if (isNew === 'false') { //redis values are stringified.
-        newAttachment['Item_Revision__c'] = revisionId;
+      if (isPLM) {
+        sObjectWithNamespace = `${orgNamespace}__Document__c`;
+        newAttachment = {
+          External_Attachment_URL__c: webViewLink,
+          File_Extension__c: fileExtension,
+          Google_File_Id__c: id,
+          External_Attachment_Download_URL__c: webContentLink!,
+          Content_Location__c: EXTERNAL_CONTENT_LOCATION
+        };
+        if (isNew === 'false') { //redis values are stringified.
+          newAttachment['Item_Revision__c'] = revisionId;
+        }
+      } else {
+        sObjectWithNamespace = `${orgNamespace}__Digital_Asset__c`;
+        newAttachment = {
+          View_Link__c: webViewLink,
+          Content_Location__c: platform,
+          External_File_Id__c: id,
+          Mime_Type__c: fileExtension,
+          Size__c: fileSize!
+        };
       }
 
+
       const sObject = await connection
-        .sobject(`${orgNamespace}__Document__c`)
+        .sobject(sObjectWithNamespace)
         .create({
           Name: name,
           ...(await this.addNamespace(newAttachment, orgNamespace))
@@ -100,7 +102,7 @@ export default {
   async setupNamespace(connection: any): Promise<string> {
     try {
       const jsForceRecords = await connection.query(
-        'SELECT NamespacePrefix FROM ApexClass WHERE Name = \'CloudStorageService\' LIMIT 1'
+        'SELECT NamespacePrefix FROM Organization'
       );
       const orgNamespace: string = jsForceRecords.records[0].NamespacePrefix;
       logSuccessResponse({ orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
@@ -111,7 +113,7 @@ export default {
     }
   },
 
-  async addNamespace(customObject: Record<string, string>, orgNamespace: string) {
+  async addNamespace(customObject: Record<string, string | number>, orgNamespace: string) {
     for (const key in customObject) {
       if (key.substring(key.length - CUSTOM_SUFFIX.length) !== CUSTOM_SUFFIX) continue;
 

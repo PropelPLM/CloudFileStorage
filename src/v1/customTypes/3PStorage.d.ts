@@ -1,14 +1,17 @@
 import { Client } from "@microsoft/microsoft-graph-client";
 
+type Platform = 'googledrive' | 'aws' | 'office365';
 class CreatedFileDetails {
     constructor(
         public status: number,
-        public id?: string,
-        public name?: string,
-        public webViewLink?: string,
-        public fileExtension?: string,
-        public webContentLink?: string
+        public id: string,
+        public name: string,
+        public webViewLink: string,
+        public fileExtension: string,
+        public platform: Platform,
     ) {}
+    public webContentLink?: string
+    public fileSize?: number
 }
 
 type MicrosoftClient = Client & {

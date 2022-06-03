@@ -6,12 +6,13 @@ import { PassThrough } from 'stream';
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
 import MessageEmitter from '../../utils/MessageEmitter';
 import InstanceManager from '../../utils/InstanceManager';
-import { CloudStorageProviderClient, CreatedFileDetails } from '../../customTypes/3PStorage';
+import { CloudStorageProviderClient, CreatedFileDetails, Platform } from '../../customTypes/3PStorage';
 import { IPlatform } from '../Platform';
 
 export class GoogleDrive implements IPlatform {
   public static redirect_uris: string[] = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];
   public static actions: Record<string, string> = { driveFiles: 'https://www.googleapis.com/auth/drive.file' };
+  private static className = 'googledrive';
 
   public constructor() {}
   private oAuth2Client: CloudStorageProviderClient;
@@ -126,14 +127,16 @@ export class GoogleDrive implements IPlatform {
     const googleFileCreationResult = await fileDetails.file;
     const { name, webViewLink, id, fileExtension, webContentLink } = googleFileCreationResult.data;
 
-    return new CreatedFileDetails(
+    const createdFileDetails = new CreatedFileDetails(
       googleFileCreationResult.status,
       id,
       name,
       webViewLink,
       fileExtension,
-      webContentLink
-    );
+      GoogleDrive.className as Platform
+      );
+      createdFileDetails.webContentLink = webContentLink;
+      return createdFileDetails;
   }
 }
 

@@ -8,11 +8,12 @@ import { PassThrough } from 'stream';
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
 import MessageEmitter from '../../utils/MessageEmitter';
 import InstanceManager from '../../utils/InstanceManager';
-import { CloudStorageProviderClient, CreatedFileDetails } from '../../customTypes/3PStorage';
+import { CloudStorageProviderClient, CreatedFileDetails, Platform } from '../../customTypes/3PStorage';
 
 export class AWS implements IPlatform {
   private s3Client: CloudStorageProviderClient;
   private bytesRead = 0;
+  private static className: string = 'aws';
 
   public constructor(public instanceKey: string) {}
 
@@ -103,13 +104,16 @@ export class AWS implements IPlatform {
 
   async endUpload(fileDetails: FileDetail): Promise<CreatedFileDetails> {
     const awsFileCreationResult: CompleteMultipartUploadCommandOutput = await (await fileDetails.file).done();
-    return new CreatedFileDetails(
+    const createdFileDetails = new CreatedFileDetails(
       awsFileCreationResult.$metadata.httpStatusCode!,
       awsFileCreationResult.VersionId!,
       awsFileCreationResult.Key!,
       awsFileCreationResult.Location!,
-      fileDetails.mimeType
-    )
+      fileDetails.mimeType,
+      AWS.className as Platform
+    );
+    createdFileDetails.fileSize = fileDetails.fileSize;
+    return createdFileDetails;
   }
 
   private static sanitiseBucketName(bucketName: string): string {
