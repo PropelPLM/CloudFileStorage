@@ -85,20 +85,25 @@ router.post('/:instanceKey', async (req: Request, res: Response) => {
                 reject(err);
               })
               .on('end', async () => {
-                let file: CreatedFileDetails;
-                file = await configuredPlatform.endUpload(fileDetailsMap[fileDetailKey]);
-                let sfObject = await JsForce.create(file.data, instanceKey);
-                const response = {
-                  status: parseInt(file.status),
-                  data: {
-                    ...file.data,
-                    sfId: sfObject.id,
-                    revisionId: sfObject.revisionId,
-                  }
-                };
-                responses.push(response);
-                logSuccessResponse(response, '[END_UPLOAD]');
-                resolve(file);
+                try {
+                  let file: CreatedFileDetails;
+                  file = await configuredPlatform.endUpload(fileDetailsMap[fileDetailKey]);
+                  let sfObject = await JsForce.create(file.data, instanceKey);
+                  const response = {
+                    status: parseInt(file.status),
+                    data: {
+                      ...file.data,
+                      sfId: sfObject.id,
+                      revisionId: sfObject.revisionId,
+                    }
+                  };
+                  responses.push(response);
+                  logSuccessResponse(response, '[END_UPLOAD]');
+                  resolve(file);
+                } catch (err) {
+                  logSuccessResponse(err, '[END_UPLOAD]');
+                  reject(err)
+                }
               });
             })
           );
