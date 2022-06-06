@@ -1,11 +1,13 @@
-import { Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
+import { ResponseError } from '../utils/middleware/responseGenerator';
+
 const router = Router();
 
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 
 const OFFICE_365 = 'office365';
 // the check only applies to Office365 due to Sharepoint limitations
-router.post('/testLock', async (_: Request, res: Response) => {
+router.post('/testLock', async (_: Request, res: Response, next: NextFunction) => {
   let platform: string, salesforceUrl: string, resourcesToTestLock: string[];
   ({ platform, salesforceUrl, resourcesToTestLock } = res.locals);
   const configuredPlatform = res.locals.platformInstance;
@@ -13,15 +15,17 @@ router.post('/testLock', async (_: Request, res: Response) => {
     if (platform.toLowerCase() == OFFICE_365) {
       const result: any = await configuredPlatform.testLock!(salesforceUrl, resourcesToTestLock);
       logSuccessResponse(result, `[${platform}.TEST_LOCK]`);
-      res.status(200).send(result);
+      res.locals.result = result;
     }
   } catch (err) {
     logErrorResponse(err, `[${platform}.TEST_LOCK]`);
-    res.status(400).send(`Failed to test the locking status of a file (via renaming): ${err}`);
+    res.locals.err = new ResponseError(400, `Failed to test the locking status of a file (via renaming): ${err}`);
+  } finally {
+    next();
   }
 });
 
-router.post('/create', async (_: Request, res: Response) => {
+router.post('/create', async (_: Request, res: Response, next: NextFunction) => {
   let platform: string, salesforceUrl: string, type: string, fileName: string, destinationFolderId: string;
   ({ platform, salesforceUrl, type, fileName, destinationFolderId } = res.locals);
   const configuredPlatform = res.locals.platformInstance;
@@ -29,14 +33,16 @@ router.post('/create', async (_: Request, res: Response) => {
   try {
     const result: any = await configuredPlatform.createFile!(salesforceUrl, type, fileName, destinationFolderId);
     logSuccessResponse(result, `[${platform}.CREATE_FILE]`);
-    res.status(200).send(result);
-  } catch (err) {
+    res.locals.result = result;
+  } catch (err: any) {
     logErrorResponse(err, `[${platform}.CREATE_FILE]`);
-    res.status(400).send(`Failed to create: ${err}`);
+    res.locals.err = new ResponseError(400, `Failed to create: ${err}`);
+  } finally {
+    next();
   }
 });
 
-router.post('/get', async (_: Request, res: Response) => {
+router.post('/get', async (_: Request, res: Response, next: NextFunction) => {
   let platform: string, salesforceUrl: string, fileOptions: Record<string, string[]>;
   ({ platform, salesforceUrl, fileOptions} = res.locals);
   const logMessage = `[${platform}.GET_FILE]`;
@@ -58,13 +64,14 @@ router.post('/get', async (_: Request, res: Response) => {
   }
 
   if (errorResults.length > 0) {
-    res.status(400).send([`Could not get all files: ${errorResults.join(',')}`]);
+    res.locals.err = new ResponseError(400, `Could not get all files: ${errorResults.join(',')}`);
   } else {
-    res.status(200).send(response);
+    res.locals.result = response;
   }
+  next();
 });
 
-router.post('/search', async (_: Request, res: Response) => {
+router.post('/search', async (_: Request, res: Response, next: NextFunction) => {
   let platform: string, salesforceUrl: string, searchStrings: string[];
   ({ platform, salesforceUrl, searchStrings } = res.locals);
   const configuredPlatform = res.locals.platformInstance;
@@ -84,16 +91,15 @@ router.post('/search', async (_: Request, res: Response) => {
     }
   }
 
-  if (Object.keys(response).length > 0) {
-    res.status(200).send(response);
+  if (errorResults.length > 0) {
+    res.locals.err = new ResponseError(400, `Did not retrieve any search results for file names: ${errorResults.join(',')}`);
   } else {
-    res.status(400).send({
-      message: `Did not retrieve any search results for file names: ${errorResults.join(',')}`
-    });
+    res.locals.result = response;
   }
+  next();
 });
 
-router.post('/supersede', async (_: Request, res: Response) => {
+router.post('/supersede', async (_: Request, res: Response, next: NextFunction) => {
   let platform: string, salesforceUrl: string, fileTypes: string[], fileNames: string[], docIds: string[], numSuperseded: number;
   ({ platform, salesforceUrl, fileTypes, fileNames, docIds, numSuperseded } = res.locals);
   const configuredPlatform = res.locals.platformInstance;
@@ -114,15 +120,16 @@ router.post('/supersede', async (_: Request, res: Response) => {
 
   // TODO: below code is flexible to change according to desired behavior: e.g. custom error message outlining which files have failed to be superseded
   if (resultArray.length !== numSuperseded) { // failed to supersede at least one file
-    res.status(400).send([`Failed to supersede at least one file: please try again.`]);
+    res.locals.err = new ResponseError(400, `Failed to supersede at least one file: please try again.`);
   } else { // all files were successfully superseded
     logSuccessResponse(resultArray, `[${platform}.SUPERSEDE_FILE]`);
     const finalResult: Record<string, string[]> = { "recordArray" : resultArray }
-    res.status(200).send(finalResult);
+    res.locals.result = finalResult;
   }
+  next();
 });
 
-router.post('/clone', async (_: Request, res: Response) => {
+router.post('/clone', async (_: Request, res: Response, next: NextFunction) => {
   let platform: string, salesforceUrl: string, fileOptions: Record<string, Record<string, any>>;
   ({ platform, salesforceUrl, fileOptions} = res.locals);
 
@@ -144,13 +151,14 @@ router.post('/clone', async (_: Request, res: Response) => {
   }
 
   if (errorResults.length > 0) {
-    res.status(400).send(errorResults);
+    res.locals.err = new ResponseError(400, `Failed to clone following files: ${errorResults.join(',')}`);
   } else {
-    res.status(200).send(response);
+    res.locals.result = response;
   }
+  next();
 });
 
-router.post('/download', async (_: Request, res: Response) => {
+router.post('/download', async (_: Request, res: Response, next: NextFunction) => {
   let platform: string, salesforceUrl: string, fileId: string;
   ({ platform, salesforceUrl, fileId} = res.locals);
   const configuredPlatform = res.locals.platformInstance;
@@ -158,14 +166,16 @@ router.post('/download', async (_: Request, res: Response) => {
   try {
     const downloadLink: any = await configuredPlatform.downloadFile!(salesforceUrl, fileId);
     logSuccessResponse(`downloadLink: ${downloadLink}`, `[${platform}.DOWNLOAD_FILE]`);
-    res.status(200).send({downloadLink});
+    res.locals.result = downloadLink;
   } catch (err: any) {
     logErrorResponse(err, `[${platform}.DOWNLOAD_FILE]`);
-    res.status(406).send({message: err.message});
+    res.locals.err = new ResponseError(406, err.message);
+  } finally {
+    next();
   }
 });
 
-router.post('/delete', async (_: Request, res: Response) => {
+router.post('/delete', async (_: Request, res: Response, next: NextFunction) => {
   let platform: string, salesforceUrl: string, fileId: string;
   ({ platform, salesforceUrl, fileId} = res.locals);
   const configuredPlatform = res.locals.platformInstance;
@@ -173,15 +183,17 @@ router.post('/delete', async (_: Request, res: Response) => {
   try {
     const result: any = await configuredPlatform.deleteFile!(salesforceUrl, fileId);
     logSuccessResponse(result, `[${platform}.DELETE_FILE]`);
-    res.status(200).send(result);
+    res.locals.result = result;
   } catch (err: any) {
     logErrorResponse(err, `[${platform}.DELETE_FILE]`);
     const message = err.message || 'Unable to delete Cloud document';
-    res.status(406).send({message: message.replace('access', 'delete')});
+    res.locals.err = new ResponseError(406, message.replace('access', 'delete'));
+  } finally {
+    next();
   }
 });
 
-router.post('/update', async (_: Request, res: Response) => {
+router.post('/update', async (_: Request, res: Response, next: NextFunction) => {
   let platform: string, salesforceUrl: string, fileOptions: Record<string, Record<string, any>>;
   ({ platform, salesforceUrl, fileOptions} = res.locals);
   const logMessage = `[${platform}.FILES_UPDATE]`;
@@ -203,15 +215,16 @@ router.post('/update', async (_: Request, res: Response) => {
   }
 
   if (errorResults.length > 0) {
-    res.status(400).send([`Could not update all files: ${errorResults.join(',')}`]);
+    res.locals.err = new ResponseError(400, `Could not update all files: ${errorResults.join(',')}`);
   } else {
-    res.status(200).send({});
+    res.locals.result = {};
   }
+  next();
 });
 
 /** Miscellaneous endpoints */
 
-router.post('/getCurrentUser', async (_: Request, res: Response) => {
+router.post('/getCurrentUser', async (_: Request, res: Response, next: NextFunction) => {
   let platform: string, salesforceUrl: string;
   ({ platform, salesforceUrl } = res.locals);
   const configuredPlatform = res.locals.platformInstance;
@@ -219,10 +232,12 @@ router.post('/getCurrentUser', async (_: Request, res: Response) => {
   try {
     const result: any = await configuredPlatform.getCurrentUser!(salesforceUrl);
     logSuccessResponse(result, `[${platform}.GET_CURRENT_USER]`);
-    res.status(200).send(result);
-  } catch (err) {
+    res.locals.result = result;
+  } catch (err: any) {
     logErrorResponse(err, `[${platform}.GET_CURRENT_USER]`);
-    res.status(400).send(`Failed to get current user: ${err}`);
+    res.locals.err = new ResponseError(400, `Failed to get current user: ${err}`);
+  } finally {
+    next();
   }
 });
 
