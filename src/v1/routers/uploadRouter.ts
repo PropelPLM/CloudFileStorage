@@ -119,7 +119,7 @@ router.post('/files/:instanceKey', async (req: Request, res: Response, next: Nex
             isNew,
             responses
           };
-          logErrorResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > PP INTO]');
+          logErrorResponse(response, '[END_POINT.UPLOAD_INSTANCE_KEY > UPLOAD]');
           res.locals.result = response;
           next();
         } catch (err: any) {
