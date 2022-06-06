@@ -99,7 +99,7 @@ $(() => {
       spinner.css('visibility', 'hidden');
       errorContainer.css('visibility', 'visible');
       progressContainer.css('display', 'none');
-      errorContainer.text(`${err.response.data} Please fix appropriately and refresh.`)
+      errorContainer.text(`${err.response.data.error} Please fix appropriately and refresh.`)
     }
   };
 
