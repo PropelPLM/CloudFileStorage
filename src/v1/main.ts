@@ -31,10 +31,6 @@ server.listen(port, async () => {
   }
 });
 
-app.get('/hi', (_, res: Response) => {
-  res.send('Good to go');
-});
-
 app.use('/auth', authRouter);
 app.use('/upload', uploadRouter);
 app.use('/platform', platformOperationsRouter)
