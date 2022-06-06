@@ -68,6 +68,7 @@ export class Office365 implements StoragePlatform {
       type: type
     });
     // we might want to implement a db to store this information in the future instead of relying on a 3rd party domain
+    throw new Error('behhh');
     return this.constructDriveItem(fileObject);
   }
 
