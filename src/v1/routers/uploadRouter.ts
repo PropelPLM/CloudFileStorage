@@ -1,6 +1,6 @@
 'use strict';
 
-import { Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { PassThrough, Stream } from "stream";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -13,30 +13,35 @@ import MessageEmitter from '../utils/MessageEmitter';
 import JsForce from '../utils/JsForce';
 import { CreatedFileDetails, StoragePlatform } from '../platforms/StoragePlatform';
 
-// all endpoints are hit by the react frontend (DEPRECATE)
-router.post('/token', async (req: any, res: any) => {
+router.post('/token', async (req: any, res: any, next: NextFunction) => {
   const instanceKey = uuidv4();
   try {
     const instanceDetails = { ...req.body };
     await InstanceManager.upsert(instanceKey, instanceDetails);
     logSuccessResponse({instanceKey}, '[END_POINT.TOKEN]');
-    res.status(200).send({ instanceKey });
+    res.locals.result = { instanceKey };
   } catch (err) {
     logErrorResponse(err, '[END_POINT.TOKEN]');
-    res.status(400).send(`Failed to receive tokens: ${err}`);
+    res.locals.err.code = 400;
+    res.locals.err.error =`Failed to receive tokens: ${err}`;
+  } finally {
+    next();
   }
 });
 
-router.post('/details/:instanceKey', async (req: any, res: any) => {
+router.post('/details/:instanceKey', async (req: any, res: any, next: NextFunction) => {
   try {
     const instanceKey = req.params.instanceKey;
     const instanceDetails = { ...req.body };
     await InstanceManager.upsert(instanceKey, instanceDetails);
     logSuccessResponse({ instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
-    res.status(200).send({ instanceKey });
+    res.locals.result = { instanceKey };
   } catch (err) {
-    res.status(400).send(`Failed to update upload details ${err}`);
     logErrorResponse(err , '[END_POINT.UPLOAD_DETAILS]');
+    res.locals.err.code = 400;
+    res.locals.err.error = `Failed to update upload details ${err}`;
+  } finally {
+    next();
   }
 });
 
