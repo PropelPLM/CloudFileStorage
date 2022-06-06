@@ -81,10 +81,10 @@ $(() => {
     let uploadResult;
     try {
       uploadResult = await axios.post(
-        `/upload/${instanceKey}`,
+        `/upload/files/${instanceKey}`,
         data,
         {
-          headers: {'Content-Type': 'application/json'}
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }
       );
       socket.off('progress');
