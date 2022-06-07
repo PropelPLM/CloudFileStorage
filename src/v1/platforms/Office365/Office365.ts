@@ -4,16 +4,19 @@ import 'isomorphic-fetch';
 import { Client, ResponseType } from '@microsoft/microsoft-graph-client';
 import axios from 'axios';
 import XlsxPopulate from 'xlsx-populate';
-import { CloudStorageProviderClient, GoogleFile } from '../../customTypes/GoogleObjects';
 
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
 import InstanceManager from '../../utils/InstanceManager';
 import AuthProvider from './AuthProvider';
-import { IPlatform } from '../Platform';
+import { CreatedFileDetails, StoragePlatform } from '../StoragePlatform';
 import { PassThrough } from 'stream';
 
-export class Office365 implements IPlatform {
-  static async authorize(instanceKey: string): Promise<IPlatform> {
+export class Office365 implements StoragePlatform {
+  private constructor() {}
+  private oAuth2Client: CloudStorageProviderClient;
+  // private static className: string = 'office365';
+
+  static async authorize(instanceKey: string): Promise<StoragePlatform> {
     try {
       const officeInstance = new Office365();
       let clientId: string, clientSecret: string, tenantId: string;
@@ -24,16 +27,13 @@ export class Office365 implements IPlatform {
       ]));
       // client should handle refreshing of access token
       officeInstance.oAuth2Client = Client.initWithMiddleware({ authProvider: new AuthProvider(clientId, clientSecret, tenantId) });
-      logSuccessResponse({}, '[OFFICE365.AUTHORIZE]');
+      logSuccessResponse(instanceKey, '[OFFICE365.AUTHORIZE]');
       return officeInstance;
     } catch (err) {
       logErrorResponse(err, '[OFFICE365.AUTHORIZE]');
       throw(err);
     }
   }
-
-  private constructor() {}
-  private oAuth2Client: CloudStorageProviderClient;
 
   public async getFile(instanceKey: string, fileId: string): Promise<Record<string, string>> {
     let groupId: string;
@@ -362,15 +362,15 @@ export class Office365 implements IPlatform {
 
 
   // TODO: below methods' "implementation" are placeholders to prevent tsc errors
-  async initUpload(instanceKey: string, oAuth2Client: CloudStorageProviderClient, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any> {
-    console.log(instanceKey, oAuth2Client, uploadStream, fileDetailsMap, fileDetailKey);
+  async initUpload(instanceKey: string, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any> {
+    console.log(instanceKey, uploadStream, fileDetailsMap, fileDetailKey);
   }
 
-  async uploadFile(fileDetails: FileDetail, payload: Record<string, any>): Promise<void> {
-    console.log(fileDetails, payload);
+  async uploadFile(fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string, payload: Record<string, any>): Promise<void> {
+    console.log(fileDetailsMap, fileDetailKey, payload);
    }
 
-  async endUpload(fileDetails: FileDetail): Promise<GoogleFile> {
+  async endUpload(fileDetails: FileDetail): Promise<CreatedFileDetails> {
     ({ fileDetails } = await InstanceManager.get('instanceKeyOrOrgUrl', [MapKey.fileDetails]));
     return await fileDetails.file;
   }

@@ -6,14 +6,15 @@ import { PassThrough } from 'stream';
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
 import MessageEmitter from '../../utils/MessageEmitter';
 import InstanceManager from '../../utils/InstanceManager';
-import { CloudStorageProviderClient } from '../../customTypes/GoogleObjects';
-import { IPlatform } from '../Platform';
+import { CreatedFileDetails, PlatformIdentifier, StoragePlatform } from '../StoragePlatform';
 
-export class GoogleDrive implements IPlatform {
+export class GoogleDrive implements StoragePlatform {
   public static redirect_uris: string[] = ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'];
   public static actions: Record<string, string> = { driveFiles: 'https://www.googleapis.com/auth/drive.file' };
+  private static className: PlatformIdentifier = 'googledrive';
 
   public constructor() {}
+  private oAuth2Client: CloudStorageProviderClient;
 
   //TOKEN FLOW - INSTANCE MANAGER VARIABLES HERE DO NOT PERSIST TO UPLOAD FLOW
   public static createAuthUrl(credentials: Record<string, string> , instanceKey: string): string {
@@ -46,6 +47,7 @@ export class GoogleDrive implements IPlatform {
   //UPLOAD FLOW- INSTANCE MANAGER VARIABLES HERE DFO NOT PERSIST FROM TOKEN FLOW
   static async authorize(instanceKey: string): Promise<CloudStorageProviderClient> {
     try {
+      const driveInstance = new GoogleDrive();
       let clientId, clientSecret, accessToken, refreshToken, expiryDate;
       ({ clientId, clientSecret, accessToken, refreshToken, expiryDate } = await InstanceManager.get(instanceKey,
         [
@@ -65,19 +67,20 @@ export class GoogleDrive implements IPlatform {
         expiry_date: expiryDate
       };
       oAuth2Client.setCredentials(tokens);
-      logSuccessResponse({}, '[GOOGLE_DRIVE.AUTHORIZE]');
-      return oAuth2Client;
+      driveInstance.oAuth2Client = oAuth2Client;
+      logSuccessResponse(instanceKey, '[GOOGLE_DRIVE.AUTHORIZE]');
+      return driveInstance;
     } catch (err) {
       logErrorResponse(err, '[GOOGLE_DRIVE.AUTHORIZE]');
       throw(err);
     }
   }
 
-  async initUpload(instanceKey: string, oAuth2Client: CloudStorageProviderClient, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any> {
+  async initUpload(instanceKey: string, uploadStream: PassThrough, fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string): Promise<any> {
     let destinationFolderId: string, fileName: string, mimeType: string;
     ({ destinationFolderId } = await InstanceManager.get(instanceKey, [ MapKey.destinationFolderId ]));
     ({ fileName, mimeType } = fileDetailsMap[fileDetailKey]);
-    const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+    const drive = google.drive({ version: 'v3', auth: this.oAuth2Client });
     const fileMetadata = {
       name: fileName,
       driveId: destinationFolderId,
@@ -115,22 +118,24 @@ export class GoogleDrive implements IPlatform {
     );
   }
 
-  async uploadFile(fileDetails: FileDetail, payload: Record<string, any>): Promise<void> {
-    try {
-      fileDetails.uploadStream.push(payload);
-    } catch (err) {
-      logErrorResponse(err, '[GOOGLE_DRIVE > UPLOAD_FILE]')
-    }
+  async uploadFile(fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string, payload: Record<string, any>): Promise<void> {
+    fileDetailsMap[fileDetailKey].uploadStream.push(payload);
   }
 
-  async endUpload(fileDetails: FileDetail): Promise<GoogleFile> {
-    try {
-      return await fileDetails.file;
-    } catch (err: any) {
-      let error: string, error_description: string;
-      ({ error, error_description } =err.response.data);
-      throw new Error(`${error}: ${error_description}`);
-    }
+  async endUpload(fileDetails: FileDetail): Promise<CreatedFileDetails> {
+    const googleFileCreationResult = await fileDetails.file;
+    const { name, webViewLink, id, fileExtension, webContentLink } = googleFileCreationResult.data;
+
+    const createdFileDetails = new CreatedFileDetails(
+      googleFileCreationResult.status,
+      id,
+      name,
+      webViewLink,
+      fileExtension,
+      GoogleDrive.className
+      );
+      createdFileDetails.webContentLink = webContentLink;
+      return createdFileDetails;
   }
 }
 

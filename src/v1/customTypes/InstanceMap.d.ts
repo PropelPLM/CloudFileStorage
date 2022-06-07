@@ -31,6 +31,7 @@ const enum MapKey {
   // operations
   fileDetails = "fileDetails",
   isNew = "isNew",
+  isPLM = "isPLM",
 
   // office specific information
   groupId = "groupId",

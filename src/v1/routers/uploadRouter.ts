@@ -2,6 +2,7 @@
 
 import { Request, Response, Router } from 'express';
 import { PassThrough, Stream } from "stream";
+import { v4 as uuidv4 } from 'uuid';
 
 const Busboy = require('busboy');
 const router = Router();
@@ -10,16 +11,13 @@ import InstanceManager from '../utils/InstanceManager';
 import { logSuccessResponse, logErrorResponse, getPlatform } from '../utils/Logger';
 import MessageEmitter from '../utils/MessageEmitter';
 import JsForce from '../utils/JsForce';
-import { IPlatform } from '../platforms/Platform';
-import { CloudStorageProviderClient } from "../customTypes/GoogleObjects";
+import { CreatedFileDetails, StoragePlatform } from '../platforms/StoragePlatform';
 
 // all endpoints are hit by the react frontend (DEPRECATE)
-router.post('/token/:instanceKey', async (req: any, res: any) => {
-  const instanceKey = req.params.instanceKey;
+router.post('/token', async (req: any, res: any) => {
+  const instanceKey = uuidv4();
   try {
-    let clientId, clientSecret, accessToken, refreshToken, expiryDate, platform, sessionId, salesforceUrl;
-    ({ clientId, clientSecret, accessToken, refreshToken, expiryDate, platform, sessionId, salesforceUrl } = req.body);
-    const instanceDetails = { clientId, clientSecret, accessToken, refreshToken, expiryDate, platform, sessionId, salesforceUrl };
+    const instanceDetails = { ...req.body };
     await InstanceManager.upsert(instanceKey, instanceDetails);
     logSuccessResponse({instanceKey}, '[END_POINT.TOKEN]');
     res.status(200).send({ instanceKey });
@@ -32,9 +30,7 @@ router.post('/token/:instanceKey', async (req: any, res: any) => {
 router.post('/details/:instanceKey', async (req: any, res: any) => {
   try {
     const instanceKey = req.params.instanceKey;
-    let revisionId, destinationFolderId, isNew, platform;
-    ({ revisionId, destinationFolderId, isNew, platform } = req.body);
-    const instanceDetails = { revisionId, destinationFolderId, isNew, platform };
+    const instanceDetails = { ...req.body };
     await InstanceManager.upsert(instanceKey, instanceDetails);
     logSuccessResponse({ instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
     res.status(200).send({ instanceKey });
@@ -53,11 +49,10 @@ router.post('/:instanceKey', async (req: Request, res: Response) => {
   let fileDetails: FileDetail;
   try {
     ({ salesforceUrl, isNew, platform } = await InstanceManager.get(instanceKey, [MapKey.salesforceUrl, MapKey.isNew, MapKey.platform]));
-    const configuredPlatform: IPlatform = await getPlatform(platform, instanceKey);
+    const configuredPlatform: StoragePlatform = await getPlatform(platform, instanceKey);
     const responses: Record<string,any>[] = [];
     const promises: any[] = [];
     let fileSizes: Record<string, number> = {};
-    const oAuth2Client: CloudStorageProviderClient = await configuredPlatform.authorize(instanceKey);
 
     form
       .on('field', (fieldName: string, value: string) => {
@@ -75,34 +70,39 @@ router.post('/:instanceKey', async (req: Request, res: Response) => {
             fileDetails = { fileName, fileSize, frontendBytes: 0, externalBytes: 0, mimeType, uploadStream };
             const fileDetailKey: string = createFileDetailKey(fileDetails.fileName);
             fileDetailsMap[fileDetailKey] = fileDetails;
-            fileDetailsMap[fileDetailKey].file = configuredPlatform.initUpload(instanceKey, oAuth2Client, uploadStream, fileDetailsMap, fileDetailKey);
+            fileDetailsMap[fileDetailKey].file = configuredPlatform.initUpload(instanceKey, uploadStream, fileDetailsMap, fileDetailKey);
             let progress: number = 0;
             fileStream
               .on('data', async (data: Record<string, any>) => {
                 progress = progress + data.length;
                 fileDetails.frontendBytes = progress;
                 MessageEmitter.postProgress(instanceKey, fileDetailsMap, fileDetailKey, 'FRONTEND');
-                await configuredPlatform.uploadFile(fileDetailsMap[fileDetailKey], data);
+                configuredPlatform.uploadFile(fileDetailsMap, fileDetailKey, data);
               })
               .on('error', err => {
                 logErrorResponse(err, '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]');
                 reject(err);
               })
               .on('end', async () => {
-                let file: GoogleFile;
-                file = await configuredPlatform.endUpload(fileDetailsMap[fileDetailKey]);
-                let sfObject = await JsForce.create(file.data, instanceKey);
-                const response = {
-                  status: parseInt(file.status),
-                  data: {
-                    ...file.data,
-                    sfId: sfObject.id,
-                    revisionId: sfObject.revisionId,
-                  }
-                };
-                responses.push(response);
-                logSuccessResponse(response, '[END_UPLOAD]');
-                resolve(file);
+                try {
+                  const file: CreatedFileDetails =
+                    await configuredPlatform.endUpload(fileDetailsMap[fileDetailKey]);
+                  const sfObject = await JsForce.create(file, instanceKey);
+                  const response = {
+                    status: file.status,
+                    data: {
+                      ...file,
+                      sfId: sfObject.id,
+                      revisionId: sfObject.revisionId,
+                    }
+                  };
+                  responses.push(response);
+                  logSuccessResponse(response, '[END_UPLOAD]');
+                  resolve(file);
+                } catch (err) {
+                  logSuccessResponse(err, '[END_UPLOAD]');
+                  reject(err)
+                }
               });
             })
           );
