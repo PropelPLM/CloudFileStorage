@@ -10,11 +10,13 @@ const server = require('http').createServer(app);
 const port = process.env.PORT || 3030;
 module.exports = server;
 
-import { logSuccessResponse, logErrorResponse } from './utils/Logger';
 import InstanceManager from './utils/InstanceManager';
 import authRouter from './routers/authRouter';
 import uploadRouter from './routers/uploadRouter';
 import platformOperationsRouter from './routers/platformOperationsRouter';
+
+import { logSuccessResponse, logErrorResponse } from './utils/Logger';
+import { responseGenerator } from './utils/middleware/responseGenerator';
 
 app.use(express.json());
 app.use(cors());
@@ -27,10 +29,6 @@ server.listen(port, async () => {
   } catch (err) {
     logErrorResponse(err, '[SERVER_INIT]');
   }
-});
-
-app.get('/hi', (_, res: Response) => {
-  res.send('Good to go');
 });
 
 app.use('/auth', authRouter);
@@ -46,3 +44,5 @@ app.get('/:instanceKey', (req: Request, res: Response) => {
     logErrorResponse(err, '[END_POINT.INSTANCE_KEY]');
   }
 });
+
+app.use(responseGenerator);
