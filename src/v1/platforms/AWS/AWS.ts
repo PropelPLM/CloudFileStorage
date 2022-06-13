@@ -1,6 +1,6 @@
 'use strict';
 
-import { CompleteMultipartUploadCommandOutput, HeadBucketCommand, S3Client } from "@aws-sdk/client-s3";
+import { CompleteMultipartUploadCommandOutput, CreateBucketCommand, HeadBucketCommand, PutBucketVersioningCommand, S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { PassThrough } from 'stream';
 
@@ -30,7 +30,14 @@ export class AWS implements StoragePlatform {
 
   private async createBucket(bucketName: string) {
     try {
-      await this.s3Client.createBucket({ Bucket: bucketName }).promise();
+      await this.s3Client.send(new CreateBucketCommand({ Bucket: bucketName }));
+      await this.s3Client.send(new PutBucketVersioningCommand({
+        Bucket: bucketName,
+        VersioningConfiguration: {
+          MFADelete: "Disabled",
+          Status: "Enabled"
+         }
+      }));
       return true;
     } catch (error: any) {
       logErrorResponse(error.stack, '[AWS.CREATE_BUCKET]');
@@ -43,11 +50,12 @@ export class AWS implements StoragePlatform {
       await this.s3Client.send(new HeadBucketCommand({ Bucket: bucketName }));
       return true;
     } catch (error: any) {
-      if (error.statusCode === 404) {
+      console.log({error});
+      if (error['$metadata'].httpStatusCode === 404) {
         logErrorResponse('No such bucket exists', '[AWS.CHECK_BUCKET]');
         return false;
       } else {
-        throw new Error(error.statusCode === 403 ?
+        throw new Error(error['$metadata'].httpStatusCode === 403 ?
           'Forbidden (most likely due to permissions)' :
           error.code
         );
