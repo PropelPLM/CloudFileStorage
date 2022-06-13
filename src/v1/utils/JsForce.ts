@@ -44,7 +44,6 @@ export default {
   },
 
   async create(file: CreatedFileDetails, instanceKey: string) {
-    console.log({file})
     try {
       let salesforceUrl: string, sessionId: string, //jsforce
           revisionId: string, isNew: string, isPLM: string, name: string, platform: PlatformIdentifier, // SF file creation
@@ -86,14 +85,12 @@ export default {
         };
       }
 
-      console.log({sObjectWithNamespace})
       const sObject = await connection
         .sobject(sObjectWithNamespace)
         .create({
           Name: name,
           ...(await this.addNamespace(newAttachment, orgNamespace))
         });
-      console.log({sObject})
       if (!sObject.success) throw new Error(`Failed to create SObject: ${sObject.errors.join('\n')}`);
 
       logSuccessResponse({ sObject }, '[JSFORCE.CREATE]');
@@ -120,7 +117,6 @@ export default {
   },
 
   async addNamespace(customObject: Record<string, string | number>, orgNamespace: string) {
-    console.log({orgNamespace, customObject})
     if (orgNamespace === null) return customObject;
     for (const key in customObject) {
       if (key.substring(key.length - CUSTOM_SUFFIX.length) !== CUSTOM_SUFFIX) continue;
