@@ -44,6 +44,7 @@ export default {
   },
 
   async create(file: CreatedFileDetails, instanceKey: string) {
+    console.log({file})
     try {
       let salesforceUrl: string, sessionId: string, //jsforce
           revisionId: string, isNew: string, isPLM: string, name: string, platform: PlatformIdentifier, // SF file creation
@@ -59,7 +60,9 @@ export default {
       ({ name, webViewLink, id, fileExtension, fileSize, webContentLink, platform } = file);
 
       if (isPLM) {
-        sObjectWithNamespace = `${orgNamespace}__Document__c`;
+        sObjectWithNamespace = orgNamespace === null
+          ? 'Document__c'
+          : `${orgNamespace}__Document__c`;
         newAttachment = {
           External_Attachment_URL__c: webViewLink,
           File_Extension__c: fileExtension,
@@ -71,7 +74,9 @@ export default {
           newAttachment['Item_Revision__c'] = revisionId;
         }
       } else {
-        sObjectWithNamespace = `${orgNamespace}__Digital_Asset__c`;
+        sObjectWithNamespace = orgNamespace === null
+          ? 'Digital_Asset__c'
+          : `${orgNamespace}__Digital_Asset__c`;
         newAttachment = {
           Content_Location__c: platform,
           External_File_Id__c: id,
@@ -81,14 +86,15 @@ export default {
         };
       }
 
-
+      console.log({sObjectWithNamespace})
       const sObject = await connection
         .sobject(sObjectWithNamespace)
         .create({
           Name: name,
           ...(await this.addNamespace(newAttachment, orgNamespace))
         });
-      if (!sObject.success) throw new Error(`Failed to create Document__c: ${sObject.errors.join('\n')}`);
+      console.log({sObject})
+      if (!sObject.success) throw new Error(`Failed to create SObject: ${sObject.errors.join('\n')}`);
 
       logSuccessResponse({ sObject }, '[JSFORCE.CREATE]');
       return { ...sObject, revisionId };
@@ -114,6 +120,8 @@ export default {
   },
 
   async addNamespace(customObject: Record<string, string | number>, orgNamespace: string) {
+    console.log({orgNamespace, customObject})
+    if (orgNamespace === null) return customObject;
     for (const key in customObject) {
       if (key.substring(key.length - CUSTOM_SUFFIX.length) !== CUSTOM_SUFFIX) continue;
 
