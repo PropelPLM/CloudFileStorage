@@ -65,6 +65,8 @@ $(() => {
 
   const setFilesUploaded = () => {
     overallFileProgress.text(`${numFiles} uploaded!`);
+    progressBar.css('width', `100%`);
+    progressBarText.text(`100%`);
   };
 
   const uploadFile = async (files) => {

@@ -100,15 +100,9 @@ export class GoogleDrive implements StoragePlatform {
       {
         onUploadProgress: (evt: Record<string, any>) => {
           const bytesRead: number = evt.bytesRead;
-          let totalFileSize: number, totalExternalBytes: number;
           fileDetailsMap[fileDetailKey].externalBytes = bytesRead;
           MessageEmitter.postProgress(instanceKey, fileDetailsMap, fileDetailKey, 'GOOGLE_DRIVE');
-          totalFileSize = totalExternalBytes = 0;
-          for (const detail in fileDetailsMap) {
-            totalFileSize += fileDetailsMap[detail].fileSize;
-            totalExternalBytes += fileDetailsMap[detail].externalBytes;
-          }
-          if (totalExternalBytes == totalFileSize) {
+          if (fileDetailsMap[fileDetailKey].externalBytes == fileDetailsMap[fileDetailKey].fileSize) {
             logSuccessResponse({fileName}, '[GOOGLE_DRIVE.FILE_UPLOAD_END]');
             //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
             uploadStream.emit('end');
