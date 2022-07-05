@@ -11,7 +11,6 @@ import { CreatedFileDetails, StoragePlatform, PlatformIdentifier } from '../Stor
 
 export class AWS implements StoragePlatform {
   private s3Client: CloudStorageProviderClient;
-  private bytesRead = 0;
   private static className: PlatformIdentifier = 'aws';
 
   public constructor(public instanceKey: string) {}
@@ -89,9 +88,8 @@ export class AWS implements StoragePlatform {
 
   async uploadFile(fileDetailsMap: Record<string, FileDetail>, fileDetailKey: string, payload: Record<string, any>): Promise<void> {
     const bytesRead: number = payload.length;
-    this.bytesRead += bytesRead;
     const stream = fileDetailsMap[fileDetailKey].uploadStream;
-    fileDetailsMap[fileDetailKey].externalBytes = this.bytesRead;
+    fileDetailsMap[fileDetailKey].externalBytes += bytesRead;
     stream.push(payload);
     MessageEmitter.postProgress(this.instanceKey, fileDetailsMap, fileDetailKey, 'AWS');
 
@@ -101,7 +99,7 @@ export class AWS implements StoragePlatform {
       totalFileSize += fileDetailsMap[detail].fileSize;
       totalExternalBytes += fileDetailsMap[detail].externalBytes;
     }
-    if (totalExternalBytes == totalFileSize) {
+    if (fileDetailsMap[fileDetailKey].externalBytes == fileDetailsMap[fileDetailKey].fileSize) {
       logSuccessResponse(fileDetailsMap[fileDetailKey].fileName, '[AWS.FILE_UPLOAD_END]');
       //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
       stream.end();
