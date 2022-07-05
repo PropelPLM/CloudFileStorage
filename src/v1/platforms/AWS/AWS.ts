@@ -92,13 +92,6 @@ export class AWS implements StoragePlatform {
     fileDetailsMap[fileDetailKey].externalBytes += bytesRead;
     stream.push(payload);
     MessageEmitter.postProgress(this.instanceKey, fileDetailsMap, fileDetailKey, 'AWS');
-
-    let totalFileSize: number, totalExternalBytes: number;
-    totalFileSize = totalExternalBytes = 0;
-    for (const detail in fileDetailsMap) {
-      totalFileSize += fileDetailsMap[detail].fileSize;
-      totalExternalBytes += fileDetailsMap[detail].externalBytes;
-    }
     if (fileDetailsMap[fileDetailKey].externalBytes == fileDetailsMap[fileDetailKey].fileSize) {
       logSuccessResponse(fileDetailsMap[fileDetailKey].fileName, '[AWS.FILE_UPLOAD_END]');
       //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
