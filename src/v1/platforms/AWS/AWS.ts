@@ -174,6 +174,7 @@ export class AWS implements StoragePlatform {
             Bucket: AWS.sanitiseBucketName(salesforceUrl),
             Key: key,
             VersionId: versionId,
+            ResponseContentDisposition: `attachment; filename="${key}"`,
         });
         return await getSignedUrl(this.s3Client, command, {
             expiresIn: 3600,
