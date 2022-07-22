@@ -174,11 +174,9 @@ export class AWS implements StoragePlatform {
             Key: key,
             VersionId: versionId,
         });
-        const url = await getSignedUrl(this.s3Client, command, {
+        return await getSignedUrl(this.s3Client, command, {
             expiresIn: 3600,
         });
-        console.log({ url });
-        return 'henlo';
     }
     private static sanitiseBucketName(bucketName: string): string {
         return bucketName.replace(/((^\w+:|^)\/\/)|\/|:/g, '');
