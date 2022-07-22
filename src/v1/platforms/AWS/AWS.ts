@@ -114,6 +114,7 @@ export class AWS implements StoragePlatform {
                 Key: fileNameKey,
                 Body: uploadStream,
                 ContentType: mimeType,
+                ContentDisposition: 'inline',
                 ACL: 'public-read',
             },
         });
