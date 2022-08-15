@@ -67,7 +67,7 @@ router.post(
     '/files/:instanceKey',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            res.setTimeout(9999999999);
+            res.setTimeout(2147483647);
             const instanceKey = req.params.instanceKey;
 
             const form = new Busboy({ headers: req.headers });
