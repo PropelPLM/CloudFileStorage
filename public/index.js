@@ -11,7 +11,8 @@ $(() => {
   const spinner = $('#spinner');
   const check = $('#check');
   const overallFileProgress = $('#overall-file-progress');
-  const socket = io();
+  const url = $(location).attr('href').slice(0, -1);
+  const socket = io(`${url.substr(0, url.slice(0, -1).lastIndexOf('/') + 1)}`, {transports: [ "websocket" ]});
   let numFiles = 0;
 
   // INIT
@@ -23,7 +24,6 @@ $(() => {
   resetIcons();
 
   const instanceKeyFinder = () => {
-    const url = $(location).attr('href').slice(0, -1);
     return url.substr(url.slice(0, -1).lastIndexOf('/') + 1);
   };
   socket.emit('start', instanceKeyFinder());
