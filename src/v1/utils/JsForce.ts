@@ -184,5 +184,50 @@ export default {
             delete customObject[key];
         }
         return customObject;
+    },
+
+    insertCustomMetadata: async (instanceKey: string, metadataPairs: Record<string, string>) => {
+        let salesforceUrl: string, sessionId: string;
+        try {
+            ({ salesforceUrl, sessionId } = await InstanceManager.get(instanceKey, [
+                MapKey.salesforceUrl,
+                MapKey.sessionId,
+            ]));
+            const connection = new jsConnect.Connection({
+                instanceUrl: salesforceUrl,
+                sessionId,
+            });
+            const metadata: Metadata[] = [];
+            Object.entries(metadataPairs).forEach(([key, value]) => {
+                if (!key || !value) throw new Error(`Missing key(${key}) or value(${value}).`)
+                metadata.push(new Metadata(key, value))
+            });
+            connection.metadata.create('CustomMetadata', metadata, (err, results) => {
+                if (err) {
+                    logErrorResponse(err, '[JSFORCE.INSERT_CUSTOM_MDT > INSERTION]');
+                    return;
+                }
+                logSuccessResponse(results, '[JSFORCE.INSERT_CUSTOM_MDT]');
+                return results;
+            });
+        } catch (err) {
+            logErrorResponse(err, '[JSFORCE.INSERT_CUSTOM_MDT]');
+            throw err;
+        }
     }
 };
+
+class Metadata {
+    fullName: string;
+    label: string;
+    values: { field: string, value: string }
+
+    constructor(public metadataName: string, public metadataValue: string) {
+        this.fullName = `Configuration__mdt.${metadataName}`,
+        this.label = metadataName,
+        this.values = {
+            field: 'Value__c',
+            value: metadataValue
+        }
+    }
+}
