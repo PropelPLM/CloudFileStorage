@@ -9,6 +9,10 @@ import {
     S3Client,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import {
+    CloudFrontClient,
+    CreateDistributionCommand,
+} from '@aws-sdk/client-cloudfront';
 import { Upload } from '@aws-sdk/lib-storage';
 import { PassThrough } from 'stream';
 
@@ -20,6 +24,9 @@ import {
     StoragePlatform,
     PlatformIdentifier,
 } from '../StoragePlatform';
+import JsForce from '../../utils/JsForce';
+
+const US_EAST = 'us-east-1';
 
 export class AWS implements StoragePlatform {
     private s3Client: CloudStorageProviderClient;
@@ -69,7 +76,6 @@ export class AWS implements StoragePlatform {
             );
             return true;
         } catch (error: any) {
-            console.log({ error });
             if (error['$metadata'].httpStatusCode === 404) {
                 logErrorResponse('No such bucket exists', '[AWS.CHECK_BUCKET]');
                 return false;
@@ -89,36 +95,42 @@ export class AWS implements StoragePlatform {
         fileDetailsMap: Record<string, FileDetail>,
         fileDetailKey: string
     ): Promise<any> {
-        let destinationFolderId: string,
-            fileName: string,
-            mimeType: string,
-            salesforceUrl: string;
-        ({ destinationFolderId, salesforceUrl } = await InstanceManager.get(
-            instanceKey,
-            [MapKey.destinationFolderId, MapKey.salesforceUrl]
-        ));
-        ({ fileName, mimeType } = fileDetailsMap[fileDetailKey]);
+        try {
+            let destinationFolderId: string,
+                fileName: string,
+                mimeType: string,
+                salesforceUrl: string;
+            ({ destinationFolderId, salesforceUrl } = await InstanceManager.get(
+                instanceKey,
+                [MapKey.destinationFolderId, MapKey.salesforceUrl]
+            ));
+            ({ fileName, mimeType } = fileDetailsMap[fileDetailKey]);
 
-        const sanitisedName = AWS.sanitiseBucketName(salesforceUrl);
-        const fileNameKey = `${
-            destinationFolderId ? destinationFolderId + '/' : ''
-        }${fileName}`;
-        if (!(await this.bucketExists(sanitisedName))) {
-            await this.createBucket(sanitisedName);
+            const sanitisedName = AWS.sanitiseBucketName(salesforceUrl);
+            const fileNameKey = `${
+                destinationFolderId ? destinationFolderId + '/' : ''
+            }${fileName}`;
+            console.log({sanitisedName})
+            if (!(await this.bucketExists(sanitisedName))) {
+                await this.createBucket(sanitisedName);
+            }
+            const s3Upload = new Upload({
+                client: this.s3Client,
+                leavePartsOnError: false, // optional manually handle dropped parts
+                params: {
+                    Bucket: sanitisedName,
+                    Key: fileNameKey,
+                    Body: uploadStream,
+                    ContentType: mimeType,
+                    ContentDisposition: 'inline',
+                    ACL: 'public-read',
+                },
+            });
+            logSuccessResponse({}, '[AWS.INIT_UPLOAD]');
+            return s3Upload;
+        } catch (err) {
+            logErrorResponse(err, '[AWS.INIT_UPLOAD]');
         }
-        const s3Upload = new Upload({
-            client: this.s3Client,
-            leavePartsOnError: false, // optional manually handle dropped parts
-            params: {
-                Bucket: sanitisedName,
-                Key: fileNameKey,
-                Body: uploadStream,
-                ContentType: mimeType,
-                ContentDisposition: 'inline',
-                ACL: 'public-read',
-            },
-        });
-        return s3Upload;
     }
 
     async uploadFile(
@@ -182,5 +194,57 @@ export class AWS implements StoragePlatform {
     }
     private static sanitiseBucketName(bucketName: string): string {
         return bucketName.replace(/((^\w+:|^)\/\/)|\/|:/g, '');
+    }
+
+    async associateDistributionToCDN(bucketId: string | undefined, bucketName: string) {
+        try {
+            const cfClient = new CloudFrontClient({ region: US_EAST });
+            let DomainName:
+                | string
+                | undefined = `${bucketName}.s3.${US_EAST}.amazonaws.com`;
+            const response = await cfClient.send(
+                new CreateDistributionCommand({
+                    DistributionConfig: {
+                        CallerReference: Date.now().toString(),
+                        Comment: 'Created by CDM flow',
+                        DefaultCacheBehavior: {
+                            ForwardedValues: {
+                                Cookies: { Forward: 'all' },
+                                QueryString: false,
+                                Headers: { Quantity: 0 },
+                                QueryStringCacheKeys: { Quantity: 0 },
+                            },
+                            MinTTL: 3600,
+                            TargetOriginId: bucketId,
+                            TrustedSigners: { Enabled: false, Quantity: 0 },
+                            ViewerProtocolPolicy: 'redirect-to-https',
+                            DefaultTTL: 86400,
+                        },
+                        Enabled: true,
+                        Origins: {
+                            Items: [
+                                {
+                                    DomainName,
+                                    Id: bucketId,
+                                    S3OriginConfig: {
+                                        OriginAccessIdentity: '',
+                                    },
+                                },
+                            ],
+                            Quantity: 1,
+                        },
+                    },
+                })
+            );
+            DomainName = response.Distribution?.DomainName;
+            await JsForce.upsertCustomMetadata(
+                this.instanceKey,
+                { 'CloudfrontDistribution': DomainName || '' }
+            );
+            logSuccessResponse({}, '[AWS.ASSOCIATE_DISTRIBUTION]');
+        } catch (err) {
+            logErrorResponse(err, '[AWS.ASSOCIATE_DISTRIBUTION]');
+            throw err;
+        }
     }
 }

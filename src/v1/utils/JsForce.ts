@@ -1,6 +1,6 @@
 'use strict';
 
-import jsConnect from 'jsforce';
+import jsConnect from 'jsforce-propel';
 
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
@@ -148,6 +148,33 @@ export default {
         }
     },
 
+    async upsertCustomMetadata (instanceKey: string, metadataPairs: Record<string, string>) {
+        let salesforceUrl: string, sessionId: string;
+        try {
+            ({ salesforceUrl, sessionId } = await InstanceManager.get(instanceKey, [
+                MapKey.salesforceUrl,
+                MapKey.sessionId,
+            ]));
+            const connection = new jsConnect.Connection({
+                instanceUrl: salesforceUrl,
+                sessionId,
+            });
+            const orgNamespace: string = await this.setupNamespace(connection);
+            const metadata: Metadata[] = [];
+
+            Object.entries(metadataPairs).forEach(([key, value]) => {
+                if (!key || !value) throw new Error(`Missing key(${key}) or value(${value}).`)
+                metadata.push(new Metadata(orgNamespace, key, value))
+            });
+
+            await connection.metadata.upsert('CustomMetadata', metadata);
+            logSuccessResponse(metadataPairs, '[JSFORCE.INSERT_CUSTOM_MDT]');
+        } catch (err) {
+            logErrorResponse(err, '[JSFORCE.INSERT_CUSTOM_MDT]');
+            throw err;
+        }
+    },
+
     // UTILS
     async setupNamespace(connection: any): Promise<string> {
         try {
@@ -184,5 +211,20 @@ export default {
             delete customObject[key];
         }
         return customObject;
-    }
+    },
 };
+
+class Metadata {
+    fullName: string;
+    label: string;
+    values: { field: string, value: string }
+
+    constructor(namespace: string, metadataName: string, metadataValue: string) {
+        this.fullName = `${namespace + '__'}Configuration__mdt.${metadataName}`,
+        this.label = metadataName,
+        this.values = {
+            field: `${namespace + '__'}Value__c`,
+            value: metadataValue
+        }
+    }
+}
