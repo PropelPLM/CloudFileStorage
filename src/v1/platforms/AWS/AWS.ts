@@ -25,6 +25,8 @@ import {
     PlatformIdentifier,
 } from '../StoragePlatform';
 import JsForce from '../../utils/JsForce';
+import { v4 as uuidv4 } from 'uuid';
+
 
 const US_EAST = 'us-east-1';
 
@@ -96,21 +98,19 @@ export class AWS implements StoragePlatform {
         fileDetailKey: string
     ): Promise<any> {
         try {
-            let destinationFolderId: string,
-                fileName: string,
-                mimeType: string,
+            let mimeType: string,
                 salesforceUrl: string;
-            ({ destinationFolderId, salesforceUrl } = await InstanceManager.get(
+            ({ salesforceUrl } = await InstanceManager.get(
                 instanceKey,
                 [MapKey.destinationFolderId, MapKey.salesforceUrl]
             ));
-            ({ fileName, mimeType } = fileDetailsMap[fileDetailKey]);
+            ({ mimeType } = fileDetailsMap[fileDetailKey]);
 
             const sanitisedName = AWS.sanitiseBucketName(salesforceUrl);
-            const fileNameKey = `${
-                destinationFolderId ? destinationFolderId + '/' : ''
-            }${fileName}`;
-            console.log({sanitisedName})
+            // const fileNameKey = `${
+            //     destinationFolderId ? destinationFolderId + '/' : ''
+            // }${fileName}`;
+            const fileNameKey = uuidv4();
             if (!(await this.bucketExists(sanitisedName))) {
                 await this.createBucket(sanitisedName);
             }
@@ -168,8 +168,8 @@ export class AWS implements StoragePlatform {
         const createdFileDetails = new CreatedFileDetails(
             awsFileCreationResult.$metadata.httpStatusCode!,
             awsFileCreationResult.VersionId!,
+            fileDetails.fileName,
             awsFileCreationResult.Key!,
-            awsFileCreationResult.Location!,
             fileDetails.mimeType,
             AWS.className
         );
