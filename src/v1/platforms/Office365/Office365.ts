@@ -158,12 +158,12 @@ export class Office365 implements StoragePlatform {
     };
   }
 
-  public async downloadFile(instanceKeyOrOrgUrl: string, fileId: string): Promise<string> {
+  public async downloadFile(instanceKeyOrOrgUrlOrOrgId: string, fileId: string): Promise<string> {
     let groupId: string;
-    ({ groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.groupId]));
+    ({ groupId } = await InstanceManager.get(instanceKeyOrOrgUrlOrOrgId, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKeyOrOrgUrl);
+      groupId = await this.getGroupId(instanceKeyOrOrgUrlOrOrgId);
     }
 
     const fileObject: Record<string, any> = await this.oAuth2Client

@@ -180,23 +180,23 @@ export class AWS implements StoragePlatform {
     }
 
     async downloadFile(
-        salesforceUrl: string,
-        versionId: string,
+        fileId: string,
         key: string
     ): Promise<string> {
         const command = new GetObjectCommand({
-            Bucket: AWS.sanitiseBucketName(salesforceUrl),
+            Bucket: PIM_DEFAULT_BUCKET,
             Key: key,
-            VersionId: versionId,
+            VersionId: fileId,
             ResponseContentDisposition: `attachment; filename="${key}"`,
         });
         return await getSignedUrl(this.s3Client, command, {
             expiresIn: 3600,
         });
     }
-    private static sanitiseBucketName(bucketName: string): string {
-        return bucketName.replace(/((^\w+:|^)\/\/)|\/|:/g, '');
-    }
+
+    // private static sanitiseBucketName(bucketName: string): string {
+    //     return bucketName.replace(/((^\w+:|^)\/\/)|\/|:/g, '');
+    // }
 
     async associateDistributionToCDN(bucketId: string | undefined, bucketName: string) {
         try {

@@ -50,8 +50,8 @@ export interface StoragePlatform {
         docId: string
     ): Promise<Record<string, string>>;
     downloadFile?(
-        instanceKeyOrOrgUrl: string,
-        fileId: string,
+        instanceKeyOrOrgUrlOrOrgId: string,
+        fileId?: string,
         key?: string
     ): Promise<string>;
     supersedeFile?(
