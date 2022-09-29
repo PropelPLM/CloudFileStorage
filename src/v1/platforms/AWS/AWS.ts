@@ -180,12 +180,13 @@ export class AWS implements StoragePlatform {
     }
 
     async downloadFile(
+        instanceKeyOrOrgUrlOrOrgId: string,
         fileId: string,
         key: string
     ): Promise<string> {
         const command = new GetObjectCommand({
             Bucket: PIM_DEFAULT_BUCKET,
-            Key: key,
+            Key: key.replace(`${instanceKeyOrOrgUrlOrOrgId}/`, ''),
             VersionId: fileId,
             ResponseContentDisposition: `attachment; filename="${key}"`,
         });
