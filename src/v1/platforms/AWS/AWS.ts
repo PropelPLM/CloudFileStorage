@@ -27,8 +27,8 @@ import {
 import JsForce from '../../utils/JsForce';
 import { v4 as uuidv4 } from 'uuid';
 
-
-const US_EAST = 'us-east-1';
+const US_WEST = 'us-west-1';
+const PIM_DEFAULT_BUCKET = 'pim-assets-default-bucket';
 
 export class AWS implements StoragePlatform {
     private s3Client: CloudStorageProviderClient;
@@ -41,7 +41,7 @@ export class AWS implements StoragePlatform {
     ): Promise<CloudStorageProviderClient> {
         try {
             const awsInstance = new AWS(instanceKey);
-            awsInstance.s3Client = new S3Client({ region: 'us-east-1' });
+            awsInstance.s3Client = new S3Client({ region: US_WEST });
             logSuccessResponse(instanceKey, '[AWS.AUTHORIZE]');
             return awsInstance;
         } catch (err) {
@@ -99,18 +99,15 @@ export class AWS implements StoragePlatform {
     ): Promise<any> {
         try {
             let mimeType: string,
-                salesforceUrl: string;
-            ({ salesforceUrl } = await InstanceManager.get(
+                orgId: string;
+            ({ orgId } = await InstanceManager.get(
                 instanceKey,
-                [MapKey.destinationFolderId, MapKey.salesforceUrl]
+                [MapKey.orgId]
             ));
             ({ mimeType } = fileDetailsMap[fileDetailKey]);
 
-            const sanitisedName = AWS.sanitiseBucketName(salesforceUrl);
-            // const fileNameKey = `${
-            //     destinationFolderId ? destinationFolderId + '/' : ''
-            // }${fileName}`;
-            const fileNameKey = uuidv4();
+            const sanitisedName = PIM_DEFAULT_BUCKET;
+            const fileNameKey = `${orgId}/${uuidv4()}`;
             if (!(await this.bucketExists(sanitisedName))) {
                 await this.createBucket(sanitisedName);
             }
@@ -123,12 +120,12 @@ export class AWS implements StoragePlatform {
                     Body: uploadStream,
                     ContentType: mimeType,
                     ContentDisposition: 'inline',
-                    ACL: 'public-read',
                 },
             });
             logSuccessResponse({}, '[AWS.INIT_UPLOAD]');
             return s3Upload;
         } catch (err) {
+            console.log({err})
             logErrorResponse(err, '[AWS.INIT_UPLOAD]');
         }
     }
@@ -138,27 +135,32 @@ export class AWS implements StoragePlatform {
         fileDetailKey: string,
         payload: Record<string, any>
     ): Promise<void> {
-        const bytesRead: number = payload.length;
-        const stream = fileDetailsMap[fileDetailKey].uploadStream;
-        fileDetailsMap[fileDetailKey].externalBytes += bytesRead;
-        stream.push(payload);
-        MessageEmitter.postProgress(
-            this.instanceKey,
-            fileDetailsMap,
-            fileDetailKey,
-            'AWS'
-        );
-        if (
-            fileDetailsMap[fileDetailKey].externalBytes ==
-            fileDetailsMap[fileDetailKey].fileSize
-        ) {
-            logSuccessResponse(
-                fileDetailsMap[fileDetailKey].fileName,
-                '[AWS.FILE_UPLOAD_END]'
+        try {
+            const bytesRead: number = payload.length;
+            const stream = fileDetailsMap[fileDetailKey].uploadStream;
+            fileDetailsMap[fileDetailKey].externalBytes += bytesRead;
+            stream.push(payload);
+            MessageEmitter.postProgress(
+                this.instanceKey,
+                fileDetailsMap,
+                fileDetailKey,
+                'AWS'
             );
-            //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
-            stream.end();
-            stream.emit('end');
+            if (
+                fileDetailsMap[fileDetailKey].externalBytes ==
+                fileDetailsMap[fileDetailKey].fileSize
+            ) {
+                logSuccessResponse(
+                    fileDetailsMap[fileDetailKey].fileName,
+                    '[AWS.FILE_UPLOAD_END]'
+                );
+                //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
+                stream.end();
+                stream.emit('end');
+            }
+        } catch (err) {
+            console.log({err})
+            logErrorResponse(err, '[AWS.UPLOAD_FILE]');
         }
     }
 
@@ -198,10 +200,10 @@ export class AWS implements StoragePlatform {
 
     async associateDistributionToCDN(bucketId: string | undefined, bucketName: string) {
         try {
-            const cfClient = new CloudFrontClient({ region: US_EAST });
+            const cfClient = new CloudFrontClient({ region: US_WEST });
             let DomainName:
                 | string
-                | undefined = `${bucketName}.s3.${US_EAST}.amazonaws.com`;
+                | undefined = `${bucketName}.s3.${US_WEST}.amazonaws.com`;
             const response = await cfClient.send(
                 new CreateDistributionCommand({
                     DistributionConfig: {
