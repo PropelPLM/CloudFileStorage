@@ -23,6 +23,7 @@ import {
     CreatedFileDetails,
     StoragePlatform,
     PlatformIdentifier,
+    DownloadParams,
 } from '../StoragePlatform';
 import JsForce from '../../utils/JsForce';
 import { v4 as uuidv4 } from 'uuid';
@@ -179,16 +180,12 @@ export class AWS implements StoragePlatform {
         return createdFileDetails;
     }
 
-    async downloadFile(
-        instanceKeyOrOrgUrlOrOrgId: string,
-        fileId: string,
-        key: string
-    ): Promise<string> {
+    async downloadFile(options: Partial<DownloadParams>): Promise<string> {
         const command = new GetObjectCommand({
             Bucket: PIM_DEFAULT_BUCKET,
-            Key: key.replace(`${instanceKeyOrOrgUrlOrOrgId}/`, ''),
-            VersionId: fileId,
-            ResponseContentDisposition: `attachment; filename="${key}"`,
+            Key: options.key,
+            VersionId: options.fileId,
+            ResponseContentDisposition: `attachment; filename="${options.key}"`,
         });
         return await getSignedUrl(this.s3Client, command, {
             expiresIn: 3600,

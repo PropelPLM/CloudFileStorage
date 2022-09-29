@@ -259,11 +259,9 @@ router.post(
 
         try {
             const downloadLink: any = await configuredPlatform.downloadFile!(
-                {
-                    instanceKeyOrOrgUrlOrOrgId: orgId || salesforceUrl,
-                    fileId: fileId,
-                    key: key
-                }
+                orgId || salesforceUrl,
+                fileId,
+                key
             );
             logSuccessResponse(
                 `downloadLink: ${downloadLink}`,
