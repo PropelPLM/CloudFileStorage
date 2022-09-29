@@ -5,6 +5,7 @@ export interface DownloadParams {
     fileId: string,
     key: string
 } 
+
 export interface StoragePlatform {
     readonly [index: string]: any;
     // Auth flow
