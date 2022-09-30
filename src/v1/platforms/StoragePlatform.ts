@@ -1,5 +1,11 @@
 import { PassThrough } from 'stream';
 
+export interface DownloadParams {
+    instanceKeyOrOrgUrlOrOrgId: string,
+    fileId: string,
+    key: string
+} 
+
 export interface StoragePlatform {
     readonly [index: string]: any;
     // Auth flow
@@ -49,11 +55,7 @@ export interface StoragePlatform {
         instanceKey: string,
         docId: string
     ): Promise<Record<string, string>>;
-    downloadFile?(
-        instanceKeyOrOrgUrl: string,
-        fileId: string,
-        key?: string
-    ): Promise<string>;
+    downloadFile?(options: Partial<DownloadParams>): Promise<string>;
     supersedeFile?(
         instanceKey: string,
         fileType: string,

@@ -250,17 +250,20 @@ router.post(
     '/download',
     async (_: Request, res: Response, next: NextFunction) => {
         let platform: string,
+            orgId: string,
             salesforceUrl: string,
             fileId: string,
             key: string;
-        ({ platform, salesforceUrl, fileId, key } = res.locals);
+        ({ platform, orgId, salesforceUrl, fileId, key } = res.locals);
         const configuredPlatform = res.locals.platformInstance;
 
         try {
             const downloadLink: any = await configuredPlatform.downloadFile!(
-                salesforceUrl,
-                fileId,
-                key
+                {
+                    instanceKeyOrOrgUrlOrOrgId: orgId || salesforceUrl,
+                    fileId: fileId,
+                    key: key
+                }
             );
             logSuccessResponse(
                 `downloadLink: ${downloadLink}`,

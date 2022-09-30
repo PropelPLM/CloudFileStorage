@@ -20,6 +20,7 @@ const enum MapKey {
   clientSecret = "clientSecret",
   destinationFolderId = "destinationFolderId",
   oAuth2Client = "oAuth2Client",
+  orgId = "orgId",
 
   // jsforce
   connection = "connection",

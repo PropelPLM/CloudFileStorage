@@ -8,7 +8,7 @@ import XlsxPopulate from 'xlsx-populate';
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
 import InstanceManager from '../../utils/InstanceManager';
 import AuthProvider from './AuthProvider';
-import { CreatedFileDetails, StoragePlatform } from '../StoragePlatform';
+import { CreatedFileDetails, DownloadParams, StoragePlatform } from '../StoragePlatform';
 import { PassThrough } from 'stream';
 
 export class Office365 implements StoragePlatform {
@@ -158,16 +158,16 @@ export class Office365 implements StoragePlatform {
     };
   }
 
-  public async downloadFile(instanceKeyOrOrgUrl: string, fileId: string): Promise<string> {
+  public async downloadFile(options: Partial<DownloadParams>): Promise<string> {
     let groupId: string;
-    ({ groupId } = await InstanceManager.get(instanceKeyOrOrgUrl, [MapKey.groupId]));
+    ({ groupId } = await InstanceManager.get(options.instanceKeyOrOrgUrlOrOrgId!, [MapKey.groupId]));
 
     if (groupId == undefined) {
-      groupId = await this.getGroupId(instanceKeyOrOrgUrl);
+      groupId = await this.getGroupId(options.instanceKeyOrOrgUrlOrOrgId!);
     }
 
     const fileObject: Record<string, any> = await this.oAuth2Client
-      .api(`/groups/${groupId}/drive/items/${fileId}/content?format=pdf`)
+      .api(`/groups/${groupId}/drive/items/${options.fileId}/content?format=pdf`)
       .responseType(ResponseType.RAW)
       .get();
 
