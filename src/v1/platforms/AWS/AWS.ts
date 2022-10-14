@@ -28,8 +28,8 @@ import {
 import JsForce from '../../utils/JsForce';
 import { v4 as uuidv4 } from 'uuid';
 
-const US_WEST = 'us-west-1';
-const PIM_DEFAULT_BUCKET = 'pim-assets-default-bucket';
+const US_EAST = 'us-east-1';
+const PIM_DEFAULT_BUCKET = 'pim-assets-default';
 
 export class AWS implements StoragePlatform {
     private s3Client: CloudStorageProviderClient;
@@ -42,7 +42,7 @@ export class AWS implements StoragePlatform {
     ): Promise<CloudStorageProviderClient> {
         try {
             const awsInstance = new AWS(instanceKey);
-            awsInstance.s3Client = new S3Client({ region: US_WEST });
+            awsInstance.s3Client = new S3Client({ region: US_EAST });
             logSuccessResponse(instanceKey, '[AWS.AUTHORIZE]');
             return awsInstance;
         } catch (err) {
@@ -198,10 +198,10 @@ export class AWS implements StoragePlatform {
 
     async associateDistributionToCDN(bucketId: string | undefined, bucketName: string) {
         try {
-            const cfClient = new CloudFrontClient({ region: US_WEST });
+            const cfClient = new CloudFrontClient({ region: US_EAST });
             let DomainName:
                 | string
-                | undefined = `${bucketName}.s3.${US_WEST}.amazonaws.com`;
+                | undefined = `${bucketName}.s3.${US_EAST}.amazonaws.com`;
             const response = await cfClient.send(
                 new CreateDistributionCommand({
                     DistributionConfig: {
