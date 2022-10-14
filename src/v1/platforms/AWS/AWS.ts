@@ -29,7 +29,7 @@ import JsForce from '../../utils/JsForce';
 import { v4 as uuidv4 } from 'uuid';
 
 const US_EAST = 'us-east-1';
-const PIM_DEFAULT_BUCKET = 'pim-assets-default';
+const PIM_DEFAULT_BUCKET = 'propel-pim-assets';
 
 export class AWS implements StoragePlatform {
     private s3Client: CloudStorageProviderClient;
