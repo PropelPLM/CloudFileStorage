@@ -63,7 +63,6 @@
         "@types/socket.io": "^2.1.8",
         "@types/supertest": "^2.0.9",
         "@types/uuid": "^8.3.4",
-        "@types/xlsx-populate": "git+https://github.com/JanLoebel/types-xlsx-populate.git",
         "babel-jest": "^26.0.1",
         "jest": "^26.0.0",
         "supertest": "^4.0.2",
