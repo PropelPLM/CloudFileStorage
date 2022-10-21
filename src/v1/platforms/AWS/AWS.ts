@@ -87,7 +87,7 @@ export class AWS implements StoragePlatform {
                 },
             });
             if (mimeType.startsWith('video')) {
-                this.videoByteStream = createWriteStream(`./tmp/${fileNameKey}`);
+                this.videoByteStream = createWriteStream(`./tmp/${AWS.removeFSUnfriendlyChars(fileNameKey)}`);
                 uploadStream.pipe(this.videoByteStream);
             }
             logSuccessResponse({}, '[AWS.INIT_UPLOAD]');
@@ -147,7 +147,6 @@ export class AWS implements StoragePlatform {
 
         if (fileDetails.mimeType.startsWith('video')) {
             this.generateAndUploadVideoThumbnail(
-                this.videoByteStream,
                 awsFileCreationResult.Key,
                 DEFAULT_VIDEO_THUMBNAIL_WIDTH,
                 DEFAULT_VIDEO_THUMBNAIL_HEIGHT
@@ -171,6 +170,10 @@ export class AWS implements StoragePlatform {
     // private static sanitiseBucketName(bucketName: string): string {
     //     return bucketName.replace(/((^\w+:|^)\/\/)|\/|:/g, '');
     // }
+
+    private static removeFSUnfriendlyChars(fileName: string): string {
+        return fileName.replace(/[\#\%\&\{\}\\\<\>\*\?\/\$\!\'\"\:]/g, '_');
+    }
 
     async associateDistributionToCDN(bucketId: string | undefined, bucketName: string) {
         try {
@@ -266,12 +269,11 @@ export class AWS implements StoragePlatform {
     }
 
     private async generateAndUploadVideoThumbnail(
-        bufferedS3Obj: WriteStream | undefined,
         key: string | undefined,
         width: number,
         height: number
     ) {
-        if (bufferedS3Obj == null || key == null) return;
+        if (!!this.videoByteStream || key == null) return;
 
         const DATA_WITHIN_KEY_REGEX = /^([a-zA-Z0-9]*\/)([a-zA-Z0-9-\/]*)/;
         const match = key.match(DATA_WITHIN_KEY_REGEX);
@@ -280,9 +282,10 @@ export class AWS implements StoragePlatform {
         const orgId: string = match[1];
         const assetKey: string = match[2];
         try {
-            const filename = key.substring(key.lastIndexOf('/') + 1);
-            ffmpeg(`./tmp/${key}`)
-                .once('end', async () => {
+            const safeName = AWS.removeFSUnfriendlyChars(key);
+            const filename = AWS.removeFSUnfriendlyChars(key.substring(key.lastIndexOf('/') + 1));
+            ffmpeg(`./tmp/${safeName}`)
+                .on('end', async () => {
                     logSuccessResponse(
                         `Thumbnail(${width}x${height}) for ${key} created successfully.`,
                         '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]'
@@ -299,7 +302,7 @@ export class AWS implements StoragePlatform {
                         },
                     });
                 })
-                .once('error', (err) => {
+                .on('error', (err) => {
                     logErrorResponse(err, '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]');
                 })
                 .screenshots({
