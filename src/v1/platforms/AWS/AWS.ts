@@ -28,12 +28,20 @@ import {
 import JsForce from '../../utils/JsForce';
 import { v4 as uuidv4 } from 'uuid';
 import ffmpeg from 'fluent-ffmpeg';
-import { createReadStream, createWriteStream, rm, WriteStream } from 'fs';
+import {
+    createReadStream,
+    createWriteStream, 
+    WriteStream,
+    mkdir,
+    rmdir
+} from 'fs';
 
 const US_EAST = 'us-east-1';
 const PIM_DEFAULT_BUCKET = 'propel-pim-assets';
 const DEFAULT_VIDEO_THUMBNAIL_WIDTH = 200;
 const DEFAULT_VIDEO_THUMBNAIL_HEIGHT = 200;
+const TEMP_DIRECTORY: string = './tmp';
+const THUMBNAIL_IDENTIFIER: string = '__thumbnail';
 
 export class AWS implements StoragePlatform {
     private s3Client: CloudStorageProviderClient;
@@ -87,7 +95,19 @@ export class AWS implements StoragePlatform {
                 },
             });
             if (mimeType.startsWith('video')) {
-                this.videoByteStream = createWriteStream(`./tmp/${AWS.removeFSUnfriendlyChars(fileNameKey)}`);
+                mkdir(
+                    TEMP_DIRECTORY,
+                    { recursive: true },
+                    (err) => { 
+                        if (err && err.code != 'EEXIST') throw err;
+                        logSuccessResponse('made directory ./tmp', '[AWS.VIDEO_THUMBNAIL]');
+                    }
+                );
+                this.videoByteStream = 
+                    createWriteStream(`${TEMP_DIRECTORY}/${AWS.removeFSUnfriendlyChars(fileNameKey)}`)
+                        .on('error', (err) => {
+                            logErrorResponse(err, '[AWS.CREATE_WRITE_STREAM]');
+                        });
                 uploadStream.pipe(this.videoByteStream);
             }
             logSuccessResponse({}, '[AWS.INIT_UPLOAD]');
@@ -273,7 +293,7 @@ export class AWS implements StoragePlatform {
         width: number,
         height: number
     ) {
-        if (!!this.videoByteStream || key == null) return;
+        if (!this.videoByteStream || key == null) return;
 
         const DATA_WITHIN_KEY_REGEX = /^([a-zA-Z0-9]*\/)([a-zA-Z0-9-\/]*)/;
         const match = key.match(DATA_WITHIN_KEY_REGEX);
@@ -283,39 +303,45 @@ export class AWS implements StoragePlatform {
         const assetKey: string = match[2];
         try {
             const safeName = AWS.removeFSUnfriendlyChars(key);
-            const filename = AWS.removeFSUnfriendlyChars(key.substring(key.lastIndexOf('/') + 1));
-            ffmpeg(`./tmp/${safeName}`)
+            const fileName = AWS.removeFSUnfriendlyChars(key.substring(key.lastIndexOf('/') + 1)) + THUMBNAIL_IDENTIFIER;
+            ffmpeg(`${TEMP_DIRECTORY}/${safeName}`)
                 .on('end', async () => {
                     logSuccessResponse(
                         `Thumbnail(${width}x${height}) for ${key} created successfully.`,
                         '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]'
                     );
-                    new Upload({
+                    await new Upload({
                         client: this.s3Client,
                         leavePartsOnError: false,
                         params: {
                             Bucket: PIM_DEFAULT_BUCKET,
                             Key: `${orgId}thumbnails/${assetKey}__d=${DEFAULT_VIDEO_THUMBNAIL_WIDTH}x${DEFAULT_VIDEO_THUMBNAIL_HEIGHT}`,
-                            Body: createReadStream(filename),
+                            Body: createReadStream(`${TEMP_DIRECTORY}/${fileName}.png`),
                             ContentType: 'image/png',
                             ContentDisposition: 'inline',
                         },
-                    });
+                    }).done();
+                    rmdir(
+                        TEMP_DIRECTORY,
+                        { recursive: true },
+                        (err) => {
+                            if (err) console.error(err);
+                            logSuccessResponse('cleared ./tmp', '[AWS.VIDEO_THUMBNAIL]');
+                        }
+                    );
                 })
-                .on('error', (err) => {
+                .on('error', (err: any) => {
+                    console.log({err})
                     logErrorResponse(err, '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]');
                 })
                 .screenshots({
                     count: 1,
-                    filename,
+                    folder: TEMP_DIRECTORY,
+                    filename: fileName,
                     size: `${width}x${height}`
                 });
         } catch (err) {
             logErrorResponse(err, '[AWS.VIDEO_THUMBNAIL]');
-        } finally {
-            rm('./tmp', { recursive: true }, () => {
-                logSuccessResponse('cleared ./tmp', '[AWS.VIDEO_THUMBNAIL]');
-            });
         }
     }
 }
