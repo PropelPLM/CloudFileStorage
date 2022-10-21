@@ -27,12 +27,17 @@ import {
 } from '../StoragePlatform';
 import JsForce from '../../utils/JsForce';
 import { v4 as uuidv4 } from 'uuid';
+import ffmpeg from 'fluent-ffmpeg';
+import { createReadStream, createWriteStream, rm, WriteStream } from 'fs';
 
 const US_EAST = 'us-east-1';
 const PIM_DEFAULT_BUCKET = 'propel-pim-assets';
+const DEFAULT_VIDEO_THUMBNAIL_WIDTH = 200;
+const DEFAULT_VIDEO_THUMBNAIL_HEIGHT = 200;
 
 export class AWS implements StoragePlatform {
     private s3Client: CloudStorageProviderClient;
+    private videoByteStream: WriteStream | undefined;
     private static className: PlatformIdentifier = 'aws';
 
     public constructor(public instanceKey: string) {}
@@ -51,47 +56,6 @@ export class AWS implements StoragePlatform {
         }
     }
 
-    private async createBucket(bucketName: string) {
-        try {
-            await this.s3Client.send(
-                new CreateBucketCommand({ Bucket: bucketName })
-            );
-            await this.s3Client.send(
-                new PutBucketVersioningCommand({
-                    Bucket: bucketName,
-                    VersioningConfiguration: {
-                        MFADelete: 'Disabled',
-                        Status: 'Enabled',
-                    },
-                })
-            );
-            return true;
-        } catch (error: any) {
-            logErrorResponse(error.stack, '[AWS.CREATE_BUCKET]');
-            return false;
-        }
-    }
-
-    private async bucketExists(bucketName: string) {
-        try {
-            await this.s3Client.send(
-                new HeadBucketCommand({ Bucket: bucketName })
-            );
-            return true;
-        } catch (error: any) {
-            if (error['$metadata'].httpStatusCode === 404) {
-                logErrorResponse('No such bucket exists', '[AWS.CHECK_BUCKET]');
-                return false;
-            } else {
-                throw new Error(
-                    error['$metadata'].httpStatusCode === 403
-                        ? 'Forbidden (most likely due to permissions)'
-                        : error.code
-                );
-            }
-        }
-    }
-
     async initUpload(
         instanceKey: string,
         uploadStream: PassThrough,
@@ -107,22 +71,25 @@ export class AWS implements StoragePlatform {
             ));
             ({ mimeType } = fileDetailsMap[fileDetailKey]);
 
-            const sanitisedName = PIM_DEFAULT_BUCKET;
             const fileNameKey = `${orgId}/${uuidv4()}`;
-            if (!(await this.bucketExists(sanitisedName))) {
-                await this.createBucket(sanitisedName);
+            if (!(await this.bucketExists(PIM_DEFAULT_BUCKET))) {
+                await this.createBucket(PIM_DEFAULT_BUCKET);
             }
             const s3Upload = new Upload({
                 client: this.s3Client,
                 leavePartsOnError: false, // optional manually handle dropped parts
                 params: {
-                    Bucket: sanitisedName,
+                    Bucket: PIM_DEFAULT_BUCKET,
                     Key: fileNameKey,
                     Body: uploadStream,
                     ContentType: mimeType,
                     ContentDisposition: 'inline',
                 },
             });
+            if (mimeType.startsWith('video')) {
+                this.videoByteStream = createWriteStream(`./tmp/${fileNameKey}`);
+                uploadStream.pipe(this.videoByteStream);
+            }
             logSuccessResponse({}, '[AWS.INIT_UPLOAD]');
             return s3Upload;
         } catch (err) {
@@ -177,6 +144,15 @@ export class AWS implements StoragePlatform {
             AWS.className
         );
         createdFileDetails.fileSize = fileDetails.fileSize;
+
+        if (fileDetails.mimeType.startsWith('video')) {
+            this.generateAndUploadVideoThumbnail(
+                this.videoByteStream,
+                awsFileCreationResult.Key,
+                DEFAULT_VIDEO_THUMBNAIL_WIDTH,
+                DEFAULT_VIDEO_THUMBNAIL_HEIGHT
+            );
+        }
         return createdFileDetails;
     }
 
@@ -245,6 +221,98 @@ export class AWS implements StoragePlatform {
         } catch (err) {
             logErrorResponse(err, '[AWS.ASSOCIATE_DISTRIBUTION]');
             throw err;
+        }
+    }
+
+    private async createBucket(bucketName: string) {
+        try {
+            await this.s3Client.send(
+                new CreateBucketCommand({ Bucket: bucketName })
+            );
+            await this.s3Client.send(
+                new PutBucketVersioningCommand({
+                    Bucket: bucketName,
+                    VersioningConfiguration: {
+                        MFADelete: 'Disabled',
+                        Status: 'Enabled',
+                    },
+                })
+            );
+            return true;
+        } catch (error: any) {
+            logErrorResponse(error.stack, '[AWS.CREATE_BUCKET]');
+            return false;
+        }
+    }
+
+    private async bucketExists(bucketName: string) {
+        try {
+            await this.s3Client.send(
+                new HeadBucketCommand({ Bucket: bucketName })
+            );
+            return true;
+        } catch (error: any) {
+            if (error['$metadata'].httpStatusCode === 404) {
+                logErrorResponse('No such bucket exists', '[AWS.CHECK_BUCKET]');
+                return false;
+            } else {
+                throw new Error(
+                    error['$metadata'].httpStatusCode === 403
+                        ? 'Forbidden (most likely due to permissions)'
+                        : error.code
+                );
+            }
+        }
+    }
+
+    private async generateAndUploadVideoThumbnail(
+        bufferedS3Obj: WriteStream | undefined,
+        key: string | undefined,
+        width: number,
+        height: number
+    ) {
+        if (bufferedS3Obj == null || key == null) return;
+
+        const DATA_WITHIN_KEY_REGEX = /^([a-zA-Z0-9]*\/)([a-zA-Z0-9-\/]*)/;
+        const match = key.match(DATA_WITHIN_KEY_REGEX);
+        if (!match) return;
+
+        const orgId: string = match[1];
+        const assetKey: string = match[2];
+        try {
+            const filename = key.substring(key.lastIndexOf('/') + 1);
+            ffmpeg(`./tmp/${key}`)
+                .once('end', async () => {
+                    logSuccessResponse(
+                        `Thumbnail(${width}x${height}) for ${key} created successfully.`,
+                        '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]'
+                    );
+                    new Upload({
+                        client: this.s3Client,
+                        leavePartsOnError: false,
+                        params: {
+                            Bucket: PIM_DEFAULT_BUCKET,
+                            Key: `${orgId}thumbnails/${assetKey}__d=${DEFAULT_VIDEO_THUMBNAIL_WIDTH}x${DEFAULT_VIDEO_THUMBNAIL_HEIGHT}`,
+                            Body: createReadStream(filename),
+                            ContentType: 'image/png',
+                            ContentDisposition: 'inline',
+                        },
+                    });
+                })
+                .once('error', (err) => {
+                    logErrorResponse(err, '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]');
+                })
+                .screenshots({
+                    count: 1,
+                    filename,
+                    size: `${width}x${height}`
+                });
+        } catch (err) {
+            logErrorResponse(err, '[AWS.VIDEO_THUMBNAIL]');
+        } finally {
+            rm('./tmp', { recursive: true }, () => {
+                logSuccessResponse('cleared ./tmp', '[AWS.VIDEO_THUMBNAIL]');
+            });
         }
     }
 }
