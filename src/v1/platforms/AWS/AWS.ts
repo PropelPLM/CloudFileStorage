@@ -31,9 +31,8 @@ import ffmpeg from "fluent-ffmpeg";
 import {
     createReadStream,
     createWriteStream,
-    WriteStream,
     mkdir,
-    rmdir,
+    rmdir
 } from "fs";
 
 const US_EAST = "us-east-1";
@@ -45,17 +44,19 @@ const THUMBNAIL_IDENTIFIER: string = "__thumbnail";
 
 export class AWS implements StoragePlatform {
     private s3Client: CloudStorageProviderClient;
-    private videoByteStream: WriteStream | undefined;
+    private keyToVideoByteStream: Record<string, PassThrough>;
     private static className: PlatformIdentifier = "aws";
 
-    public constructor(public instanceKey: string) {}
+    public constructor(public instanceKey: string) {
+        this.s3Client = new S3Client({ region: US_EAST });
+        this.keyToVideoByteStream = {};
+    }
 
     static async authorize(
         instanceKey: string
     ): Promise<CloudStorageProviderClient> {
         try {
             const awsInstance = new AWS(instanceKey);
-            awsInstance.s3Client = new S3Client({ region: US_EAST });
             logSuccessResponse(instanceKey, "[AWS.AUTHORIZE]");
             return awsInstance;
         } catch (err) {
@@ -81,13 +82,14 @@ export class AWS implements StoragePlatform {
             if (!(await this.bucketExists(PIM_DEFAULT_BUCKET))) {
                 await this.createBucket(PIM_DEFAULT_BUCKET);
             }
+            const s3UploadStream = new PassThrough();
             const s3Upload = new Upload({
                 client: this.s3Client,
                 leavePartsOnError: false, // optional manually handle dropped parts
                 params: {
                     Bucket: PIM_DEFAULT_BUCKET,
                     Key: fileNameKey,
-                    Body: uploadStream,
+                    Body: s3UploadStream,
                     ContentType: mimeType,
                     ContentDisposition: "inline",
                 },
@@ -100,14 +102,22 @@ export class AWS implements StoragePlatform {
                         "[AWS.VIDEO_THUMBNAIL]"
                     );
                 });
-                this.videoByteStream = createWriteStream(
+                const videoByteStream = createWriteStream(
                     `${TEMP_DIRECTORY}/${AWS.removeFSUnfriendlyChars(
                         fileNameKey
                     )}`
                 ).on("error", (err) => {
                     logErrorResponse(err, "[AWS.CREATE_WRITE_STREAM]");
                 });
-                uploadStream.pipe(this.videoByteStream);
+                uploadStream
+                    .on("data", (chunk) => {
+                        s3UploadStream.write(chunk);
+                    })
+                    .on("end", () => {
+                        s3UploadStream.end()
+                    });
+                uploadStream.pipe(videoByteStream);
+                this.keyToVideoByteStream[fileDetailKey] = s3UploadStream;
             }
             logSuccessResponse({}, "[AWS.INIT_UPLOAD]");
             return s3Upload;
@@ -137,13 +147,13 @@ export class AWS implements StoragePlatform {
                 fileDetailsMap[fileDetailKey].externalBytes ==
                 fileDetailsMap[fileDetailKey].fileSize
             ) {
+                //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
+                stream.end();
+                stream.emit("end");
                 logSuccessResponse(
                     fileDetailsMap[fileDetailKey].fileName,
                     "[AWS.FILE_UPLOAD_END]"
                 );
-                //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
-                stream.end();
-                stream.emit("end");
             }
         } catch (err) {
             console.log({ err });
@@ -151,7 +161,11 @@ export class AWS implements StoragePlatform {
         }
     }
 
-    async endUpload(fileDetails: FileDetail): Promise<CreatedFileDetails> {
+    async endUpload(
+        fileDetailsMap: Record<string, FileDetail>,
+        fileDetailKey: string
+    ): Promise<CreatedFileDetails> {
+        const fileDetails = fileDetailsMap[fileDetailKey];
         const awsFileCreationResult: CompleteMultipartUploadCommandOutput =
             await (await fileDetails.file).done();
         const createdFileDetails = new CreatedFileDetails(
@@ -166,6 +180,7 @@ export class AWS implements StoragePlatform {
 
         if (fileDetails.mimeType.startsWith("video")) {
             this.generateAndUploadVideoThumbnail(
+                this.keyToVideoByteStream[fileDetailKey],
                 awsFileCreationResult.Key,
                 DEFAULT_VIDEO_THUMBNAIL_WIDTH,
                 DEFAULT_VIDEO_THUMBNAIL_HEIGHT
@@ -290,11 +305,12 @@ export class AWS implements StoragePlatform {
     }
 
     private async generateAndUploadVideoThumbnail(
+        videoByteStream: PassThrough,
         key: string | undefined,
         width: number,
         height: number
     ) {
-        if (!this.videoByteStream || key == null) return;
+        if (!videoByteStream || key == null) return;
 
         const DATA_WITHIN_KEY_REGEX = /^([a-zA-Z0-9]*\/)([a-zA-Z0-9-\/]*)/;
         const match = key.match(DATA_WITHIN_KEY_REGEX);
