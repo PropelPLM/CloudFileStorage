@@ -78,6 +78,13 @@ export class AWS implements StoragePlatform {
                 await this.createBucket(PIM_DEFAULT_BUCKET);
             }
             const s3UploadStream = new PassThrough();
+            uploadStream
+                .on('data', (chunk) => {
+                    s3UploadStream.write(chunk);
+                })
+                .on('end', () => {
+                    s3UploadStream.end();
+                });
             const s3Upload = new Upload({
                 client: this.s3Client,
                 leavePartsOnError: false, // optional manually handle dropped parts
@@ -104,13 +111,6 @@ export class AWS implements StoragePlatform {
                 ).on('error', (err) => {
                     logErrorResponse(err, '[AWS.CREATE_WRITE_STREAM]');
                 });
-                uploadStream
-                    .on('data', (chunk) => {
-                        s3UploadStream.write(chunk);
-                    })
-                    .on('end', () => {
-                        s3UploadStream.end();
-                    });
                 uploadStream.pipe(videoByteStream);
                 this.keyToVideoByteStream[fileDetailKey] = s3UploadStream;
             }
