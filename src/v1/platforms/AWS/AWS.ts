@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import {
     CompleteMultipartUploadCommandOutput,
@@ -6,46 +6,41 @@ import {
     GetObjectCommand,
     HeadBucketCommand,
     PutBucketVersioningCommand,
-    S3Client,
-} from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+    S3Client
+} from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import {
     CloudFrontClient,
-    CreateDistributionCommand,
-} from "@aws-sdk/client-cloudfront";
-import { Upload } from "@aws-sdk/lib-storage";
-import { PassThrough } from "stream";
+    CreateDistributionCommand
+} from '@aws-sdk/client-cloudfront';
+import { Upload } from '@aws-sdk/lib-storage';
+import { PassThrough } from 'stream';
 
-import { logSuccessResponse, logErrorResponse } from "../../utils/Logger";
-import MessageEmitter from "../../utils/MessageEmitter";
-import InstanceManager from "../../utils/InstanceManager";
+import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
+import MessageEmitter from '../../utils/MessageEmitter';
+import InstanceManager from '../../utils/InstanceManager';
 import {
     CreatedFileDetails,
     StoragePlatform,
     PlatformIdentifier,
-    DownloadParams,
-} from "../StoragePlatform";
-import JsForce from "../../utils/JsForce";
-import { v4 as uuidv4 } from "uuid";
-import ffmpeg from "fluent-ffmpeg";
-import {
-    createReadStream,
-    createWriteStream,
-    mkdir,
-    rmdir
-} from "fs";
+    DownloadParams
+} from '../StoragePlatform';
+import JsForce from '../../utils/JsForce';
+import { v4 as uuidv4 } from 'uuid';
+import ffmpeg from 'fluent-ffmpeg';
+import { createReadStream, createWriteStream, mkdir, rmdir } from 'fs';
 
-const US_EAST = "us-east-1";
-const PIM_DEFAULT_BUCKET = "propel-pim-assets";
+const US_EAST = 'us-east-1';
+const PIM_DEFAULT_BUCKET = 'propel-pim-assets';
 const DEFAULT_VIDEO_THUMBNAIL_WIDTH = 200;
 const DEFAULT_VIDEO_THUMBNAIL_HEIGHT = 200;
-const TEMP_DIRECTORY: string = "./tmp";
-const THUMBNAIL_IDENTIFIER: string = "__thumbnail";
+const TEMP_DIRECTORY: string = './tmp';
+const THUMBNAIL_IDENTIFIER: string = '__thumbnail';
 
 export class AWS implements StoragePlatform {
     private s3Client: CloudStorageProviderClient;
     private keyToVideoByteStream: Record<string, PassThrough>;
-    private static className: PlatformIdentifier = "aws";
+    private static className: PlatformIdentifier = 'aws';
 
     public constructor(public instanceKey: string) {
         this.s3Client = new S3Client({ region: US_EAST });
@@ -57,10 +52,10 @@ export class AWS implements StoragePlatform {
     ): Promise<CloudStorageProviderClient> {
         try {
             const awsInstance = new AWS(instanceKey);
-            logSuccessResponse(instanceKey, "[AWS.AUTHORIZE]");
+            logSuccessResponse(instanceKey, '[AWS.AUTHORIZE]');
             return awsInstance;
         } catch (err) {
-            logErrorResponse(err, "[AWS.AUTHORIZE]");
+            logErrorResponse(err, '[AWS.AUTHORIZE]');
             throw err;
         }
     }
@@ -74,7 +69,7 @@ export class AWS implements StoragePlatform {
         try {
             let mimeType: string, orgId: string;
             ({ orgId } = await InstanceManager.get(instanceKey, [
-                MapKey.orgId,
+                MapKey.orgId
             ]));
             ({ mimeType } = fileDetailsMap[fileDetailKey]);
 
@@ -91,39 +86,39 @@ export class AWS implements StoragePlatform {
                     Key: fileNameKey,
                     Body: s3UploadStream,
                     ContentType: mimeType,
-                    ContentDisposition: "inline",
-                },
+                    ContentDisposition: 'inline'
+                }
             });
-            if (mimeType.startsWith("video")) {
+            if (mimeType.startsWith('video')) {
                 mkdir(TEMP_DIRECTORY, { recursive: true }, (err) => {
-                    if (err && err.code != "EEXIST") throw err;
+                    if (err && err.code != 'EEXIST') throw err;
                     logSuccessResponse(
-                        "made directory ./tmp",
-                        "[AWS.VIDEO_THUMBNAIL]"
+                        'made directory ./tmp',
+                        '[AWS.VIDEO_THUMBNAIL]'
                     );
                 });
                 const videoByteStream = createWriteStream(
                     `${TEMP_DIRECTORY}/${AWS.removeFSUnfriendlyChars(
                         fileNameKey
                     )}`
-                ).on("error", (err) => {
-                    logErrorResponse(err, "[AWS.CREATE_WRITE_STREAM]");
+                ).on('error', (err) => {
+                    logErrorResponse(err, '[AWS.CREATE_WRITE_STREAM]');
                 });
                 uploadStream
-                    .on("data", (chunk) => {
+                    .on('data', (chunk) => {
                         s3UploadStream.write(chunk);
                     })
-                    .on("end", () => {
-                        s3UploadStream.end()
+                    .on('end', () => {
+                        s3UploadStream.end();
                     });
                 uploadStream.pipe(videoByteStream);
                 this.keyToVideoByteStream[fileDetailKey] = s3UploadStream;
             }
-            logSuccessResponse({}, "[AWS.INIT_UPLOAD]");
+            logSuccessResponse({}, '[AWS.INIT_UPLOAD]');
             return s3Upload;
         } catch (err) {
             console.log({ err });
-            logErrorResponse(err, "[AWS.INIT_UPLOAD]");
+            logErrorResponse(err, '[AWS.INIT_UPLOAD]');
         }
     }
 
@@ -141,7 +136,7 @@ export class AWS implements StoragePlatform {
                 this.instanceKey,
                 fileDetailsMap,
                 fileDetailKey,
-                "AWS"
+                'AWS'
             );
             if (
                 fileDetailsMap[fileDetailKey].externalBytes ==
@@ -149,15 +144,15 @@ export class AWS implements StoragePlatform {
             ) {
                 //SUPER IMPORTANT - busboy doesnt terminate the stream automatically: file stream to external storage will remain open
                 stream.end();
-                stream.emit("end");
+                stream.emit('end');
                 logSuccessResponse(
                     fileDetailsMap[fileDetailKey].fileName,
-                    "[AWS.FILE_UPLOAD_END]"
+                    '[AWS.FILE_UPLOAD_END]'
                 );
             }
         } catch (err) {
             console.log({ err });
-            logErrorResponse(err, "[AWS.UPLOAD_FILE]");
+            logErrorResponse(err, '[AWS.UPLOAD_FILE]');
         }
     }
 
@@ -178,7 +173,7 @@ export class AWS implements StoragePlatform {
         );
         createdFileDetails.fileSize = fileDetails.fileSize;
 
-        if (fileDetails.mimeType.startsWith("video")) {
+        if (fileDetails.mimeType.startsWith('video')) {
             this.generateAndUploadVideoThumbnail(
                 this.keyToVideoByteStream[fileDetailKey],
                 awsFileCreationResult.Key,
@@ -194,10 +189,10 @@ export class AWS implements StoragePlatform {
             Bucket: PIM_DEFAULT_BUCKET,
             Key: options.key,
             VersionId: options.fileId,
-            ResponseContentDisposition: `attachment; filename="${options.key}"`,
+            ResponseContentDisposition: `attachment; filename="${options.key}"`
         });
         return await getSignedUrl(this.s3Client, command, {
-            expiresIn: 3600,
+            expiresIn: 3600
         });
     }
 
@@ -206,7 +201,7 @@ export class AWS implements StoragePlatform {
     // }
 
     private static removeFSUnfriendlyChars(fileName: string): string {
-        return fileName.replace(/[\#\%\&\{\}\\\<\>\*\?\/\$\!\'\"\:]/g, "_");
+        return fileName.replace(/[\#\%\&\{\}\\\<\>\*\?\/\$\!\'\"\:]/g, '_');
     }
 
     async associateDistributionToCDN(
@@ -222,19 +217,19 @@ export class AWS implements StoragePlatform {
                 new CreateDistributionCommand({
                     DistributionConfig: {
                         CallerReference: Date.now().toString(),
-                        Comment: "Created by CDM flow",
+                        Comment: 'Created by CDM flow',
                         DefaultCacheBehavior: {
                             ForwardedValues: {
-                                Cookies: { Forward: "all" },
+                                Cookies: { Forward: 'all' },
                                 QueryString: false,
                                 Headers: { Quantity: 0 },
-                                QueryStringCacheKeys: { Quantity: 0 },
+                                QueryStringCacheKeys: { Quantity: 0 }
                             },
                             MinTTL: 3600,
                             TargetOriginId: bucketId,
                             TrustedSigners: { Enabled: false, Quantity: 0 },
-                            ViewerProtocolPolicy: "redirect-to-https",
-                            DefaultTTL: 86400,
+                            ViewerProtocolPolicy: 'redirect-to-https',
+                            DefaultTTL: 86400
                         },
                         Enabled: true,
                         Origins: {
@@ -243,22 +238,22 @@ export class AWS implements StoragePlatform {
                                     DomainName,
                                     Id: bucketId,
                                     S3OriginConfig: {
-                                        OriginAccessIdentity: "",
-                                    },
-                                },
+                                        OriginAccessIdentity: ''
+                                    }
+                                }
                             ],
-                            Quantity: 1,
-                        },
-                    },
+                            Quantity: 1
+                        }
+                    }
                 })
             );
             DomainName = response.Distribution?.DomainName;
             await JsForce.upsertCustomMetadata(this.instanceKey, {
-                CloudfrontDistribution: DomainName || "",
+                CloudfrontDistribution: DomainName || ''
             });
-            logSuccessResponse({}, "[AWS.ASSOCIATE_DISTRIBUTION]");
+            logSuccessResponse({}, '[AWS.ASSOCIATE_DISTRIBUTION]');
         } catch (err) {
-            logErrorResponse(err, "[AWS.ASSOCIATE_DISTRIBUTION]");
+            logErrorResponse(err, '[AWS.ASSOCIATE_DISTRIBUTION]');
             throw err;
         }
     }
@@ -272,14 +267,14 @@ export class AWS implements StoragePlatform {
                 new PutBucketVersioningCommand({
                     Bucket: bucketName,
                     VersioningConfiguration: {
-                        MFADelete: "Disabled",
-                        Status: "Enabled",
-                    },
+                        MFADelete: 'Disabled',
+                        Status: 'Enabled'
+                    }
                 })
             );
             return true;
         } catch (error: any) {
-            logErrorResponse(error.stack, "[AWS.CREATE_BUCKET]");
+            logErrorResponse(error.stack, '[AWS.CREATE_BUCKET]');
             return false;
         }
     }
@@ -291,13 +286,13 @@ export class AWS implements StoragePlatform {
             );
             return true;
         } catch (error: any) {
-            if (error["$metadata"].httpStatusCode === 404) {
-                logErrorResponse("No such bucket exists", "[AWS.CHECK_BUCKET]");
+            if (error['$metadata'].httpStatusCode === 404) {
+                logErrorResponse('No such bucket exists', '[AWS.CHECK_BUCKET]');
                 return false;
             } else {
                 throw new Error(
-                    error["$metadata"].httpStatusCode === 403
-                        ? "Forbidden (most likely due to permissions)"
+                    error['$metadata'].httpStatusCode === 403
+                        ? 'Forbidden (most likely due to permissions)'
                         : error.code
                 );
             }
@@ -322,13 +317,13 @@ export class AWS implements StoragePlatform {
             const safeName = AWS.removeFSUnfriendlyChars(key);
             const fileName =
                 AWS.removeFSUnfriendlyChars(
-                    key.substring(key.lastIndexOf("/") + 1)
+                    key.substring(key.lastIndexOf('/') + 1)
                 ) + THUMBNAIL_IDENTIFIER;
             ffmpeg(`${TEMP_DIRECTORY}/${safeName}`)
-                .on("end", async () => {
+                .on('end', async () => {
                     logSuccessResponse(
                         `Thumbnail(${width}x${height}) for ${key} created successfully.`,
-                        "[FFMPEG.GENERATE_VIDEO_THUMBNAIL]"
+                        '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]'
                     );
                     await new Upload({
                         client: this.s3Client,
@@ -339,30 +334,30 @@ export class AWS implements StoragePlatform {
                             Body: createReadStream(
                                 `${TEMP_DIRECTORY}/${fileName}.png`
                             ),
-                            ContentType: "image/png",
-                            ContentDisposition: "inline",
-                        },
+                            ContentType: 'image/png',
+                            ContentDisposition: 'inline'
+                        }
                     }).done();
                     rmdir(TEMP_DIRECTORY, { recursive: true }, (err) => {
                         if (err) console.error(err);
                         logSuccessResponse(
-                            "cleared ./tmp",
-                            "[AWS.VIDEO_THUMBNAIL]"
+                            'cleared ./tmp',
+                            '[AWS.VIDEO_THUMBNAIL]'
                         );
                     });
                 })
-                .on("error", (err: any) => {
+                .on('error', (err: any) => {
                     console.log({ err });
-                    logErrorResponse(err, "[FFMPEG.GENERATE_VIDEO_THUMBNAIL]");
+                    logErrorResponse(err, '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]');
                 })
                 .screenshots({
                     count: 1,
                     folder: TEMP_DIRECTORY,
                     filename: fileName,
-                    size: `${width}x${height}`,
+                    size: `${width}x${height}`
                 });
         } catch (err) {
-            logErrorResponse(err, "[AWS.VIDEO_THUMBNAIL]");
+            logErrorResponse(err, '[AWS.VIDEO_THUMBNAIL]');
         }
     }
 }
