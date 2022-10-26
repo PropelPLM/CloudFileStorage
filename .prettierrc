@@ -1,0 +1,20 @@
+{
+    "trailingComma": "none",
+    "overrides": [
+        {
+            "files": "**/lwc/**/*.html",
+            "options": { "parser": "lwc" }
+        },
+        {
+            "files": "*.{cmp,page,component}",
+            "options": { "parser": "html" }
+        },
+        {
+            "files": "*.{js,html,css}",
+            "options": { "tabWidth": 2 }
+        }
+    ],
+    "tabWidth": 4,
+    "useTabs": false,
+    "singleQuote": true
+}

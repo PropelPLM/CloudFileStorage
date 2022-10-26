@@ -156,9 +156,8 @@ router.post(
                                         try {
                                             const file: CreatedFileDetails =
                                                 await configuredPlatform.endUpload(
-                                                    fileDetailsMap[
-                                                        fileDetailKey
-                                                    ]
+                                                    fileDetailsMap,
+                                                    fileDetailKey
                                                 );
                                             const sfObject =
                                                 await JsForce.create(

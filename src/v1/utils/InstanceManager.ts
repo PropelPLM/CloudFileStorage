@@ -6,8 +6,13 @@ let redisClient: RedisClientType;
 
 function removeEmpty(obj: Partial<Record<MapKey, any>>) {
     return Object.entries(obj)
-        .filter(([_, v]) => v != null)
-        .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+        .filter(([_, v]) => v != null && !!v )
+        .reduce((acc, [k, v]) => {
+            return {
+                ...acc,
+                [k]: typeof v != 'string' ? JSON.stringify(v) : v
+            }
+        }, {});
 }
 
 const NESTED_FILE_DETAILS_FIELD = 'fileDetails';
@@ -38,8 +43,10 @@ export default {
         keyValuePairs: Partial<Record<MapKey, any>>
     ) => {
         try {
+            console.log({redisClient, cleaned: removeEmpty(keyValuePairs)});
             await redisClient.hSet(instanceKey, removeEmpty(keyValuePairs));
         } catch (error) {
+            console.log(error)
             throw new Error(
                 `Failed to update ${instanceKey} in InstanceManager: ${JSON.stringify(
                     keyValuePairs

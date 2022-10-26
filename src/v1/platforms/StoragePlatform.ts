@@ -31,7 +31,10 @@ export interface StoragePlatform {
         fileDetailKey: string,
         payload: Record<string, any>
     ): Promise<void>;
-    endUpload(fileDetails: FileDetail): Promise<CreatedFileDetails>;
+    endUpload(
+        fileDetailsMap: Record<string, FileDetail>,
+        fileDetailKey: string
+    ): Promise<CreatedFileDetails>;
 
     // fileop
     // methods are marked optional (?) as Google has yet to implement these methods
