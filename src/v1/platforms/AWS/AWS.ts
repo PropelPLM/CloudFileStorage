@@ -330,7 +330,7 @@ export class AWS implements StoragePlatform {
                         leavePartsOnError: false,
                         params: {
                             Bucket: PIM_DEFAULT_BUCKET,
-                            Key: `${orgId}thumbnails/${assetKey}?d=${DEFAULT_VIDEO_THUMBNAIL_WIDTH}x${DEFAULT_VIDEO_THUMBNAIL_HEIGHT}`,
+                            Key: `${orgId}thumbnails/${assetKey}__d=${DEFAULT_VIDEO_THUMBNAIL_WIDTH}x${DEFAULT_VIDEO_THUMBNAIL_HEIGHT}`,
                             Body: createReadStream(
                                 `${TEMP_DIRECTORY}/${fileName}.png`
                             ),
