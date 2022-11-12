@@ -189,7 +189,7 @@ export class AWS implements StoragePlatform {
             Bucket: PIM_DEFAULT_BUCKET,
             Key: options.key,
             VersionId: options.fileId,
-            ResponseContentDisposition: `attachment; filename="${options.key}"`
+            ResponseContentDisposition: `attachment; filename="${options.fileName ?? options.key}"`
         });
         return await getSignedUrl(this.s3Client, command, {
             expiresIn: 3600

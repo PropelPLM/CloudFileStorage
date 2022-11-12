@@ -1,10 +1,11 @@
 import { PassThrough } from 'stream';
 
-export interface DownloadParams {
-    instanceKeyOrOrgUrlOrOrgId: string,
-    fileId: string,
-    key: string
-} 
+export type DownloadParams = {
+    instanceKeyOrOrgUrlOrOrgId: string;
+    fileId: string;
+    fileName: string;
+    key: string;
+};
 
 export interface StoragePlatform {
     readonly [index: string]: any;
