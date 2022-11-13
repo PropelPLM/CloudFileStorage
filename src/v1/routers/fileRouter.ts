@@ -158,7 +158,7 @@ router.post(
             fileTypes,
             fileNames,
             docIds,
-            numSuperseded,
+            numSuperseded
         } = res.locals);
         const configuredPlatform = res.locals.platformInstance;
 
@@ -198,7 +198,7 @@ router.post(
             // all files were successfully superseded
             logSuccessResponse(resultArray, `[${platform}.SUPERSEDE_FILE]`);
             const finalResult: Record<string, string[]> = {
-                recordArray: resultArray,
+                recordArray: resultArray
             };
             res.locals.result = finalResult;
         }
@@ -253,18 +253,19 @@ router.post(
             orgId: string,
             salesforceUrl: string,
             fileId: string,
+            fileName: string,
             key: string;
-        ({ platform, orgId, salesforceUrl, fileId, key } = res.locals);
+        ({ platform, orgId, salesforceUrl, fileId, fileName, key } =
+            res.locals);
         const configuredPlatform = res.locals.platformInstance;
 
         try {
-            const downloadLink: any = await configuredPlatform.downloadFile!(
-                {
-                    instanceKeyOrOrgUrlOrOrgId: orgId || salesforceUrl,
-                    fileId: fileId,
-                    key: key
-                }
-            );
+            const downloadLink: any = await configuredPlatform.downloadFile!({
+                instanceKeyOrOrgUrlOrOrgId: orgId || salesforceUrl,
+                fileId,
+                key,
+                fileName
+            });
             logSuccessResponse(
                 `downloadLink: ${downloadLink}`,
                 `[${platform}.DOWNLOAD_FILE]`
