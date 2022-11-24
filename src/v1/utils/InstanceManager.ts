@@ -1,17 +1,18 @@
 'use strict';
 
 import { createClient, RedisClientType } from 'redis';
+import { logErrorResponse, logSuccessResponse } from './Logger';
 
 let redisClient: RedisClientType;
 
 function removeEmpty(obj: Partial<Record<MapKey, any>>) {
     return Object.entries(obj)
-        .filter(([_, v]) => v != null && !!v )
+        .filter(([_, v]) => v != null && !!v)
         .reduce((acc, [k, v]) => {
             return {
                 ...acc,
                 [k]: typeof v != 'string' ? JSON.stringify(v) : v
-            }
+            };
         }, {});
 }
 
@@ -20,7 +21,7 @@ const NESTED_FILE_DETAILS_FIELD = 'fileDetails';
 export default {
     connectToRedisServer: async () => {
         const client: RedisClientType = createClient({
-            url: process.env.REDIS_URL,
+            url: process.env.REDIS_URL
         });
         client.on('error', (err) => console.error('Redis client error:', err));
         redisClient = client;
@@ -43,10 +44,11 @@ export default {
         keyValuePairs: Partial<Record<MapKey, any>>
     ) => {
         try {
-            console.log({redisClient, cleaned: removeEmpty(keyValuePairs)});
-            await redisClient.hSet(instanceKey, removeEmpty(keyValuePairs));
+            const dbItemsToCommit = removeEmpty(keyValuePairs);
+            await redisClient.hSet(instanceKey, dbItemsToCommit);
+            logSuccessResponse(dbItemsToCommit, '[DB.UPSERT');
         } catch (error) {
-            console.log(error)
+            logErrorResponse(error, '[DB.UPSERT');
             throw new Error(
                 `Failed to update ${instanceKey} in InstanceManager: ${JSON.stringify(
                     keyValuePairs
@@ -73,12 +75,13 @@ export default {
                 requestedDetails[key] = redisResult[key];
             });
 
+            logSuccessResponse(requestedDetails, '[DB.GET]');
             return requestedDetails;
         } catch (err) {
-            console.log(err);
+            logErrorResponse(err, '[DB.GET]');
             throw new Error(`InstanceManager does not contain requested keys:
         ${detailKeys.join(', ')}
       `);
         }
-    },
+    }
 };
