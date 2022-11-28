@@ -6,7 +6,7 @@ import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
 import {
     CreatedFileDetails,
-    PlatformIdentifier,
+    PlatformIdentifier
 } from '../platforms/StoragePlatform';
 
 const CUSTOM_SUFFIX = '__c';
@@ -28,11 +28,11 @@ export default {
         let salesforceUrl: string, sessionId: string; //jsforce
         ({ salesforceUrl, sessionId } = await InstanceManager.get(instanceKey, [
             MapKey.salesforceUrl,
-            MapKey.sessionId,
+            MapKey.sessionId
         ]));
         const connection = new jsConnect.Connection({
             instanceUrl: salesforceUrl,
-            sessionId,
+            sessionId
         });
         const orgNamespace: string = await this.setupNamespace(connection);
         const newSetting = {
@@ -41,7 +41,7 @@ export default {
             Refresh_Token__c: tokens.refresh_token,
             Expiry_Date__c: tokens.expiry_date,
             Client_Id__c: tokens.clientId,
-            Client_Secret__c: tokens.clientSecret,
+            Client_Secret__c: tokens.clientSecret
         };
 
         try {
@@ -79,12 +79,12 @@ export default {
                     MapKey.isNew,
                     MapKey.isPLM,
                     MapKey.salesforceUrl,
-                    MapKey.sessionId,
+                    MapKey.sessionId
                 ]));
 
             const connection = new jsConnect.Connection({
                 instanceUrl: salesforceUrl,
-                sessionId,
+                sessionId
             });
             const orgNamespace: string = await this.setupNamespace(connection);
             let sObjectWithNamespace: string,
@@ -96,7 +96,7 @@ export default {
                 fileExtension,
                 fileSize,
                 webContentLink,
-                platform,
+                platform
             } = file);
 
             if (isPLM) {
@@ -109,7 +109,7 @@ export default {
                     File_Extension__c: fileExtension,
                     Google_File_Id__c: id,
                     External_Attachment_Download_URL__c: webContentLink!,
-                    Content_Location__c: EXTERNAL_CONTENT_LOCATION,
+                    Content_Location__c: EXTERNAL_CONTENT_LOCATION
                 };
                 if (isNew === 'false') {
                     //redis values are stringified.
@@ -125,7 +125,7 @@ export default {
                     External_File_Id__c: id,
                     Mime_Type__c: fileExtension,
                     Size__c: fileSize!,
-                    View_Link__c: webViewLink,
+                    View_Link__c: webViewLink
                 };
             }
 
@@ -133,7 +133,7 @@ export default {
                 .sobject(sObjectWithNamespace)
                 .create({
                     Name: name,
-                    ...this.addNamespace(newAttachment, orgNamespace),
+                    ...this.addNamespace(newAttachment, orgNamespace)
                 });
             if (!sObject.success)
                 throw new Error(
@@ -148,23 +148,27 @@ export default {
         }
     },
 
-    async upsertCustomMetadata (instanceKey: string, metadataPairs: Record<string, string>) {
+    async upsertCustomMetadata(
+        instanceKey: string,
+        metadataPairs: Record<string, string>
+    ) {
         let salesforceUrl: string, sessionId: string;
         try {
-            ({ salesforceUrl, sessionId } = await InstanceManager.get(instanceKey, [
-                MapKey.salesforceUrl,
-                MapKey.sessionId,
-            ]));
+            ({ salesforceUrl, sessionId } = await InstanceManager.get(
+                instanceKey,
+                [MapKey.salesforceUrl, MapKey.sessionId]
+            ));
             const connection = new jsConnect.Connection({
                 instanceUrl: salesforceUrl,
-                sessionId,
+                sessionId
             });
             const orgNamespace: string = await this.setupNamespace(connection);
             const metadata: Metadata[] = [];
 
             Object.entries(metadataPairs).forEach(([key, value]) => {
-                if (!key || !value) throw new Error(`Missing key(${key}) or value(${value}).`)
-                metadata.push(new Metadata(orgNamespace, key, value))
+                if (!key || !value)
+                    throw new Error(`Missing key(${key}) or value(${value}).`);
+                metadata.push(new Metadata(orgNamespace, key, value));
             });
 
             await connection.metadata.upsert('CustomMetadata', metadata);
@@ -179,7 +183,7 @@ export default {
     async setupNamespace(connection: any): Promise<string> {
         try {
             const jsForceRecords = await connection.query(
-                'SELECT NamespacePrefix FROM Organization'
+                "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'SoslBuilder' LIMIT 1"
             );
             const orgNamespace: string =
                 jsForceRecords.records[0].NamespacePrefix;
@@ -211,20 +215,26 @@ export default {
             delete customObject[key];
         }
         return customObject;
-    },
+    }
 };
 
 class Metadata {
     fullName: string;
     label: string;
-    values: { field: string, value: string }
+    values: { field: string; value: string };
 
-    constructor(namespace: string, metadataName: string, metadataValue: string) {
-        this.fullName = `${namespace + '__'}Configuration__mdt.${metadataName}`,
-        this.label = metadataName,
-        this.values = {
-            field: `${namespace + '__'}Value__c`,
-            value: metadataValue
-        }
+    constructor(
+        namespace: string,
+        metadataName: string,
+        metadataValue: string
+    ) {
+        (this.fullName = `${
+            namespace + '__'
+        }Configuration__mdt.${metadataName}`),
+            (this.label = metadataName),
+            (this.values = {
+                field: `${namespace + '__'}Value__c`,
+                value: metadataValue
+            });
     }
 }
