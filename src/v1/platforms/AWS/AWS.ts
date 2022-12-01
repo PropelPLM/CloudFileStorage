@@ -77,43 +77,43 @@ export class AWS implements StoragePlatform {
             if (!(await this.bucketExists(PIM_DEFAULT_BUCKET))) {
                 await this.createBucket(PIM_DEFAULT_BUCKET);
             }
-            const s3UploadStream = new PassThrough();
-            uploadStream
-                .on('data', (chunk) => {
-                    s3UploadStream.write(chunk);
-                })
-                .on('end', () => {
-                    s3UploadStream.end();
-                });
+            // const s3UploadStream = new PassThrough();
+            // uploadStream
+            //     .on('data', (chunk) => {
+            //         s3UploadStream.write(chunk);
+            //     })
+            //     .on('end', () => {
+            //         s3UploadStream.end();
+            //     });
             const s3Upload = new Upload({
                 client: this.s3Client,
                 leavePartsOnError: false, // optional manually handle dropped parts
                 params: {
                     Bucket: PIM_DEFAULT_BUCKET,
                     Key: fileNameKey,
-                    Body: s3UploadStream,
+                    Body: uploadStream,
                     ContentType: mimeType,
                     ContentDisposition: 'inline'
                 }
             });
-            if (mimeType.startsWith('video')) {
-                mkdir(TEMP_DIRECTORY, { recursive: true }, (err) => {
-                    if (err && err.code != 'EEXIST') throw err;
-                    logSuccessResponse(
-                        'made directory ./tmp',
-                        '[AWS.VIDEO_THUMBNAIL]'
-                    );
-                });
-                const videoByteStream = createWriteStream(
-                    `${TEMP_DIRECTORY}/${AWS.removeFSUnfriendlyChars(
-                        fileNameKey
-                    )}`
-                ).on('error', (err) => {
-                    logErrorResponse(err, '[AWS.CREATE_WRITE_STREAM]');
-                });
-                uploadStream.pipe(videoByteStream);
-                this.keyToVideoByteStream[fileDetailKey] = s3UploadStream;
-            }
+            // if (mimeType.startsWith('video')) {
+            //     mkdir(TEMP_DIRECTORY, { recursive: true }, (err) => {
+            //         if (err && err.code != 'EEXIST') throw err;
+            //         logSuccessResponse(
+            //             'made directory ./tmp',
+            //             '[AWS.VIDEO_THUMBNAIL]'
+            //         );
+            //     });
+            //     const videoByteStream = createWriteStream(
+            //         `${TEMP_DIRECTORY}/${AWS.removeFSUnfriendlyChars(
+            //             fileNameKey
+            //         )}`
+            //     ).on('error', (err) => {
+            //         logErrorResponse(err, '[AWS.CREATE_WRITE_STREAM]');
+            //     });
+            //     uploadStream.pipe(videoByteStream);
+            //     this.keyToVideoByteStream[fileDetailKey] = s3UploadStream;
+            // }
             logSuccessResponse({}, '[AWS.INIT_UPLOAD]');
             return s3Upload;
         } catch (err) {
@@ -173,14 +173,14 @@ export class AWS implements StoragePlatform {
         );
         createdFileDetails.fileSize = fileDetails.fileSize;
 
-        if (fileDetails.mimeType.startsWith('video')) {
-            this.generateAndUploadVideoThumbnail(
-                this.keyToVideoByteStream[fileDetailKey],
-                awsFileCreationResult.Key,
-                DEFAULT_VIDEO_THUMBNAIL_WIDTH,
-                DEFAULT_VIDEO_THUMBNAIL_HEIGHT
-            );
-        }
+        // if (fileDetails.mimeType.startsWith('video')) {
+        //     this.generateAndUploadVideoThumbnail(
+        //         this.keyToVideoByteStream[fileDetailKey],
+        //         awsFileCreationResult.Key,
+        //         DEFAULT_VIDEO_THUMBNAIL_WIDTH,
+        //         DEFAULT_VIDEO_THUMBNAIL_HEIGHT
+        //     );
+        // }
         return createdFileDetails;
     }
 
