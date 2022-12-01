@@ -27,24 +27,24 @@ import {
 } from '../StoragePlatform';
 import JsForce from '../../utils/JsForce';
 import { v4 as uuidv4 } from 'uuid';
-import ffmpeg from 'fluent-ffmpeg';
-import { createReadStream, createWriteStream, mkdir, rmdir } from 'fs';
+// import ffmpeg from 'fluent-ffmpeg';
+// import { createReadStream, createWriteStream, mkdir, rmdir } from 'fs';
 
 const US_EAST = 'us-east-1';
 const PIM_DEFAULT_BUCKET = 'propel-pim-assets';
-const DEFAULT_VIDEO_THUMBNAIL_WIDTH = 200;
-const DEFAULT_VIDEO_THUMBNAIL_HEIGHT = 200;
-const TEMP_DIRECTORY: string = './tmp';
-const THUMBNAIL_IDENTIFIER: string = '__thumbnail';
+// const DEFAULT_VIDEO_THUMBNAIL_WIDTH = 200;
+// const DEFAULT_VIDEO_THUMBNAIL_HEIGHT = 200;
+// const TEMP_DIRECTORY: string = './tmp';
+// const THUMBNAIL_IDENTIFIER: string = '__thumbnail';
 
 export class AWS implements StoragePlatform {
     private s3Client: CloudStorageProviderClient;
-    private keyToVideoByteStream: Record<string, PassThrough>;
+    // private keyToVideoByteStream: Record<string, PassThrough>;
     private static className: PlatformIdentifier = 'aws';
 
     public constructor(public instanceKey: string) {
         this.s3Client = new S3Client({ region: US_EAST });
-        this.keyToVideoByteStream = {};
+        // this.keyToVideoByteStream = {};
     }
 
     static async authorize(
@@ -202,9 +202,9 @@ export class AWS implements StoragePlatform {
     //     return bucketName.replace(/((^\w+:|^)\/\/)|\/|:/g, '');
     // }
 
-    private static removeFSUnfriendlyChars(fileName: string): string {
-        return fileName.replace(/[\#\%\&\{\}\\\<\>\*\?\/\$\!\'\"\:]/g, '_');
-    }
+    // private static removeFSUnfriendlyChars(fileName: string): string {
+    //     return fileName.replace(/[\#\%\&\{\}\\\<\>\*\?\/\$\!\'\"\:]/g, '_');
+    // }
 
     async associateDistributionToCDN(
         bucketId: string | undefined,
@@ -301,65 +301,65 @@ export class AWS implements StoragePlatform {
         }
     }
 
-    private async generateAndUploadVideoThumbnail(
-        videoByteStream: PassThrough,
-        key: string | undefined,
-        width: number,
-        height: number
-    ) {
-        if (!videoByteStream || key == null) return;
+    // private async generateAndUploadVideoThumbnail(
+    //     videoByteStream: PassThrough,
+    //     key: string | undefined,
+    //     width: number,
+    //     height: number
+    // ) {
+    //     if (!videoByteStream || key == null) return;
 
-        const DATA_WITHIN_KEY_REGEX = /^([a-zA-Z0-9]*\/)([a-zA-Z0-9-\/]*)/;
-        const match = key.match(DATA_WITHIN_KEY_REGEX);
-        if (!match) return;
+    //     const DATA_WITHIN_KEY_REGEX = /^([a-zA-Z0-9]*\/)([a-zA-Z0-9-\/]*)/;
+    //     const match = key.match(DATA_WITHIN_KEY_REGEX);
+    //     if (!match) return;
 
-        const orgId: string = match[1];
-        const assetKey: string = match[2];
-        try {
-            const safeName = AWS.removeFSUnfriendlyChars(key);
-            const fileName =
-                AWS.removeFSUnfriendlyChars(
-                    key.substring(key.lastIndexOf('/') + 1)
-                ) + THUMBNAIL_IDENTIFIER;
-            ffmpeg(`${TEMP_DIRECTORY}/${safeName}`)
-                .on('end', async () => {
-                    logSuccessResponse(
-                        `Thumbnail(${width}x${height}) for ${key} created successfully.`,
-                        '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]'
-                    );
-                    await new Upload({
-                        client: this.s3Client,
-                        leavePartsOnError: false,
-                        params: {
-                            Bucket: PIM_DEFAULT_BUCKET,
-                            Key: `${orgId}thumbnails/${assetKey}__d=${DEFAULT_VIDEO_THUMBNAIL_WIDTH}x${DEFAULT_VIDEO_THUMBNAIL_HEIGHT}`,
-                            Body: createReadStream(
-                                `${TEMP_DIRECTORY}/${fileName}.png`
-                            ),
-                            ContentType: 'image/png',
-                            ContentDisposition: 'inline'
-                        }
-                    }).done();
-                    rmdir(TEMP_DIRECTORY, { recursive: true }, (err) => {
-                        if (err) console.error(err);
-                        logSuccessResponse(
-                            'cleared ./tmp',
-                            '[AWS.VIDEO_THUMBNAIL]'
-                        );
-                    });
-                })
-                .on('error', (err: any) => {
-                    console.log({ err });
-                    logErrorResponse(err, '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]');
-                })
-                .screenshots({
-                    count: 1,
-                    folder: TEMP_DIRECTORY,
-                    filename: fileName,
-                    size: `${width}x${height}`
-                });
-        } catch (err) {
-            logErrorResponse(err, '[AWS.VIDEO_THUMBNAIL]');
-        }
-    }
+    //     const orgId: string = match[1];
+    //     const assetKey: string = match[2];
+    //     try {
+    //         const safeName = AWS.removeFSUnfriendlyChars(key);
+    //         const fileName =
+    //             AWS.removeFSUnfriendlyChars(
+    //                 key.substring(key.lastIndexOf('/') + 1)
+    //             ) + THUMBNAIL_IDENTIFIER;
+    //         ffmpeg(`${TEMP_DIRECTORY}/${safeName}`)
+    //             .on('end', async () => {
+    //                 logSuccessResponse(
+    //                     `Thumbnail(${width}x${height}) for ${key} created successfully.`,
+    //                     '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]'
+    //                 );
+    //                 await new Upload({
+    //                     client: this.s3Client,
+    //                     leavePartsOnError: false,
+    //                     params: {
+    //                         Bucket: PIM_DEFAULT_BUCKET,
+    //                         Key: `${orgId}thumbnails/${assetKey}__d=${DEFAULT_VIDEO_THUMBNAIL_WIDTH}x${DEFAULT_VIDEO_THUMBNAIL_HEIGHT}`,
+    //                         Body: createReadStream(
+    //                             `${TEMP_DIRECTORY}/${fileName}.png`
+    //                         ),
+    //                         ContentType: 'image/png',
+    //                         ContentDisposition: 'inline'
+    //                     }
+    //                 }).done();
+    //                 rmdir(TEMP_DIRECTORY, { recursive: true }, (err) => {
+    //                     if (err) console.error(err);
+    //                     logSuccessResponse(
+    //                         'cleared ./tmp',
+    //                         '[AWS.VIDEO_THUMBNAIL]'
+    //                     );
+    //                 });
+    //             })
+    //             .on('error', (err: any) => {
+    //                 console.log({ err });
+    //                 logErrorResponse(err, '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]');
+    //             })
+    //             .screenshots({
+    //                 count: 1,
+    //                 folder: TEMP_DIRECTORY,
+    //                 filename: fileName,
+    //                 size: `${width}x${height}`
+    //             });
+    //     } catch (err) {
+    //         logErrorResponse(err, '[AWS.VIDEO_THUMBNAIL]');
+    //     }
+    // }
 }
