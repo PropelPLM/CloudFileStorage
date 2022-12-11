@@ -5,6 +5,7 @@ html {
   position: absolute;
   overflow: hidden;
   width: 100%;
+  background: none;
 }
 
 .slds-form-element,
@@ -15,12 +16,12 @@ html {
 #form {
   display: inline-flex;
   width: 100%;
-  padding: 1rem;
 }
 
 #completion-text {
   min-inline-size: fit-content;
-  margin-right: 5px;
+  margin-left: auto;
+  margin-right: 4px;
 }
 
 #file-name {
@@ -40,7 +41,6 @@ html {
   font-size: inherit;
   cursor: pointer;
   padding: 0.25rem 0.5rem;
-  transition: background-color 0.5s, box-shadow 0.5s, color 0.5s;
 }
 
 input[type='file'] {
@@ -51,6 +51,7 @@ input[type='file'] {
   display: block;
   background-color: #0070d2;
   padding: 8px;
+  white-space: nowrap;
 }
 
 .disabled {
@@ -62,18 +63,16 @@ input[type='file'] {
 }
 
 .custom-file-upload:hover {
-  box-shadow: 0px 0px 0.2rem 0.2rem rgba(32, 95, 178, 0.5);
-  background-color: #205fb2;
+  background-color: rgb(1, 68, 134);
 }
 
 #progress-container {
   margin: 0 0 0 0;
   transform: translateY(-15%);
-  width: 60%;
+  width: 42%;
   visibility: hidden;
 }
 
 #progress-bar-text {
-  margin-left: auto;
   font-weight: bold;
 }
