@@ -85,7 +85,8 @@ export default {
 
             const connection = new jsConnect.Connection({
                 instanceUrl: salesforceUrl,
-                sessionId
+                sessionId,
+                version: '49.0'
             });
             const orgNamespace: string = await this.setupNamespace(connection);
             let sObjectWithNamespace: string,
