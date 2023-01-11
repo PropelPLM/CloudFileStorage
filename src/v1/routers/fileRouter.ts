@@ -4,6 +4,7 @@ import { ResponseError } from '../utils/middleware/responseGenerator';
 const router = Router();
 
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
+import { DADownloadDetails } from '../platforms/StoragePlatform';
 
 const OFFICE_365 = 'office365';
 // the check only applies to Office365 due to Sharepoint limitations
@@ -252,19 +253,33 @@ router.post(
         let platform: string,
             orgId: string,
             salesforceUrl: string,
-            fileId: string,
-            fileName: string,
-            key: string;
-        ({ platform, orgId, salesforceUrl, fileId, fileName, key } =
-            res.locals);
+            sessionId: string,
+            hostName: string,
+            zipFileName: string,
+            daDownloadDetailsList: Array<DADownloadDetails>;
+        ({
+            platform,
+            orgId,
+            salesforceUrl,
+            sessionId,
+            hostName,
+            zipFileName,
+            daDownloadDetailsList
+        } = res.locals);
         const configuredPlatform = res.locals.platformInstance;
 
         try {
+            if (!daDownloadDetailsList || daDownloadDetailsList.length === 0) throw new Error('No files to download');
+            if (
+                daDownloadDetailsList.length > 1 && 
+                ( !sessionId || !hostName|| !zipFileName )
+            ) throw new Error('Not enough details for bulk download');
             const downloadLink: any = await configuredPlatform.downloadFile!({
                 instanceKeyOrOrgUrlOrOrgId: orgId || salesforceUrl,
-                fileId,
-                key,
-                fileName
+                daDownloadDetailsList,
+                sessionId,
+                hostName,
+                zipFileName
             });
             logSuccessResponse(
                 `downloadLink: ${downloadLink}`,

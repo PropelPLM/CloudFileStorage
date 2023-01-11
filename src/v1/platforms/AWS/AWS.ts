@@ -23,12 +23,15 @@ import {
     CreatedFileDetails,
     StoragePlatform,
     PlatformIdentifier,
+    DADownloadDetails,
     DownloadParams
 } from '../StoragePlatform';
 import JsForce from '../../utils/JsForce';
 import { v4 as uuidv4 } from 'uuid';
+import archiver from 'archiver';
 // import ffmpeg from 'fluent-ffmpeg';
 // import { createReadStream, createWriteStream, mkdir, rmdir } from 'fs';
+import { createWriteStream } from 'fs';
 
 const US_EAST = 'us-east-1';
 const PIM_DEFAULT_BUCKET = 'propel-pim-assets';
@@ -185,17 +188,44 @@ export class AWS implements StoragePlatform {
     }
 
     async downloadFile(options: Partial<DownloadParams>): Promise<string> {
-        const command = new GetObjectCommand({
-            Bucket: PIM_DEFAULT_BUCKET,
-            Key: options.key,
-            VersionId: options.fileId,
-            ResponseContentDisposition: `attachment; filename="${
-                options.fileName ?? options.key
-            }"`
-        });
-        return await getSignedUrl(this.s3Client, command, {
-            expiresIn: 3600
-        });
+        const daDownloadDetailsList: Array<DADownloadDetails> = options.daDownloadDetailsList!!;
+        if (daDownloadDetailsList.length === 1) {
+            const downloadDetails = options?.daDownloadDetailsList?.[0];
+            const command = new GetObjectCommand({
+                Bucket: PIM_DEFAULT_BUCKET,
+                Key: downloadDetails?.key,
+                VersionId: downloadDetails?.fileId,
+                ResponseContentDisposition: `attachment; filename="${
+                    downloadDetails?.fileName ?? downloadDetails?.key
+                }"`
+            });
+            return await getSignedUrl(this.s3Client, command, {
+                expiresIn: 3600
+            });
+        } else {
+            const hostName: string = options.hostName!!;
+            const sessionId: string = options.sessionId!!;
+            const zipFileName: string = options.zipFileName!!;
+            const output = createWriteStream(`${__dirname}/${zipFileName}`);
+            const archive = archiver('zip', { zlib: { level: 9 } });
+            archive.pipe(output);
+            const zipPromises = daDownloadDetailsList.map(async (detail: DADownloadDetails) => {
+                const command = new GetObjectCommand({
+                    Bucket: PIM_DEFAULT_BUCKET,
+                    Key: detail?.key,
+                    VersionId: detail?.fileId,
+                    ResponseContentDisposition: `attachment; filename="${
+                        detail?.fileName ?? detail?.key
+                    }"`
+                });
+                const { Body } = await this.s3Client.send(command)
+                archive.append(Body, { name: detail?.fileName ?? detail?.key });
+            })
+            await Promise.all(zipPromises);
+            archive.finalize();
+            JsForce.postToChatter(zipFileName, sessionId, hostName);
+            return 'Download processing. Please check Chatter.';
+        }
     }
 
     // private static sanitiseBucketName(bucketName: string): string {
