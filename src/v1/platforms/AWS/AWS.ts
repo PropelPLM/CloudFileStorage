@@ -189,7 +189,10 @@ export class AWS implements StoragePlatform {
 
     async downloadFile(options: Partial<DownloadParams>): Promise<string> {
         const daDownloadDetailsList: Array<DADownloadDetails> = options.daDownloadDetailsList!!;
-        if (daDownloadDetailsList.length === 1) {
+        const hostName: string = options.hostName!!;
+        const sessionId: string = options.sessionId!!;
+        const zipFileName: string = options.zipFileName!!;
+        if (!zipFileName && daDownloadDetailsList.length === 1) {
             const downloadDetails = options?.daDownloadDetailsList?.[0];
             const command = new GetObjectCommand({
                 Bucket: PIM_DEFAULT_BUCKET,
@@ -203,24 +206,25 @@ export class AWS implements StoragePlatform {
                 expiresIn: 3600
             });
         } else {
-            const hostName: string = options.hostName!!;
-            const sessionId: string = options.sessionId!!;
-            const zipFileName: string = options.zipFileName!!;
             const output = createWriteStream(`${__dirname}/${zipFileName}`);
             const archive = archiver('zip', { zlib: { level: 9 } });
             archive.pipe(output);
-            const zipPromises = daDownloadDetailsList.map(async (detail: DADownloadDetails) => {
-                const command = new GetObjectCommand({
-                    Bucket: PIM_DEFAULT_BUCKET,
-                    Key: detail?.key,
-                    VersionId: detail?.fileId,
-                    ResponseContentDisposition: `attachment; filename="${
-                        detail?.fileName ?? detail?.key
-                    }"`
-                });
-                const { Body } = await this.s3Client.send(command)
-                archive.append(Body, { name: detail?.fileName ?? detail?.key });
-            })
+            const zipPromises = daDownloadDetailsList.map(
+                async (detail: DADownloadDetails) => {
+                    const command = new GetObjectCommand({
+                        Bucket: PIM_DEFAULT_BUCKET,
+                        Key: detail?.key,
+                        VersionId: detail?.fileId,
+                        ResponseContentDisposition: `attachment; filename="${
+                            detail?.fileName ?? detail?.key
+                        }"`
+                    });
+                    const { Body } = await this.s3Client.send(command);
+                    archive.append(Body, {
+                        name: detail?.fileName ?? detail?.key
+                    });
+                }
+            );
             await Promise.all(zipPromises);
             archive.finalize();
             JsForce.postToChatter(zipFileName, sessionId, hostName);
