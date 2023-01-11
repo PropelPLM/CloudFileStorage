@@ -31,7 +31,7 @@ import { v4 as uuidv4 } from 'uuid';
 import archiver from 'archiver';
 // import ffmpeg from 'fluent-ffmpeg';
 // import { createReadStream, createWriteStream, mkdir, rmdir } from 'fs';
-import { createWriteStream } from 'fs';
+import { createWriteStream, mkdir } from 'fs';
 
 const US_EAST = 'us-east-1';
 const PIM_DEFAULT_BUCKET = 'propel-pim-assets';
@@ -206,7 +206,15 @@ export class AWS implements StoragePlatform {
                 expiresIn: 3600
             });
         } else {
-            const output = createWriteStream(`${__dirname}/${zipFileName}`);
+            const TEMP_DIRECTORY: string = './tmp';
+            mkdir(TEMP_DIRECTORY, { recursive: true }, (err) => {
+                if (err && err.code != 'EEXIST') throw err;
+                logSuccessResponse(
+                    'made directory ./tmp',
+                    '[AWS.DOWNLOAD_CHATTER]'
+                );
+            });
+            const output = createWriteStream(`./tmp/${zipFileName}`);
             const archive = archiver('zip', { zlib: { level: 9 } });
             archive.pipe(output);
             const zipPromises = daDownloadDetailsList.map(
@@ -226,8 +234,10 @@ export class AWS implements StoragePlatform {
                 }
             );
             await Promise.all(zipPromises);
+            archive.on('finish', function () {
+                JsForce.postToChatter(zipFileName, sessionId, hostName);
+            });
             archive.finalize();
-            JsForce.postToChatter(zipFileName, sessionId, hostName);
             return 'Download processing. Please check Chatter.';
         }
     }
