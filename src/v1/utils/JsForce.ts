@@ -9,7 +9,7 @@ import {
     PlatformIdentifier
 } from '../platforms/StoragePlatform';
 import { v4 as uuidv4 } from 'uuid';
-import axios, { AxiosRequestConfig } from 'axios';
+import https from 'https';
 import fs from 'fs';
 
 const CUSTOM_SUFFIX = '__c';
@@ -234,14 +234,24 @@ export default {
         sessionId: string,
         hostName: string
     ) {
-        var boundary = uuidv4();
-        var path = '/services/data/v34.0/chatter/feed-elements';
+        const boundary = uuidv4();
+        const path = '/services/data/v34.0/chatter/feed-elements';
         // if (communityId) {
         //     path = `/services/data/v34.0/connect/communities/${communityId}/chatter/feed-elements`;
         // }
 
-        var CRLF = '\r\n';
-        var data = [
+        const options = {
+            hostname: hostName,
+            path,
+            method: 'POST',
+            headers: {
+                'content-type': 'multipart/form-data; boundary=' + boundary,
+                Authorization: 'OAuth ' + sessionId
+            }
+        };
+
+        const CRLF = '\r\n';
+        const data = [
             '--' + boundary,
             'Content-Disposition: form-data; name="json"',
             'Content-Type: application/json; charset=UTF-8',
@@ -268,29 +278,27 @@ export default {
             `Content-Disposition: form-data; name="feedElementFileUpload"; filename="${fileName}"`,
             'Content-Type: application/octet-stream; charset=ISO-8859-1',
             '',
-            '--' + boundary + '--',
             ''
         ].join(CRLF);
 
-        // Options to create the request
-        var options: AxiosRequestConfig = {
-            method: 'POST',
-            headers: {
-                'content-type': 'multipart/form-data; boundary=' + boundary,
-                Authorization: 'OAuth ' + sessionId
-            },
-            url: hostName + path,
-            data
-        };
-        // Execute request
-        try {
-            await axios(options)
-            logSuccessResponse(fileName, '[JSFORCE.POST_TO_CHATTER]');
-        } catch (err) {
+        const req: any = https.request(options, res => {
+            console.log('response: ', res.statusCode, res.statusMessage);
+        });
+
+        req.on('error', (err: any)=> {
             logErrorResponse(err, '[JSFORCE.POST_TO_CHATTER]');
-        } finally {
-            removeFileFromDisk(fileName);
-        }
+        })
+
+        // write data to request body
+        const fullName = `./tmp/${fileName}`;
+        req.write(data);
+        fs.createReadStream(fullName)
+            .on('end', function () {
+                removeFileFromDisk(fullName);
+                req.end(CRLF + '--' + boundary + '--' + CRLF);
+            }).pipe(req, { end: false });
+
+        logSuccessResponse(fileName, '[JSFORCE.POST_TO_CHATTER]');
     }
 };
 
