@@ -10,6 +10,7 @@ import InstanceManager from '../../utils/InstanceManager';
 import AuthProvider from './AuthProvider';
 import {
     CreatedFileDetails,
+    DADownloadDetails,
     DownloadParams,
     StoragePlatform
 } from '../StoragePlatform';
@@ -234,22 +235,31 @@ export class Office365 implements StoragePlatform {
             );
         }
 
-        const fileObject: Record<string, any> = await this.oAuth2Client
-            .api(
-                `/groups/${groupId}/drive/items/${options.fileId}/content?format=pdf`
-            )
-            .responseType(ResponseType.RAW)
-            .get();
+        const daDownloadDetailsList: Array<DADownloadDetails> = options.daDownloadDetailsList!!;
+        if (daDownloadDetailsList.length === 1) {
+            const fileObject: Record<string, any> = await this.oAuth2Client
+                .api(
+                    `/groups/${groupId}/drive/items/${options?.daDownloadDetailsList?.[0]?.fileId}/content?format=pdf`
+                )
+                .responseType(ResponseType.RAW)
+                .get();
 
-        if (fileObject.status >= 400) {
+            if (fileObject.status >= 400) {
+                throw {
+                    code: fileObject.status,
+                    message:
+                        'File cannot be converted to PDF and downloaded. It might be created from Propel and has not yet been edited (still empty).'
+                };
+            }
+
+            return fileObject.url;
+        } else {
             throw {
-                code: fileObject.status,
+                code: 500,
                 message:
-                    'File cannot be converted to PDF and downloaded. It might be created from Propel and has not yet been edited (still empty).'
+                    'Not yet implemented.'
             };
         }
-
-        return fileObject.url;
     }
 
     async updateFile(

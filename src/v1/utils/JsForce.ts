@@ -8,9 +8,20 @@ import {
     CreatedFileDetails,
     PlatformIdentifier
 } from '../platforms/StoragePlatform';
+import { v4 as uuidv4 } from 'uuid';
+import https from 'https';
+import fs from 'fs';
 
 const CUSTOM_SUFFIX = '__c';
 const EXTERNAL_CONTENT_LOCATION = 'E';
+
+function removeFileFromDisk(fileName: string) {
+  fs.unlink(fileName, e => {
+    if (e) {
+      console.log('unlink error:', e);
+    }
+  });
+}
 
 export default {
     async connect(
@@ -84,7 +95,8 @@ export default {
 
             const connection = new jsConnect.Connection({
                 instanceUrl: salesforceUrl,
-                sessionId
+                sessionId,
+                version: '49.0'
             });
             const orgNamespace: string = await this.setupNamespace(connection);
             let sObjectWithNamespace: string,
@@ -215,6 +227,78 @@ export default {
             delete customObject[key];
         }
         return customObject;
+    },
+
+    async postToChatter(
+        fileName: string,
+        sessionId: string,
+        hostName: string
+    ) {
+        const boundary = uuidv4();
+        const path = '/services/data/v34.0/chatter/feed-elements';
+        // if (communityId) {
+        //     path = `/services/data/v34.0/connect/communities/${communityId}/chatter/feed-elements`;
+        // }
+
+        const options = {
+            hostname: hostName,
+            path,
+            method: 'POST',
+            headers: {
+                'content-type': 'multipart/form-data; boundary=' + boundary,
+                Authorization: 'OAuth ' + sessionId
+            }
+        };
+
+        const CRLF = '\r\n';
+        const data = [
+            '--' + boundary,
+            'Content-Disposition: form-data; name="json"',
+            'Content-Type: application/json; charset=UTF-8',
+            '',
+            '{',
+            '"body":{',
+            '"messageSegments":[',
+            '{',
+            '"type":"Text",',
+            '"text":""',
+            '}',
+            ']',
+            '},',
+            '"capabilities":{',
+            '"content":{',
+            `"title":"${fileName}"`,
+            '}',
+            '},',
+            '"feedElementType":"FeedItem",',
+            `"subjectId":"me"`,
+            '}',
+            '',
+            '--' + boundary,
+            `Content-Disposition: form-data; name="feedElementFileUpload"; filename="${fileName}"`,
+            'Content-Type: application/octet-stream; charset=ISO-8859-1',
+            '',
+            ''
+        ].join(CRLF);
+
+        const req: any = https.request(options, res => {
+            console.log('response: ', res.statusCode, res.statusMessage);
+        });
+
+        req.on('error', (err: any)=> {
+            logErrorResponse(err, '[JSFORCE.POST_TO_CHATTER]');
+        })
+
+        // write data to request body
+        const fullName = `./tmp/${fileName}`;
+        req.write(data);
+        fs.createReadStream(fullName)
+            .on('end', function () {
+                removeFileFromDisk(fullName);
+                req.end(CRLF + '--' + boundary + '--' + CRLF);
+            }).pipe(req, { end: false });
+
+        logSuccessResponse(fileName, '[JSFORCE.POST_TO_CHATTER]');
     }
 };
 

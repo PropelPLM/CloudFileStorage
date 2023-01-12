@@ -1,10 +1,17 @@
 import { PassThrough } from 'stream';
 
-export type DownloadParams = {
-    instanceKeyOrOrgUrlOrOrgId: string;
+export type DADownloadDetails = {
     fileId: string;
     fileName: string;
     key: string;
+};
+
+export type DownloadParams = {
+    instanceKeyOrOrgUrlOrOrgId: string;
+    daDownloadDetailsList: Array<DADownloadDetails>;
+    sessionId: string;
+    hostName: string;
+    zipFileName: string;
 };
 
 export interface StoragePlatform {
