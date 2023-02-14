@@ -36,8 +36,8 @@ export default {
         tokens: Record<string, string | number>,
         instanceKey: string
     ) {
-        let salesforceUrl: string, sessionId: string; //jsforce
-        ({ salesforceUrl, sessionId } = await InstanceManager.get(instanceKey, [
+        let salesforceUrl: string, sessionId: string, orgNamespace: string; //jsforce
+        ({ salesforceUrl, sessionId, orgNamespace } = await InstanceManager.get(instanceKey, [
             MapKey.salesforceUrl,
             MapKey.sessionId
         ]));
@@ -45,7 +45,6 @@ export default {
             instanceUrl: salesforceUrl,
             sessionId
         });
-        const orgNamespace: string = await this.setupNamespace(connection);
         const newSetting = {
             Name: 'GoogleDrive',
             Access_Token__c: tokens.access_token,
@@ -83,8 +82,9 @@ export default {
                 id: string,
                 fileExtension: string,
                 fileSize: number | undefined,
+                orgNamespace: string,
                 webContentLink: string | undefined; // newly created file
-            ({ revisionId, isNew, isPLM, salesforceUrl, sessionId } =
+            ({ revisionId, isNew, isPLM, salesforceUrl, sessionId, orgNamespace } =
                 await InstanceManager.get(instanceKey, [
                     MapKey.revisionId,
                     MapKey.isNew,
@@ -98,7 +98,6 @@ export default {
                 sessionId,
                 version: '49.0'
             });
-            const orgNamespace: string = await this.setupNamespace(connection);
             let sObjectWithNamespace: string,
                 newAttachment: Record<string, string | number>;
             ({
@@ -164,9 +163,9 @@ export default {
         instanceKey: string,
         metadataPairs: Record<string, string>
     ) {
-        let salesforceUrl: string, sessionId: string;
+        let salesforceUrl: string, sessionId: string, orgNamespace: string;
         try {
-            ({ salesforceUrl, sessionId } = await InstanceManager.get(
+            ({ salesforceUrl, sessionId, orgNamespace } = await InstanceManager.get(
                 instanceKey,
                 [MapKey.salesforceUrl, MapKey.sessionId]
             ));
@@ -174,7 +173,6 @@ export default {
                 instanceUrl: salesforceUrl,
                 sessionId
             });
-            const orgNamespace: string = await this.setupNamespace(connection);
             const metadata: Metadata[] = [];
 
             Object.entries(metadataPairs).forEach(([key, value]) => {
@@ -192,21 +190,6 @@ export default {
     },
 
     // UTILS
-    async setupNamespace(connection: any): Promise<string> {
-        try {
-            const jsForceRecords = await connection.query(
-                "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'SoslBuilder' LIMIT 1"
-            );
-            const orgNamespace: string =
-                jsForceRecords.records[0].NamespacePrefix;
-            logSuccessResponse({ orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
-            return orgNamespace;
-        } catch (err) {
-            logErrorResponse(err, '[JSFORCE.SETUP_NAMESPACE]');
-            throw err;
-        }
-    },
-
     addNamespace(
         customObject: Record<string, string | number>,
         orgNamespace: string
@@ -301,6 +284,21 @@ export default {
         logSuccessResponse(fileName, '[JSFORCE.POST_TO_CHATTER]');
     }
 };
+
+// async setupNamespace(connection: any): Promise<string> {
+//     try {
+//         const jsForceRecords = await connection.query(
+//             "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'SoslBuilder' LIMIT 1"
+//         );
+//         const orgNamespace: string =
+//             jsForceRecords.records[0].NamespacePrefix;
+//         logSuccessResponse({ orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
+//         return orgNamespace;
+//     } catch (err) {
+//         logErrorResponse(err, '[JSFORCE.SETUP_NAMESPACE]');
+//         throw err;
+//     }
+// },
 
 class Metadata {
     fullName: string;
