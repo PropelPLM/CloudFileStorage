@@ -7,7 +7,7 @@ let redisClient: RedisClientType;
 
 function removeEmpty(obj: Partial<Record<MapKey, any>>) {
     return Object.entries(obj)
-        .filter(([_, v]) => v != null && !!v)
+        .filter(([_, v]) => v != null)
         .reduce((acc, [k, v]) => {
             return {
                 ...acc,

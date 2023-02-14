@@ -11,17 +11,17 @@ import InstanceManager from '../utils/InstanceManager';
 import {
     logSuccessResponse,
     logErrorResponse,
-    getPlatform,
+    getPlatform
 } from '../utils/Logger';
 import {
     ResponseError,
-    responseGenerator,
+    responseGenerator
 } from '../utils/middleware/responseGenerator';
 import MessageEmitter from '../utils/MessageEmitter';
 import JsForce from '../utils/JsForce';
 import {
     CreatedFileDetails,
-    StoragePlatform,
+    StoragePlatform
 } from '../platforms/StoragePlatform';
 
 router.post('/token', async (req: any, res: any, next: NextFunction) => {
@@ -29,7 +29,7 @@ router.post('/token', async (req: any, res: any, next: NextFunction) => {
     try {
         const instanceDetails = { ...req.body };
         await InstanceManager.upsert(instanceKey, instanceDetails);
-        logSuccessResponse({ instanceKey }, '[END_POINT.TOKEN]');
+        logSuccessResponse({ instanceDetails }, '[END_POINT.TOKEN]');
         res.locals.result = { instanceKey };
     } catch (err) {
         logErrorResponse(err, '[END_POINT.TOKEN]');
@@ -49,7 +49,10 @@ router.post(
             const instanceKey = req.params.instanceKey;
             const instanceDetails = { ...req.body };
             await InstanceManager.upsert(instanceKey, instanceDetails);
-            logSuccessResponse({ instanceKey }, '[END_POINT.UPLOAD_DETAILS]');
+            logSuccessResponse(
+                { instanceDetails },
+                '[END_POINT.UPLOAD_DETAILS]'
+            );
             res.locals.result = { instanceKey };
         } catch (err) {
             logErrorResponse(err, '[END_POINT.UPLOAD_DETAILS]');
@@ -112,7 +115,7 @@ router.post(
                                     frontendBytes: 0,
                                     externalBytes: 0,
                                     mimeType,
-                                    uploadStream,
+                                    uploadStream
                                 };
                                 const fileDetailKey: string =
                                     createFileDetailKey(fileDetails.fileName);
@@ -170,8 +173,8 @@ router.post(
                                                     ...file,
                                                     sfId: sfObject.id,
                                                     revisionId:
-                                                        sfObject.revisionId,
-                                                },
+                                                        sfObject.revisionId
+                                                }
                                             };
                                             responses.push(response);
                                             logSuccessResponse(
@@ -197,7 +200,7 @@ router.post(
                         const response = {
                             salesforceUrl,
                             isNew,
-                            responses,
+                            responses
                         };
                         logSuccessResponse(
                             response,
