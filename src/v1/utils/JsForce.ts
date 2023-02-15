@@ -55,6 +55,7 @@ export default {
         };
 
         try {
+            //orgNamespace here should be PDLM in package or DEV Namespace
             await connection
                 .sobject(`${orgNamespace}__Cloud_File_Storage__c`)
                 .upsert(
@@ -114,7 +115,7 @@ export default {
                 sObjectWithNamespace =
                     orgNamespace === null
                         ? 'Document__c'
-                        : `${orgNamespace}__Document__c`;
+                        : `${orgNamespace}Document__c`;
                 newAttachment = {
                     External_Attachment_URL__c: webViewLink,
                     File_Extension__c: fileExtension,
@@ -130,7 +131,7 @@ export default {
                 sObjectWithNamespace =
                     orgNamespace === null
                         ? 'Digital_Asset__c'
-                        : `${orgNamespace}__Digital_Asset__c`;
+                        : `${orgNamespace}Digital_Asset__c`;
                 newAttachment = {
                     Content_Location__c: platform,
                     External_File_Id__c: id,
@@ -204,7 +205,7 @@ export default {
 
             Object.defineProperty(
                 customObject,
-                `${orgNamespace}__${key}`,
+                `${orgNamespace}${key}`,
                 Object.getOwnPropertyDescriptor(customObject, key)!
             );
             delete customObject[key];
