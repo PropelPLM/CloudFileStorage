@@ -39,7 +39,8 @@ export default {
         let salesforceUrl: string, sessionId: string, orgNamespace: string; //jsforce
         ({ salesforceUrl, sessionId, orgNamespace } = await InstanceManager.get(instanceKey, [
             MapKey.salesforceUrl,
-            MapKey.sessionId
+            MapKey.sessionId,
+            MapKey.orgNamespace
         ]));
         const connection = new jsConnect.Connection({
             instanceUrl: salesforceUrl,
@@ -94,7 +95,8 @@ export default {
                     MapKey.isNew,
                     MapKey.isPLM,
                     MapKey.salesforceUrl,
-                    MapKey.sessionId
+                    MapKey.sessionId,
+                    MapKey.orgNamespace
                 ]));
 
             const connection = new jsConnect.Connection({
@@ -171,7 +173,11 @@ export default {
         try {
             ({ salesforceUrl, sessionId, orgNamespace } = await InstanceManager.get(
                 instanceKey,
-                [MapKey.salesforceUrl, MapKey.sessionId]
+                [
+                    MapKey.salesforceUrl, 
+                    MapKey.sessionId, 
+                    MapKey.orgNamespace
+                ]
             ));
             const connection = new jsConnect.Connection({
                 instanceUrl: salesforceUrl,
