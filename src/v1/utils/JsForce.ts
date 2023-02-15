@@ -45,6 +45,9 @@ export default {
             instanceUrl: salesforceUrl,
             sessionId
         });
+
+        console.log({ tokens, orgNamespace });
+
         const newSetting = {
             Name: 'GoogleDrive',
             Access_Token__c: tokens.access_token,
@@ -210,6 +213,7 @@ export default {
             );
             delete customObject[key];
         }
+        console.log({ customObject });
         return customObject;
     },
 
