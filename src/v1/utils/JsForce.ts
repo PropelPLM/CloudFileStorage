@@ -61,7 +61,7 @@ export default {
         try {
             //orgNamespace here should be PDLM in package or DEV Namespace
             await connection
-                .sobject(`${orgNamespace}__Cloud_File_Storage__c`)
+                .sobject(`${orgNamespace}Cloud_File_Storage__c`)
                 .upsert(
                     { ...this.addNamespace(newSetting, orgNamespace) },
                     'Name'
