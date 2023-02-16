@@ -296,21 +296,6 @@ export default {
     }
 };
 
-// async setupNamespace(connection: any): Promise<string> {
-//     try {
-//         const jsForceRecords = await connection.query(
-//             "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'SoslBuilder' LIMIT 1"
-//         );
-//         const orgNamespace: string =
-//             jsForceRecords.records[0].NamespacePrefix;
-//         logSuccessResponse({ orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
-//         return orgNamespace;
-//     } catch (err) {
-//         logErrorResponse(err, '[JSFORCE.SETUP_NAMESPACE]');
-//         throw err;
-//     }
-// },
-
 class Metadata {
     fullName: string;
     label: string;
