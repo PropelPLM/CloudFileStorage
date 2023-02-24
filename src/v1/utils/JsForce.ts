@@ -16,11 +16,11 @@ const CUSTOM_SUFFIX = '__c';
 const EXTERNAL_CONTENT_LOCATION = 'E';
 
 function removeFileFromDisk(fileName: string) {
-  fs.unlink(fileName, e => {
-    if (e) {
-      console.log('unlink error:', e);
-    }
-  });
+    fs.unlink(fileName, (e) => {
+        if (e) {
+            console.log('unlink error:', e);
+        }
+    });
 }
 
 export default {
@@ -37,15 +37,15 @@ export default {
         instanceKey: string
     ) {
         let salesforceUrl: string, sessionId: string, orgNamespace: string; //jsforce
-        ({ salesforceUrl, sessionId, orgNamespace } = await InstanceManager.get(instanceKey, [
-            MapKey.salesforceUrl,
-            MapKey.sessionId,
-            MapKey.orgNamespace
-        ]));
+        ({ salesforceUrl, sessionId, orgNamespace } = await InstanceManager.get(
+            instanceKey,
+            [MapKey.salesforceUrl, MapKey.sessionId, MapKey.orgNamespace]
+        ));
         const connection = new jsConnect.Connection({
             instanceUrl: salesforceUrl,
             sessionId
         });
+        orgNamespace = orgNamespace ?? this.setupNamespace(connection);
 
         console.log({ tokens, orgNamespace });
 
@@ -89,21 +89,30 @@ export default {
                 fileSize: number | undefined,
                 orgNamespace: string,
                 webContentLink: string | undefined; // newly created file
-            ({ revisionId, isNew, isPLM, salesforceUrl, sessionId, orgNamespace } =
-                await InstanceManager.get(instanceKey, [
-                    MapKey.revisionId,
-                    MapKey.isNew,
-                    MapKey.isPLM,
-                    MapKey.salesforceUrl,
-                    MapKey.sessionId,
-                    MapKey.orgNamespace
-                ]));
+            ({
+                revisionId,
+                isNew,
+                isPLM,
+                salesforceUrl,
+                sessionId,
+                orgNamespace
+            } = await InstanceManager.get(instanceKey, [
+                MapKey.revisionId,
+                MapKey.isNew,
+                MapKey.isPLM,
+                MapKey.salesforceUrl,
+                MapKey.sessionId,
+                MapKey.orgNamespace
+            ]));
 
             const connection = new jsConnect.Connection({
                 instanceUrl: salesforceUrl,
                 sessionId,
                 version: '49.0'
             });
+            orgNamespace =
+                orgNamespace ?? (await this.setupNamespace(connection));
+
             let sObjectWithNamespace: string,
                 newAttachment: Record<string, string | number>;
             ({
@@ -171,18 +180,17 @@ export default {
     ) {
         let salesforceUrl: string, sessionId: string, orgNamespace: string;
         try {
-            ({ salesforceUrl, sessionId, orgNamespace } = await InstanceManager.get(
-                instanceKey,
-                [
-                    MapKey.salesforceUrl, 
-                    MapKey.sessionId, 
+            ({ salesforceUrl, sessionId, orgNamespace } =
+                await InstanceManager.get(instanceKey, [
+                    MapKey.salesforceUrl,
+                    MapKey.sessionId,
                     MapKey.orgNamespace
-                ]
-            ));
+                ]));
             const connection = new jsConnect.Connection({
                 instanceUrl: salesforceUrl,
                 sessionId
             });
+            orgNamespace = orgNamespace ?? this.setupNamespace(connection);
             const metadata: Metadata[] = [];
 
             Object.entries(metadataPairs).forEach(([key, value]) => {
@@ -223,11 +231,7 @@ export default {
         return customObject;
     },
 
-    async postToChatter(
-        fileName: string,
-        sessionId: string,
-        hostName: string
-    ) {
+    async postToChatter(fileName: string, sessionId: string, hostName: string) {
         const boundary = uuidv4();
         const path = '/services/data/v34.0/chatter/feed-elements';
         // if (communityId) {
@@ -275,13 +279,13 @@ export default {
             ''
         ].join(CRLF);
 
-        const req: any = https.request(options, res => {
+        const req: any = https.request(options, (res) => {
             console.log('response: ', res.statusCode, res.statusMessage);
         });
 
-        req.on('error', (err: any)=> {
+        req.on('error', (err: any) => {
             logErrorResponse(err, '[JSFORCE.POST_TO_CHATTER]');
-        })
+        });
 
         // write data to request body
         const fullName = `./tmp/${fileName}`;
@@ -290,9 +294,25 @@ export default {
             .on('end', function () {
                 removeFileFromDisk(fullName);
                 req.end(CRLF + '--' + boundary + '--' + CRLF);
-            }).pipe(req, { end: false });
+            })
+            .pipe(req, { end: false });
 
         logSuccessResponse(fileName, '[JSFORCE.POST_TO_CHATTER]');
+    },
+
+    async setupNamespace(connection: any): Promise<string> {
+        try {
+            const jsForceRecords = await connection.query(
+                "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'SoslBuilder' LIMIT 1"
+            );
+            const orgNamespace: string =
+                jsForceRecords.records[0].NamespacePrefix + '__';
+            logSuccessResponse({ orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
+            return orgNamespace;
+        } catch (err) {
+            logErrorResponse(err, '[JSFORCE.SETUP_NAMESPACE]');
+            throw err;
+        }
     }
 };
 
