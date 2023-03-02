@@ -212,7 +212,7 @@ export default {
         customObject: Record<string, string | number>,
         orgNamespace: string
     ) {
-        if (orgNamespace === null) return customObject;
+        if (!orgNamespace) return customObject;
         for (const key in customObject) {
             if (
                 key.substring(key.length - CUSTOM_SUFFIX.length) !==
@@ -227,7 +227,7 @@ export default {
             );
             delete customObject[key];
         }
-        console.log({ customObject });
+        logSuccessResponse(customObject, '[JSFORCE.ADD_NAMESPACE');
         return customObject;
     },
 
@@ -280,6 +280,18 @@ export default {
         ].join(CRLF);
 
         const req: any = https.request(options, (res) => {
+            let data = '';
+            res.on('data', (d) => (data += d.toString()));
+            res.on('end', () =>
+                logSuccessResponse(
+                    {
+                        data,
+                        statusCode: res.statusCode,
+                        statusMessage: res.statusMessage
+                    },
+                    'JSFORCE.POST_TO_CHATTER'
+                )
+            );
             console.log('response: ', res.statusCode, res.statusMessage);
         });
 
@@ -297,7 +309,7 @@ export default {
             })
             .pipe(req, { end: false });
 
-        logSuccessResponse(fileName, '[JSFORCE.POST_TO_CHATTER]');
+        logSuccessResponse(fileName, '[JSFORCE.POST_TO_CHATTER_CLEAN_UP]');
     },
 
     async setupNamespace(connection: any): Promise<string> {
