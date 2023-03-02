@@ -16,11 +16,11 @@ const CUSTOM_SUFFIX = '__c';
 const EXTERNAL_CONTENT_LOCATION = 'E';
 
 function removeFileFromDisk(fileName: string) {
-  fs.unlink(fileName, e => {
-    if (e) {
-      console.log('unlink error:', e);
-    }
-  });
+    fs.unlink(fileName, (e) => {
+        if (e) {
+            console.log('unlink error:', e);
+        }
+    });
 }
 
 export default {
@@ -37,14 +37,18 @@ export default {
         instanceKey: string
     ) {
         let salesforceUrl: string, sessionId: string, orgNamespace: string; //jsforce
-        ({ salesforceUrl, sessionId, orgNamespace } = await InstanceManager.get(instanceKey, [
-            MapKey.salesforceUrl,
-            MapKey.sessionId
-        ]));
+        ({ salesforceUrl, sessionId, orgNamespace } = await InstanceManager.get(
+            instanceKey,
+            [MapKey.salesforceUrl, MapKey.sessionId, MapKey.orgNamespace]
+        ));
         const connection = new jsConnect.Connection({
             instanceUrl: salesforceUrl,
             sessionId
         });
+        orgNamespace = orgNamespace ?? this.setupNamespace(connection);
+
+        console.log({ tokens, orgNamespace });
+
         const newSetting = {
             Name: 'GoogleDrive',
             Access_Token__c: tokens.access_token,
@@ -55,8 +59,9 @@ export default {
         };
 
         try {
+            //orgNamespace here should be PDLM in package or DEV Namespace
             await connection
-                .sobject(`${orgNamespace}__Cloud_File_Storage__c`)
+                .sobject(`${orgNamespace}Cloud_File_Storage__c`)
                 .upsert(
                     { ...this.addNamespace(newSetting, orgNamespace) },
                     'Name'
@@ -84,20 +89,30 @@ export default {
                 fileSize: number | undefined,
                 orgNamespace: string,
                 webContentLink: string | undefined; // newly created file
-            ({ revisionId, isNew, isPLM, salesforceUrl, sessionId, orgNamespace } =
-                await InstanceManager.get(instanceKey, [
-                    MapKey.revisionId,
-                    MapKey.isNew,
-                    MapKey.isPLM,
-                    MapKey.salesforceUrl,
-                    MapKey.sessionId
-                ]));
+            ({
+                revisionId,
+                isNew,
+                isPLM,
+                salesforceUrl,
+                sessionId,
+                orgNamespace
+            } = await InstanceManager.get(instanceKey, [
+                MapKey.revisionId,
+                MapKey.isNew,
+                MapKey.isPLM,
+                MapKey.salesforceUrl,
+                MapKey.sessionId,
+                MapKey.orgNamespace
+            ]));
 
             const connection = new jsConnect.Connection({
                 instanceUrl: salesforceUrl,
                 sessionId,
                 version: '49.0'
             });
+            orgNamespace =
+                orgNamespace ?? (await this.setupNamespace(connection));
+
             let sObjectWithNamespace: string,
                 newAttachment: Record<string, string | number>;
             ({
@@ -114,7 +129,7 @@ export default {
                 sObjectWithNamespace =
                     orgNamespace === null
                         ? 'Document__c'
-                        : `${orgNamespace}__Document__c`;
+                        : `${orgNamespace}Document__c`;
                 newAttachment = {
                     External_Attachment_URL__c: webViewLink,
                     File_Extension__c: fileExtension,
@@ -130,7 +145,7 @@ export default {
                 sObjectWithNamespace =
                     orgNamespace === null
                         ? 'Digital_Asset__c'
-                        : `${orgNamespace}__Digital_Asset__c`;
+                        : `${orgNamespace}Digital_Asset__c`;
                 newAttachment = {
                     Content_Location__c: platform,
                     External_File_Id__c: id,
@@ -165,14 +180,17 @@ export default {
     ) {
         let salesforceUrl: string, sessionId: string, orgNamespace: string;
         try {
-            ({ salesforceUrl, sessionId, orgNamespace } = await InstanceManager.get(
-                instanceKey,
-                [MapKey.salesforceUrl, MapKey.sessionId]
-            ));
+            ({ salesforceUrl, sessionId, orgNamespace } =
+                await InstanceManager.get(instanceKey, [
+                    MapKey.salesforceUrl,
+                    MapKey.sessionId,
+                    MapKey.orgNamespace
+                ]));
             const connection = new jsConnect.Connection({
                 instanceUrl: salesforceUrl,
                 sessionId
             });
+            orgNamespace = orgNamespace ?? this.setupNamespace(connection);
             const metadata: Metadata[] = [];
 
             Object.entries(metadataPairs).forEach(([key, value]) => {
@@ -204,19 +222,16 @@ export default {
 
             Object.defineProperty(
                 customObject,
-                `${orgNamespace}__${key}`,
+                `${orgNamespace}${key}`,
                 Object.getOwnPropertyDescriptor(customObject, key)!
             );
             delete customObject[key];
         }
+        console.log({ customObject });
         return customObject;
     },
 
-    async postToChatter(
-        fileName: string,
-        sessionId: string,
-        hostName: string
-    ) {
+    async postToChatter(fileName: string, sessionId: string, hostName: string) {
         const boundary = uuidv4();
         const path = '/services/data/v34.0/chatter/feed-elements';
         // if (communityId) {
@@ -264,13 +279,13 @@ export default {
             ''
         ].join(CRLF);
 
-        const req: any = https.request(options, res => {
+        const req: any = https.request(options, (res) => {
             console.log('response: ', res.statusCode, res.statusMessage);
         });
 
-        req.on('error', (err: any)=> {
+        req.on('error', (err: any) => {
             logErrorResponse(err, '[JSFORCE.POST_TO_CHATTER]');
-        })
+        });
 
         // write data to request body
         const fullName = `./tmp/${fileName}`;
@@ -279,26 +294,27 @@ export default {
             .on('end', function () {
                 removeFileFromDisk(fullName);
                 req.end(CRLF + '--' + boundary + '--' + CRLF);
-            }).pipe(req, { end: false });
+            })
+            .pipe(req, { end: false });
 
         logSuccessResponse(fileName, '[JSFORCE.POST_TO_CHATTER]');
+    },
+
+    async setupNamespace(connection: any): Promise<string> {
+        try {
+            const jsForceRecords = await connection.query(
+                "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'SoslBuilder' LIMIT 1"
+            );
+            const orgNamespace: string =
+                jsForceRecords.records[0].NamespacePrefix + '__';
+            logSuccessResponse({ orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
+            return orgNamespace;
+        } catch (err) {
+            logErrorResponse(err, '[JSFORCE.SETUP_NAMESPACE]');
+            throw err;
+        }
     }
 };
-
-// async setupNamespace(connection: any): Promise<string> {
-//     try {
-//         const jsForceRecords = await connection.query(
-//             "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'SoslBuilder' LIMIT 1"
-//         );
-//         const orgNamespace: string =
-//             jsForceRecords.records[0].NamespacePrefix;
-//         logSuccessResponse({ orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
-//         return orgNamespace;
-//     } catch (err) {
-//         logErrorResponse(err, '[JSFORCE.SETUP_NAMESPACE]');
-//         throw err;
-//     }
-// },
 
 class Metadata {
     fullName: string;
