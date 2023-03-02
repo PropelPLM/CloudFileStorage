@@ -212,7 +212,7 @@ export default {
         customObject: Record<string, string | number>,
         orgNamespace: string
     ) {
-        if (orgNamespace === null) return customObject;
+        if (!orgNamespace) return customObject;
         for (const key in customObject) {
             if (
                 key.substring(key.length - CUSTOM_SUFFIX.length) !==
@@ -227,7 +227,7 @@ export default {
             );
             delete customObject[key];
         }
-        console.log({ customObject });
+        logSuccessResponse(customObject, '[JSFORCE.ADD_NAMESPACE');
         return customObject;
     },
 
