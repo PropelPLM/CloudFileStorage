@@ -14,6 +14,7 @@ import InstanceManager from './utils/InstanceManager';
 import authRouter from './routers/authRouter';
 import uploadRouter from './routers/uploadRouter';
 import platformOperationsRouter from './routers/platformOperationsRouter';
+import signedUrl from './routers/signedUrl';
 
 import { logSuccessResponse, logErrorResponse } from './utils/Logger';
 import { responseGenerator } from './utils/middleware/responseGenerator';
@@ -33,7 +34,8 @@ server.listen(port, async () => {
 
 app.use('/auth', authRouter);
 app.use('/upload', uploadRouter);
-app.use('/platform', platformOperationsRouter)
+app.use('/platform', platformOperationsRouter);
+app.use('/signedurl', signedUrl);
 
 app.get('/:instanceKey', (req: Request, res: Response) => {
   try {

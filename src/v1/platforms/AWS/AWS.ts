@@ -15,6 +15,7 @@ import {
 } from '@aws-sdk/client-cloudfront';
 import { Upload } from '@aws-sdk/lib-storage';
 import { PassThrough } from 'stream';
+import { getSignedUrl } from '@aws-sdk/cloudfront-signer';
 
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
 import MessageEmitter from '../../utils/MessageEmitter';
@@ -61,6 +62,15 @@ export class AWS implements StoragePlatform {
             logErrorResponse(err, '[AWS.AUTHORIZE]');
             throw err;
         }
+    }
+
+    static getSignedUrl(url: string) {
+        return getSignedUrl({
+            expires: new Date(Date.now() + 1000 * 60),
+            keyPairId: process.env.CLOUDFRONT_SIGNED_URL_KEY_GROUP,
+            privateKey: process.env.CLOUDFRONT_SIGNED_URL_KEY,
+            url: url,
+        });
     }
 
     async initUpload(
