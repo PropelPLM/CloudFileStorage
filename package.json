@@ -12,7 +12,11 @@
         "dev": "node build/v1/main.js",
         "postinstall": "npx tsc",
         "test": "jest",
-        "test:watch": "jest --watch --no-cache --verbose --detectOpenHandles --runInBand --colors"
+        "test:watch": "jest --watch --no-cache --verbose --detectOpenHandles --runInBand --colors",
+        "------run_locally------": "echo 'run them in order'",
+        "build": "echo 'you are building the server files...' && npx tsc",
+        "start_heroku": "echo 'starting heroku...' && heroku local -p 3030",
+        "remove_build": "echo 'you are removing all the build files...' && rm -rfv ./build"
     },
     "author": "clinton",
     "license": "ISC",

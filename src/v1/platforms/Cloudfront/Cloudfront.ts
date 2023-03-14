@@ -15,11 +15,11 @@ export class Cloudfront {
                 '';
             const signedUrl = getSignedUrl({ dateLessThan, keyPairId, privateKey, url });
             
-            logSuccessResponse(signedUrl, '[CLOUDFRONT_SIGNED_URL]');
+            logSuccessResponse(signedUrl, '[PLATFORM_CLOUDFRONT_SIGNED_URL]');
             
             return signedUrl;
         } catch(err) {
-            logErrorResponse(err, '[CLOUDFRONT_SIGNED_URL]');
+            logErrorResponse(err, '[PLATFORM_CLOUDFRONT_SIGNED_URL]');
             throw err;
         }
     }
