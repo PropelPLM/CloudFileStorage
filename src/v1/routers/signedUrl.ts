@@ -3,13 +3,13 @@
 import express from 'express';
 const router = express.Router();
 
-import { AWS } from '../platforms/AWS/AWS';
+import { Cloudfront } from '../platforms/Cloudfront/Cloudfront';
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 
 router.get('/:url', async (req, res)=> {
     try {
         const url = req.params.url;
-        const signedUrl = AWS.getSignedUrl(url);
+        const signedUrl = Cloudfront.getSignedUrl(url);
         logSuccessResponse(url, '[END_POINT.SIGNED_URL]');
         res.status(200).send({ url: signedUrl });
     } catch(err) {
@@ -17,3 +17,5 @@ router.get('/:url', async (req, res)=> {
         res.status(400).send('Signed URL failure');
     }
 });
+
+export default router;
