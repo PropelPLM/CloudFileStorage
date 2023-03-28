@@ -34,7 +34,7 @@ import archiver from 'archiver';
 import { createWriteStream, mkdir } from 'fs';
 
 const US_EAST = 'us-east-1';
-const PIM_DEFAULT_BUCKET = 'propel-pim-assets';
+const PIM_DEFAULT_BUCKET = 'propel-sftp-inbound';
 // const DEFAULT_VIDEO_THUMBNAIL_WIDTH = 200;
 // const DEFAULT_VIDEO_THUMBNAIL_HEIGHT = 200;
 // const TEMP_DIRECTORY: string = './tmp';
