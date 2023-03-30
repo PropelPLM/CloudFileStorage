@@ -45,8 +45,6 @@ export default {
     ) => {
         try {
             const dbItemsToCommit = removeEmpty(keyValuePairs);
-            console.log('-----------------DB ITEMS');
-            console.log(dbItemsToCommit);
             await redisClient.hSet(instanceKey, dbItemsToCommit);
             logSuccessResponse(dbItemsToCommit, '[DB.UPSERT');
         } catch (error) {
