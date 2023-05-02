@@ -2,8 +2,7 @@
 
 // Will be used more widely when there are different storages
 const server = require('../main');
-import ioSocket from 'socket.io';
-const io = ioSocket(server);
+const io = require('socket.io').listen(server);
 
 import { logSuccessResponse, logErrorResponse, logProgressResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
