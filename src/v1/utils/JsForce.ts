@@ -11,9 +11,22 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import https from 'https';
 import fs from 'fs';
+import  { jwtSession } from '@propelsoftwaresolutions/propel-sfdc-connect';
+
 
 const CUSTOM_SUFFIX = '__c';
 const EXTERNAL_CONTENT_LOCATION = 'E';
+
+
+export const getSessionId = async (authRequest: PropelAuthRequest) => {
+    const session = await jwtSession({
+      clientId: authRequest.clientId,
+      isTest: authRequest.isTest,
+      user: authRequest.user,
+      privateKey: process.env.PIM_DATA_SERVICE_KEY
+    });
+    return session.access_token;
+  }
 
 function removeFileFromDisk(fileName: string) {
     fs.unlink(fileName, (e) => {
