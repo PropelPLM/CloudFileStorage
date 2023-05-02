@@ -28,7 +28,7 @@ router.post('/token', async (req: any, res: any, next: NextFunction) => {
     const instanceKey = uuidv4();
     try {
         const instanceDetails = { ...req.body };
-        instanceDetails.sessionId = await getSessionId(instanceDetails);
+        instanceDetails.sessionId = instanceDetails.sessionId ?? await getSessionId(instanceDetails);
         await InstanceManager.upsert(instanceKey, instanceDetails);
         logSuccessResponse({ instanceDetails }, '[END_POINT.TOKEN]');
         res.locals.result = { instanceKey };
