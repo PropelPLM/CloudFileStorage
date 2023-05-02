@@ -8,7 +8,7 @@ import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
 import MessageEmitter from '../utils/MessageEmitter';
 import GoogleDrive from '../platforms/GoogleDrive/GoogleDrive';
-import JsForce from '../utils/JsForce';
+import JsForce, { getSessionId } from '../utils/JsForce';
 
 router.get('/:instanceKey', async (req, res)=> {
   await InstanceManager.register(req.params.instanceKey);
@@ -21,7 +21,8 @@ router.post('/:instanceKey/', async (req: any, res: any) => {
 
 
   try {
-    ({ sessionId, salesforceUrl, clientId, clientSecret, tenantId } = req.body);
+    ({ salesforceUrl, clientId, clientSecret, tenantId } = req.body);
+    sessionId = await getSessionId(req.body);
     const instanceDetails = { salesforceUrl, clientId, clientSecret, tenantId, sessionId };
     await InstanceManager.upsert(instanceKey, instanceDetails);
 
