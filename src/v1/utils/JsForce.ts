@@ -85,6 +85,7 @@ export default {
                 platform: PlatformIdentifier, // SF file creation
                 webViewLink: string,
                 id: string,
+                toReplaceId: string,
                 fileExtension: string,
                 fileSize: number | undefined,
                 orgNamespace: string,
@@ -95,14 +96,16 @@ export default {
                 isPLM,
                 salesforceUrl,
                 sessionId,
-                orgNamespace
+                orgNamespace,
+                toReplaceId
             } = await InstanceManager.get(instanceKey, [
                 MapKey.revisionId,
                 MapKey.isNew,
                 MapKey.isPLM,
                 MapKey.salesforceUrl,
                 MapKey.sessionId,
-                MapKey.orgNamespace
+                MapKey.orgNamespace,
+                MapKey.toReplaceId
             ]));
 
             const connection = new jsConnect.Connection({
@@ -153,14 +156,25 @@ export default {
                     Size__c: fileSize!,
                     View_Link__c: webViewLink
                 };
+                if ((isNew === 'true' || isNew) && toReplaceId) {
+                    newAttachment.Id = toReplaceId;
+                }
             }
 
-            const sObject = await connection
-                .sobject(sObjectWithNamespace)
-                .create({
-                    Name: name,
-                    ...this.addNamespace(newAttachment, orgNamespace)
-                });
+            const baseSObject = connection.sobject(sObjectWithNamespace);
+            const sObject =
+                newAttachment.Id == null
+                    ? await baseSObject.create({
+                          Name: name,
+                          ...this.addNamespace(newAttachment, orgNamespace)
+                      })
+                    : await baseSObject.upsert(
+                          {
+                              Name: name,
+                              ...this.addNamespace(newAttachment, orgNamespace)
+                          },
+                          'Id'
+                      );
             if (!sObject.success)
                 throw new Error(
                     `Failed to create SObject: ${sObject.errors.join('\n')}`

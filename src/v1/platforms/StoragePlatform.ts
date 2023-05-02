@@ -4,6 +4,7 @@ export type DADownloadDetails = {
     fileId: string;
     fileName: string;
     key: string;
+    mimeType: string;
 };
 
 export type DownloadParams = {

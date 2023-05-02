@@ -33,7 +33,7 @@ server.listen(port, async () => {
 
 app.use('/auth', authRouter);
 app.use('/upload', uploadRouter);
-app.use('/platform', platformOperationsRouter)
+app.use('/platform', platformOperationsRouter);
 
 app.get('/:instanceKey', (req: Request, res: Response) => {
   try {

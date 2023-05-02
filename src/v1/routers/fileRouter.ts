@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import { extension } from 'mime-types';
 import { ResponseError } from '../utils/middleware/responseGenerator';
 
 const router = Router();
@@ -269,11 +270,21 @@ router.post(
         const configuredPlatform = res.locals.platformInstance;
 
         try {
-            if (!daDownloadDetailsList || daDownloadDetailsList.length === 0) throw new Error('No files to download');
+            if (!daDownloadDetailsList || daDownloadDetailsList.length === 0)
+                throw new Error('No files to download');
             if (
-                daDownloadDetailsList.length > 1 && 
-                ( !sessionId || !hostName|| !zipFileName )
-            ) throw new Error('Not enough details for bulk download');
+                daDownloadDetailsList.length > 1 &&
+                (!sessionId || !hostName || !zipFileName)
+            )
+                throw new Error('Not enough details for bulk download');
+
+            daDownloadDetailsList.forEach((detail: DADownloadDetails) => {
+                if (detail.mimeType == null) return;
+                const mimeType: string = `.${extension(detail.mimeType)}`;
+                if (detail.fileName.endsWith(mimeType)) return;
+
+                detail.fileName += mimeType;
+            });
             const downloadLink: any = await configuredPlatform.downloadFile!({
                 instanceKeyOrOrgUrlOrOrgId: orgId || salesforceUrl,
                 daDownloadDetailsList,
