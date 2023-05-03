@@ -17,7 +17,6 @@ $(() => {
   });
   let numFiles = 0;
 
-  console.log('indexjs');
   // INIT
   const resetIcons = () => {
     check.css('visibility', 'hidden');
@@ -33,7 +32,6 @@ $(() => {
 
   //SOCKET IO HELPERS
   socket.on('setAttribute', (object) => {
-    console.log('setAttribute', object);
     Object.entries(object).forEach(([key, value]) => {
       form.attr(`data-${key}`, value);
     });
@@ -86,7 +84,6 @@ $(() => {
     let targetWindow = form.data(`target-window`);
     let uploadResult;
     try {
-      console.log({ data });
       uploadResult = await axios.post(`/upload/files/${instanceKey}`, data, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       });
