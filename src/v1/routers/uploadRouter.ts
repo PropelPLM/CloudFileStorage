@@ -18,7 +18,7 @@ import {
     responseGenerator
 } from '../utils/middleware/responseGenerator';
 import MessageEmitter from '../utils/MessageEmitter';
-import JsForce from '../utils/JsForce';
+import JsForce, { getSessionId } from '../utils/JsForce';
 import {
     CreatedFileDetails,
     StoragePlatform
@@ -28,6 +28,7 @@ router.post('/token', async (req: any, res: any, next: NextFunction) => {
     const instanceKey = uuidv4();
     try {
         const instanceDetails = { ...req.body };
+        instanceDetails.sessionId = instanceDetails.sessionId ?? await getSessionId(instanceDetails);
         await InstanceManager.upsert(instanceKey, instanceDetails);
         logSuccessResponse({ instanceDetails }, '[END_POINT.TOKEN]');
         res.locals.result = { instanceKey };
