@@ -12,9 +12,12 @@ $(() => {
   const check = $('#check');
   const overallFileProgress = $('#overall-file-progress');
   const url = $(location).attr('href').slice(0, -1);
-  const socket = io(`${url.substr(0, url.slice(0, -1).lastIndexOf('/') + 1)}`, {transports: [ "websocket" ]});
+  const socket = io(`${url.substr(0, url.slice(0, -1).lastIndexOf('/') + 1)}`, {
+    transports: ['websocket']
+  });
   let numFiles = 0;
 
+  console.log('indexjs');
   // INIT
   const resetIcons = () => {
     check.css('visibility', 'hidden');
@@ -30,6 +33,7 @@ $(() => {
 
   //SOCKET IO HELPERS
   socket.on('setAttribute', (object) => {
+    console.log('setAttribute', object);
     Object.entries(object).forEach(([key, value]) => {
       form.attr(`data-${key}`, value);
     });
@@ -39,15 +43,15 @@ $(() => {
     window.parent.postMessage(
       {
         type: topic,
-        data: payload,
+        data: payload
       },
       form.data(`target-window`)
     );
   });
 
   const trackProgress = async () => {
-    await socket.on('progress', percent => {
-      const displayPercent = Math.min(100, percent)
+    await socket.on('progress', (percent) => {
+      const displayPercent = Math.min(100, percent);
       progressBar.css('width', `${displayPercent}%`);
       progressBarText.text(`${displayPercent}%`);
       if (displayPercent === 100) {
@@ -82,40 +86,41 @@ $(() => {
     let targetWindow = form.data(`target-window`);
     let uploadResult;
     try {
-      uploadResult = await axios.post(
-        `/upload/files/${instanceKey}`,
-        data,
-        {
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        }
-      );
+      console.log({ data });
+      uploadResult = await axios.post(`/upload/files/${instanceKey}`, data, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      });
       socket.off('progress');
       spinner.css('visibility', 'hidden');
       check.css('visibility', 'visible');
       const type = uploadResult.data.isNew ? 'uploadNew' : 'uploadExisting';
       window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
-      targetWindow = targetWindow.substring(0, targetWindow.indexOf('.')+ 1) + 'lightning.force.com'
+      targetWindow =
+        targetWindow.substring(0, targetWindow.indexOf('.') + 1) +
+        'lightning.force.com';
       window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
       setFilesUploaded();
     } catch (err) {
       spinner.css('visibility', 'hidden');
       errorContainer.css('visibility', 'visible');
       progressContainer.css('display', 'none');
-      errorContainer.text(`${err.response.data.error} Please fix appropriately and refresh.`)
+      errorContainer.text(
+        `${err.response.data.error} Please fix appropriately and refresh.`
+      );
     }
   };
 
   const toggleButtonDisable = () => {
     fileSelect.prop('disabled', !fileSelect.prop('disabled'));
     fileSelect.toggleClass('disabled');
-  }
+  };
 
   const uploadsCompleteResetState = () => {
     // const instanceKey = form.data(`instance-key`);
     // axios.post(`/upload/reset/${instanceKey}`);
     numFiles = 0;
     toggleButtonDisable();
-  }
+  };
 
   fileSelect.on('change', async function (e) {
     e.preventDefault();
@@ -130,7 +135,9 @@ $(() => {
       toggleButtonDisable();
       progressBar.css('width', `0%`);
       progressBarText.text(`0%`);
-      fileName.text(numFiles > 1 ? 'Multiple files are being uploaded...' : firstFile.name);
+      fileName.text(
+        numFiles > 1 ? 'Multiple files are being uploaded...' : firstFile.name
+      );
       progressContainer.css('visibility', 'visible');
       await uploadFile(files);
       uploadsCompleteResetState();
