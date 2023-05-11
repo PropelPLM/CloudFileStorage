@@ -21,7 +21,7 @@ const EXTERNAL_CONTENT_LOCATION = 'E';
 
 export const getSessionId = async (authRequest: PropelAuthRequest) => {
     const session = await jwtSession({
-        clientId: (authRequest.clientId) ? authRequest.clientId : process.env.CLOUD_FILE_STORAGE_CLIENT_ID,
+        clientId: process.env.CLOUD_FILE_STORAGE_CLIENT_ID,
         isTest: authRequest.isTest,
         privateKey: process.env.CLOUD_FILE_STORAGE_KEY,
         user: authRequest.user
