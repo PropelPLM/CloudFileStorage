@@ -10,7 +10,7 @@
     "scripts": {
         "start": "node build/v1/main.js PRODUCTION",
         "dev": "node build/v1/main.js",
-        "postinstall": "npx tsc",
+        "postinstall": "npx -p typescript tsc",
         "test": "jest",
         "test:watch": "jest --watch --no-cache --verbose --detectOpenHandles --runInBand --colors",
         "------run_locally------": "echo 'run them in order'",
