@@ -98,7 +98,7 @@ export interface StoragePlatform {
     permissionList?(
         instanceKey: string,
         fileId: string
-    ): Promise<Record<string, string>[]>;
+    ): Promise<Array<Record<string, string>>>;
     permissionUpdate?(
         instanceKey: string,
         fileId: string,

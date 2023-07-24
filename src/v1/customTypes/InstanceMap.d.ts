@@ -37,6 +37,11 @@ const enum MapKey {
     groupId = 'groupId',
     tenantId = 'tenantId',
 
+    // gdrive specific information
+    accessToken = 'accessToken', 
+    refreshToken = 'refreshToken', 
+    expiryDate = 'expiryDate',
+
     //v1
     accessToken = 'accessToken',
     refreshToken = 'refreshToken',

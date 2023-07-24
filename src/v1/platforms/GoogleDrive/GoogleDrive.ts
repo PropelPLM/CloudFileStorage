@@ -190,6 +190,27 @@ export class GoogleDrive implements StoragePlatform {
         createdFileDetails.webContentLink = webContentLink;
         return createdFileDetails;
     }
+
+    async permissionList(
+        _: string,
+        fileId: string
+    ): Promise<Array<Record<string, string>>> {
+        try {
+            const drive = google.drive({
+                version: 'v3',
+                auth: this.oAuth2Client
+            });
+            const res: any = await drive.permissions.list({
+                fileId,
+                supportsAllDrives: true,
+                fields: 'permissions(id, emailAddress, permissionDetails, type)'
+            });
+            return res?.data?.permissions;
+        } catch (err: any) {
+            if (err.code === 404) return [];
+            throw err;
+        }
+    }
 }
 
 export default GoogleDrive;
