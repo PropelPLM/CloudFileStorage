@@ -96,6 +96,10 @@ $(() => {
         targetWindow.substring(0, targetWindow.indexOf('.') + 1) +
         'lightning.force.com';
       window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
+      targetWindow =
+        targetWindow.substring(0, targetWindow.indexOf('.') + 1) +
+        'develop.lightning.force.com';
+      window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
       setFilesUploaded();
     } catch (err) {
       spinner.css('visibility', 'hidden');
