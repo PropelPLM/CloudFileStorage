@@ -51,16 +51,15 @@ export default {
         instanceKey: string
     ) {
         let salesforceUrl: string, sessionId: string, orgNamespace: string; //jsforce
-        ({ salesforceUrl, sessionId, orgNamespace } = await InstanceManager.get(
-            instanceKey,
-            [MapKey.salesforceUrl, MapKey.sessionId, MapKey.orgNamespace]
-        ));
+        ({ salesforceUrl, sessionId } = await InstanceManager.get(instanceKey, [
+            MapKey.salesforceUrl,
+            MapKey.sessionId
+        ]));
         const connection = new jsConnect.Connection({
             instanceUrl: salesforceUrl,
             sessionId
         });
-        orgNamespace = orgNamespace ?? this.setupNamespace(connection);
-
+        orgNamespace = await this.setupNamespace(connection);
         console.log({ tokens, orgNamespace });
 
         const newSetting = {
