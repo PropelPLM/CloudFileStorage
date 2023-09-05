@@ -50,18 +50,6 @@ export default {
         tokens: Record<string, string | number>,
         instanceKey: string
     ) {
-        let salesforceUrl: string, sessionId: string, orgNamespace: string; //jsforce
-        ({ salesforceUrl, sessionId } = await InstanceManager.get(instanceKey, [
-            MapKey.salesforceUrl,
-            MapKey.sessionId
-        ]));
-        const connection = new jsConnect.Connection({
-            instanceUrl: salesforceUrl,
-            sessionId
-        });
-        orgNamespace = await this.setupNamespace(connection);
-        console.log({ tokens, orgNamespace });
-
         const newSetting = {
             Name: 'GoogleDrive',
             Access_Token__c: tokens.access_token,
@@ -72,15 +60,9 @@ export default {
         };
 
         try {
-            //orgNamespace here should be PDLM in package or DEV Namespace
-            await connection
-                .sobject(`${orgNamespace}Cloud_File_Storage__c`)
-                .upsert(
-                    { ...this.addNamespace(newSetting, orgNamespace) },
-                    'Name'
-                );
-
-            logSuccessResponse({}, '[JSFORCE.SEND_TOKENS]');
+            this.writeTokensOld(newSetting, instanceKey);
+            this.writeTokensNew(newSetting);
+            logSuccessResponse(instanceKey, '[JSFORCE.SEND_TOKENS]');
         } catch (err) {
             logErrorResponse(err, '[JSFORCE.SEND_TOKENS]');
             throw err;
@@ -352,7 +334,32 @@ export default {
             logErrorResponse(err, '[JSFORCE.SETUP_NAMESPACE]');
             throw err;
         }
-    }
+    },
+
+    async writeTokensOld(tokens: Record<string, string | number>, instanceKey: string) {
+        try {
+            const OLD_CUSTOM_SETTING = 'Cloud_Storage__c';
+            let salesforceUrl: string, sessionId: string, orgNamespace: string;
+            ({ salesforceUrl, sessionId } = await InstanceManager.get(
+                instanceKey,
+                [MapKey.salesforceUrl, MapKey.sessionId]
+            ));
+            const connection = new jsConnect.Connection({
+                instanceUrl: salesforceUrl,
+                sessionId
+            });
+            orgNamespace = await this.setupNamespace(connection);
+            await connection
+                .sobject(`${orgNamespace}${OLD_CUSTOM_SETTING}`)
+                .upsert({ ...this.addNamespace(tokens, orgNamespace) }, 'Name');
+            logSuccessResponse({}, '[JSFORCE.WRITE_OLD]');
+        } catch (err) {
+            logErrorResponse(err, '[JSFORCE.WRITE_OLD]');
+            throw err;
+        }
+    },
+
+    async writeTokensNew(tokens: Record<string, string | number>) { console.log(tokens) }
 };
 
 class Metadata {
