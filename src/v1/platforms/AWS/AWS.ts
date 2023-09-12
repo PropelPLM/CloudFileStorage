@@ -77,14 +77,6 @@ export class AWS implements StoragePlatform {
             if (!(await this.bucketExists(PIM_DEFAULT_BUCKET))) {
                 await this.createBucket(PIM_DEFAULT_BUCKET);
             }
-            const s3UploadStream = new PassThrough();
-            uploadStream
-                .on('data', (chunk) => {
-                    s3UploadStream.write(chunk);
-                })
-                .on('end', () => {
-                    s3UploadStream.end();
-                });
             const s3Upload = new Upload({
                 client: this.s3Client,
                 leavePartsOnError: false, // optional manually handle dropped parts
@@ -155,6 +147,10 @@ export class AWS implements StoragePlatform {
         );
         createdFileDetails.fileSize = fileDetails.fileSize;
 
+        logSuccessResponse(
+            `File created with key: ${awsFileCreationResult?.Key}`,
+            '[AWS.UPLOAD]'
+        );
         if (fileDetails.mimeType.startsWith('video')) {
             this.generateAndUploadVideoThumbnail(awsFileCreationResult.Key);
         }
@@ -181,15 +177,12 @@ export class AWS implements StoragePlatform {
                 expiresIn: 3600
             });
         } else {
-            const TEMP_DIRECTORY: string = './tmp';
             mkdir(TEMP_DIRECTORY, { recursive: true }, (err) => {
                 if (err && err.code != 'EEXIST') throw err;
-                logSuccessResponse(
-                    'made directory ./tmp',
-                    '[AWS.DOWNLOAD_CHATTER]'
-                );
             });
-            const output = createWriteStream(`./tmp/${zipFileName}`);
+            const output = createWriteStream(
+                `${TEMP_DIRECTORY}/${zipFileName}`
+            );
             const archive = archiver('zip', { zlib: { level: 9 } });
             archive.pipe(output);
             const zipPromises = daDownloadDetailsList.map(
@@ -332,42 +325,59 @@ export class AWS implements StoragePlatform {
         try {
             const command = new GetObjectCommand({
                 Bucket: PIM_DEFAULT_BUCKET,
-                Key: assetKey
+                Key: key
             });
             const { Body } = await this.s3Client.send(command);
-            const fileName =
-                AWS.removeFSUnfriendlyChars(
-                    key.substring(key.lastIndexOf('/') + 1)
-                ) + THUMBNAIL_IDENTIFIER;
-            ffmpeg(Body)
-                .on('end', async () => {
-                    logSuccessResponse(
-                        `Thumbnail(${DEFAULT_VIDEO_THUMBNAIL_WIDTH}x${DEFAULT_VIDEO_THUMBNAIL_HEIGHT}) for ${key} created successfully.`,
-                        '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]'
-                    );
-                    await new Upload({
-                        client: this.s3Client,
-                        leavePartsOnError: false,
-                        params: {
-                            Bucket: PIM_DEFAULT_BUCKET,
-                            Key: `${orgId}thumbnails/${assetKey}__d=${DEFAULT_VIDEO_THUMBNAIL_WIDTH}x${DEFAULT_VIDEO_THUMBNAIL_HEIGHT}`,
-                            Body: createReadStream(
-                                `${TEMP_DIRECTORY}/${fileName}.png`
-                            ),
-                            ContentType: 'image/png',
-                            ContentDisposition: 'inline'
-                        }
-                    }).done();
+            const fileName = AWS.removeFSUnfriendlyChars(
+                key.substring(key.lastIndexOf('/') + 1)
+            );
+            mkdir(TEMP_DIRECTORY, { recursive: true }, (err) => {
+                if (err && err.code != 'EEXIST') throw err;
+            });
+            const localFilePath = `${TEMP_DIRECTORY}/${fileName}`;
+            const fileStream = createWriteStream(localFilePath);
+            Body.pipe(fileStream);
+            fileStream
+                .on('close', () => {
+                    console.log(`S3 object saved locally as ${localFilePath}`);
                 })
-                .on('error', (err: any) => {
-                    console.log({ err });
-                    logErrorResponse(err, '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]');
+                .on('error', (error) => {
+                    console.error('Error writing file:', error);
                 })
-                .screenshots({
-                    count: 1,
-                    folder: TEMP_DIRECTORY,
-                    filename: fileName,
-                    size: `${DEFAULT_VIDEO_THUMBNAIL_WIDTH}x${DEFAULT_VIDEO_THUMBNAIL_HEIGHT}`
+                .on('finish', () => {
+                    ffmpeg(localFilePath)
+                        .on('end', async () => {
+                            logSuccessResponse(
+                                `Thumbnail(${DEFAULT_VIDEO_THUMBNAIL_WIDTH}x${DEFAULT_VIDEO_THUMBNAIL_HEIGHT}) for ${key} created successfully.`,
+                                '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]'
+                            );
+                            await new Upload({
+                                client: this.s3Client,
+                                leavePartsOnError: false,
+                                params: {
+                                    Bucket: PIM_DEFAULT_BUCKET,
+                                    Key: `${orgId}thumbnails/${assetKey}__d=${DEFAULT_VIDEO_THUMBNAIL_WIDTH}x${DEFAULT_VIDEO_THUMBNAIL_HEIGHT}`,
+                                    Body: createReadStream(
+                                        `${TEMP_DIRECTORY}/${fileName}${THUMBNAIL_IDENTIFIER}.png`
+                                    ),
+                                    ContentType: 'image/png',
+                                    ContentDisposition: 'inline'
+                                }
+                            }).done();
+                        })
+                        .on('error', (err: any) => {
+                            console.log({ err });
+                            logErrorResponse(
+                                err,
+                                '[FFMPEG.GENERATE_VIDEO_THUMBNAIL]'
+                            );
+                        })
+                        .screenshots({
+                            count: 1,
+                            folder: TEMP_DIRECTORY,
+                            filename: `${fileName}${THUMBNAIL_IDENTIFIER}`,
+                            size: `${DEFAULT_VIDEO_THUMBNAIL_WIDTH}x${DEFAULT_VIDEO_THUMBNAIL_HEIGHT}`
+                        });
                 });
         } catch (err) {
             logErrorResponse(err, '[AWS.VIDEO_THUMBNAIL]');
