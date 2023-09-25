@@ -15,9 +15,13 @@ import {
     jwtSession,
     PropelAuthRequest
 } from '@propelsoftwaresolutions/propel-sfdc-connect';
+import axios, { AxiosRequestConfig } from 'axios';
+import qs from 'qs';
 
-const CUSTOM_SUFFIX = '__c';
-const EXTERNAL_CONTENT_LOCATION = 'E';
+const CUSTOM_SUFFIX = '__c',
+    EXTERNAL_CONTENT_LOCATION = 'E',
+    NEW_CUSTOM_SETTING = 'Cloud_File_Storage__c',
+    OLD_CUSTOM_SETTING = 'Cloud_Storage__c';
 
 export const getSessionId = async (authRequest: PropelAuthRequest) => {
     const session = await jwtSession({
@@ -60,8 +64,23 @@ export default {
         };
 
         try {
-            this.writeTokensOld(newSetting, instanceKey);
-            this.writeTokensNew(newSetting);
+            let salesforceUrl: string, sessionId: string, orgNamespace: string;
+            ({ salesforceUrl, sessionId } = await InstanceManager.get(
+                instanceKey,
+                [MapKey.salesforceUrl, MapKey.sessionId]
+            ));
+            const connection = new jsConnect.Connection({
+                instanceUrl: salesforceUrl,
+                sessionId
+            });
+            orgNamespace = await this.setupNamespace(connection);
+            this.writeTokensOld(newSetting, connection, orgNamespace);
+            this.writeTokensNew(
+                newSetting,
+                orgNamespace,
+                salesforceUrl,
+                sessionId
+            );
             logSuccessResponse(instanceKey, '[JSFORCE.SEND_TOKENS]');
         } catch (err) {
             logErrorResponse(err, '[JSFORCE.SEND_TOKENS]');
@@ -336,19 +355,12 @@ export default {
         }
     },
 
-    async writeTokensOld(tokens: Record<string, string | number>, instanceKey: string) {
+    async writeTokensOld(
+        tokens: Record<string, string | number>,
+        connection: any,
+        orgNamespace: string
+    ) {
         try {
-            const OLD_CUSTOM_SETTING = 'Cloud_Storage__c';
-            let salesforceUrl: string, sessionId: string, orgNamespace: string;
-            ({ salesforceUrl, sessionId } = await InstanceManager.get(
-                instanceKey,
-                [MapKey.salesforceUrl, MapKey.sessionId]
-            ));
-            const connection = new jsConnect.Connection({
-                instanceUrl: salesforceUrl,
-                sessionId
-            });
-            orgNamespace = await this.setupNamespace(connection);
             await connection
                 .sobject(`${orgNamespace}${OLD_CUSTOM_SETTING}`)
                 .upsert({ ...this.addNamespace(tokens, orgNamespace) }, 'Name');
@@ -359,7 +371,31 @@ export default {
         }
     },
 
-    async writeTokensNew(tokens: Record<string, string | number>) { console.log(tokens) }
+    async writeTokensNew(
+        tokens: Record<string, string | number>,
+        orgNamespace: string,
+        salesforceUrl: string,
+        sessionId: string
+    ) {
+        try {
+            const url = `https://${salesforceUrl}/services/apexrest/${orgNamespace}/configuration/`,
+                reqBody = {
+                    settingName: NEW_CUSTOM_SETTING,
+                    payload: tokens
+                };
+            const options: AxiosRequestConfig = {
+                method: 'POST',
+                headers: { Authorization: 'OAuth ' + sessionId },
+                data: qs.stringify(reqBody),
+                url
+            };
+            await axios(options);
+            logSuccessResponse({}, '[JSFORCE.WRITE_NEW]');
+        } catch (err) {
+            logErrorResponse(err, '[JSFORCE.WRITE_NEW]');
+            throw err;
+        }
+    }
 };
 
 class Metadata {
