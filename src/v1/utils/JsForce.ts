@@ -16,7 +16,6 @@ import {
     PropelAuthRequest
 } from '@propelsoftwaresolutions/propel-sfdc-connect';
 import axios, { AxiosRequestConfig } from 'axios';
-import qs from 'qs';
 
 const CUSTOM_SUFFIX = '__c',
     EXTERNAL_CONTENT_LOCATION = 'E',
@@ -58,7 +57,7 @@ export default {
             Name: 'GoogleDrive',
             Access_Token__c: tokens.access_token,
             Refresh_Token__c: tokens.refresh_token,
-            Expiry_Date__c: tokens.expiry_date,
+            Expiry_Date__c: tokens.expiry_date + '',
             Client_Id__c: tokens.clientId,
             Client_Secret__c: tokens.clientSecret
         };
@@ -377,6 +376,15 @@ export default {
         salesforceUrl: string,
         sessionId: string
     ) {
+        const vfSubdomainRegex = new RegExp(/--[\w]{3,8}.vf\.force\.com/, 'g');
+        const regexIndex = salesforceUrl.search(vfSubdomainRegex);
+        if (regexIndex != -1) {
+            salesforceUrl =
+                salesforceUrl.slice(0, regexIndex) + '.my.salesforce.com';
+        }
+        if (orgNamespace.endsWith('__')) {
+            orgNamespace = orgNamespace.slice(0, -2);
+        }
         try {
             const url = `${salesforceUrl}/services/apexrest/${orgNamespace}/configuration/`,
                 reqBody = {
@@ -386,14 +394,16 @@ export default {
             const options: AxiosRequestConfig = {
                 method: 'POST',
                 headers: { Authorization: 'OAuth ' + sessionId },
-                data: qs.stringify(reqBody),
-                url
+                data: reqBody,
+                url,
+                validateStatus: (status) => status < 400
             };
-            await axios(options);
+            await axios(options).catch((err) => {
+                throw err;
+            });
             logSuccessResponse({}, '[JSFORCE.WRITE_NEW]');
         } catch (err) {
             logErrorResponse(err, '[JSFORCE.WRITE_NEW]');
-            throw err;
         }
     }
 };
