@@ -378,7 +378,7 @@ export default {
         sessionId: string
     ) {
         try {
-            const url = `https://${salesforceUrl}/services/apexrest/${orgNamespace}/configuration/`,
+            const url = `${salesforceUrl}/services/apexrest/${orgNamespace}/configuration/`,
                 reqBody = {
                     settingName: NEW_CUSTOM_SETTING,
                     payload: tokens
