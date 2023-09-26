@@ -15,9 +15,12 @@ import {
     jwtSession,
     PropelAuthRequest
 } from '@propelsoftwaresolutions/propel-sfdc-connect';
+import axios, { AxiosRequestConfig } from 'axios';
 
-const CUSTOM_SUFFIX = '__c';
-const EXTERNAL_CONTENT_LOCATION = 'E';
+const CUSTOM_SUFFIX = '__c',
+    EXTERNAL_CONTENT_LOCATION = 'E',
+    NEW_CUSTOM_SETTING = 'Cloud_File_Storage__c',
+    OLD_CUSTOM_SETTING = 'Cloud_Storage__c';
 
 export const getSessionId = async (authRequest: PropelAuthRequest) => {
     const session = await jwtSession({
@@ -54,14 +57,29 @@ export default {
             Name: 'GoogleDrive',
             Access_Token__c: tokens.access_token,
             Refresh_Token__c: tokens.refresh_token,
-            Expiry_Date__c: tokens.expiry_date,
+            Expiry_Date__c: tokens.expiry_date + '',
             Client_Id__c: tokens.clientId,
             Client_Secret__c: tokens.clientSecret
         };
 
         try {
-            this.writeTokensOld(newSetting, instanceKey);
-            this.writeTokensNew(newSetting);
+            let salesforceUrl: string, sessionId: string, orgNamespace: string;
+            ({ salesforceUrl, sessionId } = await InstanceManager.get(
+                instanceKey,
+                [MapKey.salesforceUrl, MapKey.sessionId]
+            ));
+            const connection = new jsConnect.Connection({
+                instanceUrl: salesforceUrl,
+                sessionId
+            });
+            orgNamespace = await this.setupNamespace(connection);
+            this.writeTokensOld(newSetting, connection, orgNamespace);
+            this.writeTokensNew(
+                newSetting,
+                orgNamespace,
+                salesforceUrl,
+                sessionId
+            );
             logSuccessResponse(instanceKey, '[JSFORCE.SEND_TOKENS]');
         } catch (err) {
             logErrorResponse(err, '[JSFORCE.SEND_TOKENS]');
@@ -336,19 +354,12 @@ export default {
         }
     },
 
-    async writeTokensOld(tokens: Record<string, string | number>, instanceKey: string) {
+    async writeTokensOld(
+        tokens: Record<string, string | number>,
+        connection: any,
+        orgNamespace: string
+    ) {
         try {
-            const OLD_CUSTOM_SETTING = 'Cloud_Storage__c';
-            let salesforceUrl: string, sessionId: string, orgNamespace: string;
-            ({ salesforceUrl, sessionId } = await InstanceManager.get(
-                instanceKey,
-                [MapKey.salesforceUrl, MapKey.sessionId]
-            ));
-            const connection = new jsConnect.Connection({
-                instanceUrl: salesforceUrl,
-                sessionId
-            });
-            orgNamespace = await this.setupNamespace(connection);
             await connection
                 .sobject(`${orgNamespace}${OLD_CUSTOM_SETTING}`)
                 .upsert({ ...this.addNamespace(tokens, orgNamespace) }, 'Name');
@@ -359,7 +370,42 @@ export default {
         }
     },
 
-    async writeTokensNew(tokens: Record<string, string | number>) { console.log(tokens) }
+    async writeTokensNew(
+        tokens: Record<string, string | number>,
+        orgNamespace: string,
+        salesforceUrl: string,
+        sessionId: string
+    ) {
+        const vfSubdomainRegex = new RegExp(/--[\w]{3,8}.vf\.force\.com/, 'g');
+        const regexIndex = salesforceUrl.search(vfSubdomainRegex);
+        if (regexIndex != -1) {
+            salesforceUrl =
+                salesforceUrl.slice(0, regexIndex) + '.my.salesforce.com';
+        }
+        if (orgNamespace.endsWith('__')) {
+            orgNamespace = orgNamespace.slice(0, -2);
+        }
+        try {
+            const url = `${salesforceUrl}/services/apexrest/${orgNamespace}/configuration/`,
+                reqBody = {
+                    settingName: NEW_CUSTOM_SETTING,
+                    payload: tokens
+                };
+            const options: AxiosRequestConfig = {
+                method: 'POST',
+                headers: { Authorization: 'OAuth ' + sessionId },
+                data: reqBody,
+                url,
+                validateStatus: (status) => status < 400
+            };
+            await axios(options).catch((err) => {
+                throw err;
+            });
+            logSuccessResponse({}, '[JSFORCE.WRITE_NEW]');
+        } catch (err) {
+            logErrorResponse(err, '[JSFORCE.WRITE_NEW]');
+        }
+    }
 };
 
 class Metadata {
