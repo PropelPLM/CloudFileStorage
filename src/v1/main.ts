@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, '../../public')));
 server.listen(port, async () => {
   try {
     await InstanceManager.connectToRedisServer();
-    logSuccessResponse(`INIT SUCCESS on port ${port}.`, '[SERVER_INIT]');
+    logSuccessResponse(`V1 INIT SUCCESS on port ${port}.`, '[SERVER_INIT]');
   } catch (err) {
     logErrorResponse(err, '[SERVER_INIT]');
   }
