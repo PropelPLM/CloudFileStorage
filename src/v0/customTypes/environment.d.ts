@@ -7,7 +7,7 @@ declare global {
       salesforceUrl: string;
       tenantId: string;
       destinationFolderId: string;
-      CLOUD_FILE_STORAGE_KEY: string;
+      CLOUD_FILE_STORAGE_KEY: string | undefined;
       PLATFORM_CONFIG: string;
     }
   }

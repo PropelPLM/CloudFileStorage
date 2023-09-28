@@ -114,7 +114,7 @@ export class GoogleDrive implements StoragePlatform {
         fileDetailsMap: Record<string, FileDetail>,
         fileDetailKey: string
     ): Promise<any> {
-        let destinationFolderId: string, fileName: string, mimeType: string;
+        let destinationFolderId: string, fileName: string, mimeType: string | undefined;
         ({ destinationFolderId } = await InstanceManager.get(instanceKey, [
             MapKey.destinationFolderId
         ]));
