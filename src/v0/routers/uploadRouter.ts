@@ -94,7 +94,7 @@ router.post('/:instanceKey', async (req: any, res: any) => {
             try {
               let fileDetailKey: string = Math.random().toString();
               fileDetailKey = `${fileName}_${fileDetailKey.substring(2)}`;
-              const newFileDetails: FileDetail = {fileName, fileSize, frontendBytes: 0, externalBytes: 0, mimeType};
+              const newFileDetails: FileDetail = {fileName, fileSize, frontendBytes: 0, externalBytes: 0};
 
               ({ fileDetails } = InstanceManager.get(instanceKey, [MapKey.fileDetails]));
               fileDetails = fileDetails ? fileDetails : {} as Record<string, FileDetail> ;

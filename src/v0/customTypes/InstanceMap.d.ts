@@ -9,7 +9,7 @@ type FileDetail = {
   frontendBytes: number;
   file?: any;
   uploadStream?: any;
-  mimeType: string;
+  mimeType?: string;
 };
 
 const enum MapKey {

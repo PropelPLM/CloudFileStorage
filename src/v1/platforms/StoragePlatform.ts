@@ -118,7 +118,7 @@ export class CreatedFileDetails {
         public id: string,
         public name: string,
         public webViewLink: string,
-        public fileExtension: string,
+        public fileExtension: string | undefined,
         public platform: PlatformIdentifier
     ) {}
     public webContentLink?: string;

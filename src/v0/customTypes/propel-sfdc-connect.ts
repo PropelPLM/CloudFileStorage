@@ -2,7 +2,7 @@ declare module '@propelsoftwaresolutions/propel-sfdc-connect' {
   type PropelAuthRequest = {
     clientId: string;
     isTest: boolean;
-    privateKey: string;
+    privateKey: string | undefined;
     user: string;
   };
 

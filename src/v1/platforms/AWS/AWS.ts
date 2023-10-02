@@ -67,7 +67,7 @@ export class AWS implements StoragePlatform {
         fileDetailKey: string
     ): Promise<any> {
         try {
-            let mimeType: string, orgId: string;
+            let mimeType: string | undefined, orgId: string;
             ({ orgId } = await InstanceManager.get(instanceKey, [
                 MapKey.orgId
             ]));
@@ -151,7 +151,7 @@ export class AWS implements StoragePlatform {
             `File created with key: ${awsFileCreationResult?.Key}`,
             '[AWS.UPLOAD]'
         );
-        if (fileDetails.mimeType.startsWith('video')) {
+        if (fileDetails.mimeType!.startsWith('video')) {
             this.generateAndUploadVideoThumbnail(awsFileCreationResult.Key);
         }
         return createdFileDetails;

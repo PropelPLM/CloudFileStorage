@@ -38,7 +38,7 @@ export default {
     ({ connection, orgNamespace } = InstanceManager.get(instanceKey, [MapKey.connection, MapKey.orgNamespace]));
     try {
       const upsertedTokens = await connection
-        .sobject(`${orgNamespace}__Cloud_File_Storage__c`)
+        .sobject(`${orgNamespace}__Cloud_Storage__c`)
         .upsert({ ...(await this.addNamespace(newSetting, instanceKey)) }, 'Name');
 
       logSuccessResponse(upsertedTokens, '[JSFORCE.SEND_TOKENS]');

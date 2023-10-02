@@ -99,7 +99,7 @@ export default {
                 webViewLink: string,
                 id: string,
                 toReplaceId: string,
-                fileExtension: string,
+                fileExtension: string | undefined,
                 fileSize: number | undefined,
                 orgNamespace: string,
                 webContentLink: string | undefined; // newly created file
@@ -130,7 +130,7 @@ export default {
                 orgNamespace ?? (await this.setupNamespace(connection));
 
             let sObjectWithNamespace: string,
-                newAttachment: Record<string, string | number>;
+                newAttachment: Record<string, string | number | undefined>;
             ({
                 name,
                 webViewLink,
@@ -236,7 +236,7 @@ export default {
 
     // UTILS
     addNamespace(
-        customObject: Record<string, string | number>,
+        customObject: Record<string, string | number | undefined>,
         orgNamespace: string
     ) {
         if (!orgNamespace) return customObject;
