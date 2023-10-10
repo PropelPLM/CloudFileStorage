@@ -69,7 +69,7 @@ router.post('/reset/:instanceKey/', async (req: any, res: any) => {
   }
 });
 
-router.post('/:instanceKey', async (req: any, res: any) => {
+router.post('/files/:instanceKey', async (req: any, res: any) => {
   const instanceKey = req.params.instanceKey;
   const form = new Busboy({ headers: req.headers });
   let salesforceUrl: string, isNew: string, fileDetails: Record<string, FileDetail>;
