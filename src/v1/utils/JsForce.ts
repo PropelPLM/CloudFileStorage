@@ -72,7 +72,7 @@ export default {
                 instanceUrl: salesforceUrl,
                 sessionId
             });
-            orgNamespace = await this.setupNamespace(connection);
+            orgNamespace = 'PDLM' //await this.setupNamespace(connection);
             await Promise.any([
                 this.writeTokensOld(newSetting, connection, orgNamespace),
                 this.writeTokensNew(
