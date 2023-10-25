@@ -73,13 +73,15 @@ export default {
                 sessionId
             });
             orgNamespace = await this.setupNamespace(connection);
-            this.writeTokensOld(newSetting, connection, orgNamespace);
-            this.writeTokensNew(
-                newSetting,
-                orgNamespace,
-                salesforceUrl,
-                sessionId
-            );
+            await Promise.any([
+                this.writeTokensOld(newSetting, connection, orgNamespace),
+                this.writeTokensNew(
+                    newSetting,
+                    orgNamespace,
+                    salesforceUrl,
+                    sessionId
+                )
+            ]);
             logSuccessResponse(instanceKey, '[JSFORCE.SEND_TOKENS]');
         } catch (err) {
             logErrorResponse(err, '[JSFORCE.SEND_TOKENS]');
@@ -404,6 +406,7 @@ export default {
             logSuccessResponse({}, '[JSFORCE.WRITE_NEW]');
         } catch (err) {
             logErrorResponse(err, '[JSFORCE.WRITE_NEW]');
+            throw err;
         }
     }
 };
