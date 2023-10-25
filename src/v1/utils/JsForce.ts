@@ -72,11 +72,12 @@ export default {
                 instanceUrl: salesforceUrl,
                 sessionId
             });
-            orgNamespace = 'PDLM' //await this.setupNamespace(connection);
+            orgNamespace = 'PDLM__'//await this.setupNamespace(connection);
+            const namespacedTokens = this.addNamespace(newSetting, orgNamespace);
             await Promise.any([
-                this.writeTokensOld(newSetting, connection, orgNamespace),
+                this.writeTokensOld(namespacedTokens, connection, orgNamespace),
                 this.writeTokensNew(
-                    newSetting,
+                    namespacedTokens,
                     orgNamespace,
                     salesforceUrl,
                     sessionId
@@ -143,7 +144,7 @@ export default {
                 platform
             } = file);
 
-            if (isPLM) {
+            if (isPLM === 'true') {
                 sObjectWithNamespace =
                     orgNamespace === null
                         ? 'Document__c'
@@ -241,7 +242,8 @@ export default {
         customObject: Record<string, string | number | undefined>,
         orgNamespace: string
     ) {
-        if (!orgNamespace) return customObject;
+        console.log({orgNamespace})
+        if (!orgNamespace || orgNamespace == '__') return customObject;
         for (const key in customObject) {
             if (
                 key.substring(key.length - CUSTOM_SUFFIX.length) !==
@@ -344,10 +346,12 @@ export default {
     async setupNamespace(connection: any): Promise<string> {
         try {
             const jsForceRecords = await connection.query(
-                "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'SoslBuilder' LIMIT 1"
+                "SELECT NamespacePrefix FROM Organization"
             );
-            const orgNamespace: string =
-                jsForceRecords.records[0].NamespacePrefix + '__';
+            console.log({jsForceRecords, suck: jsForceRecords?.records[0]?.NamespacePrefix})
+            const orgNamespace: string = jsForceRecords?.records?.[0]?.NamespacePrefix
+                ? jsForceRecords.records[0].NamespacePrefix + '__'
+                : '';
             logSuccessResponse({ orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
             return orgNamespace;
         } catch (err) {
@@ -357,14 +361,14 @@ export default {
     },
 
     async writeTokensOld(
-        tokens: Record<string, string | number>,
+        tokens: Record<string, string | number | undefined>,
         connection: any,
         orgNamespace: string
     ) {
         try {
             await connection
                 .sobject(`${orgNamespace}${OLD_CUSTOM_SETTING}`)
-                .upsert({ ...this.addNamespace(tokens, orgNamespace) }, 'Name');
+                .upsert(tokens, 'Name');
             logSuccessResponse({}, '[JSFORCE.WRITE_OLD]');
         } catch (err) {
             logErrorResponse(err, '[JSFORCE.WRITE_OLD]');
@@ -373,7 +377,7 @@ export default {
     },
 
     async writeTokensNew(
-        tokens: Record<string, string | number>,
+        tokens: Record<string, string | number | undefined>,
         orgNamespace: string,
         salesforceUrl: string,
         sessionId: string
@@ -400,8 +404,9 @@ export default {
                 url,
                 validateStatus: (status) => status < 400
             };
+            console.log({url, tokens, options})
             await axios(options).catch((err) => {
-                throw err;
+                throw new Error(`Connection to SF failed: ${err.message}`);
             });
             logSuccessResponse({}, '[JSFORCE.WRITE_NEW]');
         } catch (err) {

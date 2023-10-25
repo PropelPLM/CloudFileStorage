@@ -14,7 +14,7 @@ export const logSuccessResponse = (response: any, functionName: string) => {
 }
 
 export const logErrorResponse = (err: any, functionName: string) => {
-  console.log(`\x1b[31m${functionName} failed \x1b[39m due to error: ${JSON.stringify(err)}.`);
+  console.log(`\x1b[31m${functionName} failed \x1b[39m due to error: ${err.message}.`);
   return err;
 }
 
