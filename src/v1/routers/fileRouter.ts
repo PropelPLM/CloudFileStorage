@@ -248,6 +248,21 @@ router.post('/clone', async (_: Request, res: Response, next: NextFunction) => {
     next();
 });
 
+function resolveDownloadList(daDownloadDetailsList: Array<DADownloadDetails>, fileId: string): Array<DADownloadDetails>{
+    if (!daDownloadDetailsList?.length) {
+        if (!fileId) { throw new Error('No files to download'); }
+        daDownloadDetailsList = [{fileId}];
+    }
+    daDownloadDetailsList?.forEach((detail: DADownloadDetails) => {
+        if (detail.mimeType == null) return;
+        const mimeType: string = `.${extension(detail.mimeType)}`;
+        if (detail.fileName?.endsWith(mimeType)) return;
+
+        detail.fileName += mimeType;
+    });
+    return daDownloadDetailsList;
+}
+
 router.post(
     '/download',
     async (_: Request, res: Response, next: NextFunction) => {
@@ -256,6 +271,7 @@ router.post(
             salesforceUrl: string,
             sessionId: string,
             hostName: string,
+            fileId: string,
             zipFileName: string,
             daDownloadDetailsList: Array<DADownloadDetails>;
         ({
@@ -264,27 +280,19 @@ router.post(
             salesforceUrl,
             sessionId,
             hostName,
+            fileId,
             zipFileName,
             daDownloadDetailsList
         } = res.locals);
         const configuredPlatform = res.locals.platformInstance;
-
         try {
-            if (!daDownloadDetailsList || daDownloadDetailsList.length === 0)
-                throw new Error('No files to download');
+            daDownloadDetailsList = resolveDownloadList(daDownloadDetailsList, fileId);
             if (
                 daDownloadDetailsList.length > 1 &&
                 (!sessionId || !hostName || !zipFileName)
             )
                 throw new Error('Not enough details for bulk download');
-
-            daDownloadDetailsList.forEach((detail: DADownloadDetails) => {
-                if (detail.mimeType == null) return;
-                const mimeType: string = `.${extension(detail.mimeType)}`;
-                if (detail.fileName.endsWith(mimeType)) return;
-
-                detail.fileName += mimeType;
-            });
+            
             const downloadLink: any = await configuredPlatform.downloadFile!({
                 instanceKeyOrOrgUrlOrOrgId: orgId || salesforceUrl,
                 daDownloadDetailsList,
@@ -296,7 +304,7 @@ router.post(
                 `downloadLink: ${downloadLink}`,
                 `[${platform}.DOWNLOAD_FILE]`
             );
-            res.locals.result = downloadLink;
+            res.locals.result = {downloadLink};
         } catch (err: any) {
             logErrorResponse(err, `[${platform}.DOWNLOAD_FILE]`);
             res.locals.err = new ResponseError(406, err.message);
