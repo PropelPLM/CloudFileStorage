@@ -2,9 +2,9 @@ import { PassThrough } from 'stream';
 
 export type DADownloadDetails = {
     fileId: string;
-    fileName: string;
-    key: string;
-    mimeType: string;
+    fileName?: string;
+    key?: string;
+    mimeType?: string;
 };
 
 export type DownloadParams = {

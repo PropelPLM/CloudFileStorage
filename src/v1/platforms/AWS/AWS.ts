@@ -197,7 +197,7 @@ export class AWS implements StoragePlatform {
                     });
                     const { Body } = await this.s3Client.send(command);
                     archive.append(Body, {
-                        name: detail?.fileName ?? detail?.key
+                        name: detail?.fileName ?? detail?.key!!
                     });
                 }
             );
