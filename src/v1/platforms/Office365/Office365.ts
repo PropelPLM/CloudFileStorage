@@ -239,9 +239,9 @@ export class Office365 implements StoragePlatform {
         if (daDownloadDetailsList.length === 1) {
             const fileObject: Record<string, any> = await this.oAuth2Client
                 .api(
-                    `/groups/${groupId}/drive/items/${options?.daDownloadDetailsList?.[0]?.fileId}/content?format=pdf`
+                    // `/groups/${groupId}/drive/items/${options?.daDownloadDetailsList?.[0]?.fileId}/content?format=pdf`
+                    `/groups/${groupId}/drive/items/${options?.daDownloadDetailsList?.[0]?.fileId}?$select=content.downloadUrl`
                 )
-                .responseType(ResponseType.RAW)
                 .get();
 
             if (fileObject.status >= 400) {
@@ -252,7 +252,7 @@ export class Office365 implements StoragePlatform {
                 };
             }
 
-            return fileObject.url;
+            return fileObject['@microsoft.graph.downloadUrl'];
         } else {
             throw {
                 code: 500,
