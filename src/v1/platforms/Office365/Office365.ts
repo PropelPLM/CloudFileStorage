@@ -17,7 +17,7 @@ import {
 import { PassThrough } from 'stream';
 
 export class Office365 implements StoragePlatform {
-    private constructor() {}
+    private constructor() { }
     private oAuth2Client: CloudStorageProviderClient;
     // private static className: string = 'office365';
 
@@ -239,9 +239,10 @@ export class Office365 implements StoragePlatform {
         if (daDownloadDetailsList.length === 1) {
             const fileObject: Record<string, any> = await this.oAuth2Client
                 .api(
-                    `/groups/${groupId}/drive/items/${options?.daDownloadDetailsList?.[0]?.fileId}/content?format=pdf`
+                    // if we ever NEED PDF formatted downloads. This will break presigned URLs because the microsoft graph api can't do both JEEZ 
+                    // `/groups/${groupId}/drive/items/${options?.daDownloadDetailsList?.[0]?.fileId}/content?format=pdf`
+                    `/groups/${groupId}/drive/items/${options?.daDownloadDetailsList?.[0]?.fileId}?$select=content.downloadUrl`
                 )
-                .responseType(ResponseType.RAW)
                 .get();
 
             if (fileObject.status >= 400) {
@@ -252,7 +253,7 @@ export class Office365 implements StoragePlatform {
                 };
             }
 
-            return fileObject.url;
+            return fileObject['@microsoft.graph.downloadUrl'];
         } else {
             throw {
                 code: 500,
@@ -333,8 +334,8 @@ export class Office365 implements StoragePlatform {
         const user = permissionRes.grantedTo
             ? permissionRes.grantedTo.user
             : permissionRes.grantedToIdentities
-            ? (permissionRes.grantedToIdentities[0] || []).user
-            : {};
+                ? (permissionRes.grantedToIdentities[0] || []).user
+                : {};
 
         /** Get user email addres if creating permission for internal user */
         if (!('email' in user)) {
