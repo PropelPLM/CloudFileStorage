@@ -68,6 +68,7 @@ export default {
                 instanceKey,
                 [MapKey.salesforceUrl, MapKey.sessionId]
             ));
+            salesforceUrl = this.patchUnderPrivilegedSFURL(salesforceUrl);
             const connection = new jsConnect.Connection({
                 instanceUrl: salesforceUrl,
                 sessionId
@@ -121,6 +122,7 @@ export default {
                 MapKey.toReplaceId
             ]));
 
+            salesforceUrl = this.patchUnderPrivilegedSFURL(salesforceUrl);
             const connection = new jsConnect.Connection({
                 instanceUrl: salesforceUrl,
                 sessionId,
@@ -370,18 +372,21 @@ export default {
         }
     },
 
+    patchUnderPrivilegedSFURL(salesforceUrl: string): string {
+        const vfSubdomainRegex = new RegExp(/--[\w]{3,8}.vf\.force\.com/, 'g');
+        const regexIndex = salesforceUrl.search(vfSubdomainRegex);
+        return regexIndex != -1
+            ? salesforceUrl.slice(0, regexIndex) + '.my.salesforce.com'
+            : salesforceUrl;
+    },
+
     async writeTokensNew(
         tokens: Record<string, string | number>,
         orgNamespace: string,
         salesforceUrl: string,
         sessionId: string
     ) {
-        const vfSubdomainRegex = new RegExp(/--[\w]{3,8}.vf\.force\.com/, 'g');
-        const regexIndex = salesforceUrl.search(vfSubdomainRegex);
-        if (regexIndex != -1) {
-            salesforceUrl =
-                salesforceUrl.slice(0, regexIndex) + '.my.salesforce.com';
-        }
+        salesforceUrl = this.patchUnderPrivilegedSFURL(salesforceUrl);
         if (orgNamespace.endsWith('__')) {
             orgNamespace = orgNamespace.slice(0, -2);
         }
