@@ -22,7 +22,7 @@ router.post('/:instanceKey/', async (req: any, res: any) => {
 
   try {
     ({ sessionId, salesforceUrl, clientId, clientSecret, tenantId } = req.body);
-    sessionId = sessionId ?? await getSessionId(req.body);
+    sessionId = await getSessionId(req.body);
     const instanceDetails = { salesforceUrl, clientId, clientSecret, tenantId, sessionId };
     await InstanceManager.upsert(instanceKey, instanceDetails);
 
