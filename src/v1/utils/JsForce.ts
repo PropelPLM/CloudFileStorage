@@ -61,6 +61,8 @@ export default {
             Client_Id__c: tokens.clientId,
             Client_Secret__c: tokens.clientSecret
         };
+        console.log('newSettings')
+        console.log(newSetting)
 
         try {
             let salesforceUrl: string, sessionId: string, orgNamespace: string;
