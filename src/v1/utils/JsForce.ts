@@ -49,7 +49,7 @@ export default {
         console.log(sessionId, salesforceUrl, instanceKey);
     },
 
-    async sendTokens(
+    async sendCloudConfig(
         tokens: Record<string, string | number>,
         instanceKey: string
     ) {
