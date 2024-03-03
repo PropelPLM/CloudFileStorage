@@ -56,7 +56,7 @@ class Office365 implements IPlatform {
     }
 
     const fileObject: Record<string, string> = await oAuth2Client
-      .api(`/groups/${groupId}/drive/items/root:/${destinationFolderId}/${fileName}.${type}:/content`)
+      .api!(`/groups/${groupId}/drive/items/root:/${destinationFolderId}/${fileName}.${type}:/content`)
       .put(type == 'xlsx' ? await this.createXlsxFileBuffer() : '');
 
     Object.assign(fileObject, {
@@ -76,7 +76,7 @@ class Office365 implements IPlatform {
 
     const retFiles: Record<string, string>[] = [];
     const results: Record<string, any> = await oAuth2Client
-      .api(`/groups/${groupId}/drive/root/search(q='${searchString}')`)
+      .api!(`/groups/${groupId}/drive/root/search(q='${searchString}')`)
       .get();
 
     /** Filter out results which do not match the file name exactly */
@@ -104,7 +104,7 @@ class Office365 implements IPlatform {
     ({ folderId, driveId } = await this.getFolderAndDriveId(oAuth2Client, groupId, folderName));
 
     const monitorResponse: Record<string, any> = await oAuth2Client
-      .api(`/groups/${groupId}/drive/items/${fileId}/copy`)
+      .api!(`/groups/${groupId}/drive/items/${fileId}/copy`)
       .responseType(ResponseType.RAW)
       .post({
         "parentReference": {
@@ -131,7 +131,7 @@ class Office365 implements IPlatform {
     };
 
     const fileObject: Record<string, string> = await oAuth2Client
-      .api(`/groups/${groupId}/drive/items/${docId}`)
+      .api!(`/groups/${groupId}/drive/items/${docId}`)
       .update(driveItem);
 
     return fileObject.id;
@@ -146,7 +146,7 @@ class Office365 implements IPlatform {
     }
 
     await oAuth2Client
-      .api(`/groups/${groupId}/drive/items/${docId}`)
+      .api!(`/groups/${groupId}/drive/items/${docId}`)
       .delete(); // returns undefined object
 
     return {
@@ -163,7 +163,7 @@ class Office365 implements IPlatform {
     }
 
     const fileObject: Record<string, any> = await oAuth2Client
-      .api(`/groups/${groupId}/drive/items/${fileId}/content?format=pdf`)
+      .api!(`/groups/${groupId}/drive/items/${fileId}/content?format=pdf`)
       .responseType(ResponseType.RAW)
       .get();
 
@@ -195,7 +195,7 @@ class Office365 implements IPlatform {
 
     /** Send request to update file */
     const res: Record<string, any> = await oAuth2Client
-      .api(`/groups/${groupId}/drive/items/${fileId}`)
+      .api!(`/groups/${groupId}/drive/items/${fileId}`)
       .update(fileToUpdate);
 
     return { id: res.id };
@@ -227,10 +227,10 @@ class Office365 implements IPlatform {
     /** Send request to create permission */
     const res: Record<string, any> = await Promise.all([
       oAuth2Client
-        .api(`/groups/${groupId}/drive/items/${fileId}/invite`)
+        .api!(`/groups/${groupId}/drive/items/${fileId}/invite`)
         .post(permission),
       oAuth2Client
-        .api(`/groups/${groupId}/drive/items/${fileId}`)
+        .api!(`/groups/${groupId}/drive/items/${fileId}`)
         .get()
     ]);
 
@@ -269,7 +269,7 @@ class Office365 implements IPlatform {
     }
 
     const res: Record<string, any> = await oAuth2Client
-      .api(`/groups/${groupId}/drive/items/${fileId}/permissions/${permissionId}`)
+      .api!(`/groups/${groupId}/drive/items/${fileId}/permissions/${permissionId}`)
       .get();
     const permissions = res.value || [];
     return await this.retrievePermissionsList(oAuth2Client, permissions);
@@ -291,7 +291,7 @@ class Office365 implements IPlatform {
 
     /** Send request to delete permission */
     await oAuth2Client
-      .api(`/groups/${groupId}/drive/items/${fileId}/permissions/${permissionId}`)
+      .api!(`/groups/${groupId}/drive/items/${fileId}/permissions/${permissionId}`)
       .delete();
   }
 
@@ -311,7 +311,7 @@ class Office365 implements IPlatform {
 
     /** Send request to retrieve list of permissions */
     const res: Record<string, any> = await oAuth2Client
-      .api(`/groups/${groupId}/drive/items/${fileId}/permissions`)
+      .api!(`/groups/${groupId}/drive/items/${fileId}/permissions`)
       .get();
 
     const permissions = res.value || [];
@@ -349,7 +349,7 @@ class Office365 implements IPlatform {
     }
 
     const res: Record<string, any> = await oAuth2Client
-      .api(`/groups/${groupId}/drive/items/${fileId}/permissions/${permissionId}`)
+      .api!(`/groups/${groupId}/drive/items/${fileId}/permissions/${permissionId}`)
       .update(updatedPermission);
 
     return res; // returns a permission object
@@ -374,12 +374,12 @@ class Office365 implements IPlatform {
   // helper SDK calls
   // returns driveItem object by calling sdk with driveItem Id
   async getDriveItem(oAuth2Client: OAuth2Client, groupId: string, driveItemId: string): Promise<Record<string, string>> {
-    const driveItem = await oAuth2Client.api(`/groups/${groupId}/drive/items/${driveItemId}`).get();
+    const driveItem = await oAuth2Client.api!(`/groups/${groupId}/drive/items/${driveItemId}`).get();
     return this.constructDriveItem(driveItem);
   }
 
   async getGroupId(instanceKeyOrOrgUrl: string, oAuth2Client: OAuth2Client): Promise<string> {
-    const getGroups = await oAuth2Client.api('groups').get();
+    const getGroups = await oAuth2Client.api!('groups').get();
     const group = getGroups.value.filter((group: Record<string, any>) => group.displayName === 'PropelPLM');
     if (group.length > 1) {
       throw new Error('[Office365.getGroupId] Please ensure that there are no duplicate group names.')
@@ -392,7 +392,7 @@ class Office365 implements IPlatform {
   // returns folder and driveId by calling sdk with folderName
   async getFolderAndDriveId(oAuth2Client: OAuth2Client, groupId: string, folderName: string): Promise<Record<string, string>> {
     try {
-      const folderQueryResult: Record<string, any> = await oAuth2Client.api(`/groups/${groupId}/drive/root:/${folderName}`).get();
+      const folderQueryResult: Record<string, any> = await oAuth2Client.api!(`/groups/${groupId}/drive/root:/${folderName}`).get();
       return {
         folderId: folderQueryResult.id,
         driveId: folderQueryResult.parentReference.driveId
@@ -421,7 +421,7 @@ class Office365 implements IPlatform {
    */
   async getUserEmail(oAuth2Client: OAuth2Client, userId: string): Promise<string> {
     const user = await oAuth2Client
-      .api(`/users/${userId}`)
+      .api!(`/users/${userId}`)
       .get();
 
     return user.userPrincipalName;
@@ -593,7 +593,7 @@ class Office365 implements IPlatform {
     }
 
     return await oAuth2Client
-      .api(`/me`)
+      .api!(`/me`)
       .get();
   }
 }

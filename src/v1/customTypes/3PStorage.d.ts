@@ -15,7 +15,8 @@ type OAuth2Client = {
 
     getToken(code: string): Record<string, any>
     setCredentials(tokens: Record<string, any>): void
-    api(endpoint: string)
+    api?(endpoint: string)
 }
 
-type CloudStorageProviderClient = MicrosoftClient | OAuth2Client | S3
+type CloudStorageProviderClient = MicrosoftClient | OAuth2Client | S3;
+enum FolderNameEnum { 'Drafts', 'In Review', 'Released' };
