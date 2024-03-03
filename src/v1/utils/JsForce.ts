@@ -6,7 +6,8 @@ import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
 import {
     CreatedFileDetails,
-    PlatformIdentifier
+    PlatformIdentifier,
+    FolderNameEnum
 } from '../platforms/StoragePlatform';
 import { v4 as uuidv4 } from 'uuid';
 import https from 'https';

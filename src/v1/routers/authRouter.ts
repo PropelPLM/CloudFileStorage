@@ -3,7 +3,7 @@
 import express from 'express';
 const router = express.Router();
 import path from 'path';
-
+import { FolderNameEnum } from '../platforms/StoragePlatform';
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
 import MessageEmitter from '../utils/MessageEmitter';

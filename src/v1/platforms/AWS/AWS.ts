@@ -383,7 +383,4 @@ export class AWS implements StoragePlatform {
             logErrorResponse(err, '[AWS.VIDEO_THUMBNAIL]');
         }
     }
-
-    // TODO: below methods' "implementation" are placeholders to prevent tsc errors
-    async createSetupFolders(): Promise<Record<FolderNameEnum, string>> { return {} };
 }

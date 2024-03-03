@@ -9,7 +9,8 @@ import InstanceManager from '../../utils/InstanceManager';
 import {
     CreatedFileDetails,
     PlatformIdentifier,
-    StoragePlatform
+    StoragePlatform,
+    FolderNameEnum
 } from '../StoragePlatform';
 
 const GOOGLE_FOLDER_MIMETYPE = 'application/vnd.google-apps.folder';
@@ -198,11 +199,11 @@ export class GoogleDrive implements StoragePlatform {
     }
 
     async createSetupFolders(): Promise<Record<FolderNameEnum, string>> {
-        const folderIdMap: Record<FolderNameEnum, string> = {};
-        folderIdMap[FolderNameEnum['Drafts']] = await this.createFolder(FolderNameEnum[FolderNameEnum['Drafts']]);
-        folderIdMap[FolderNameEnum['In Review']] = await this.createFolder(FolderNameEnum[FolderNameEnum['In Review']]);
-        folderIdMap[FolderNameEnum['Released']] = await this.createFolder(FolderNameEnum[FolderNameEnum['Released']]);
-        return folderIdMap;
+        return {
+            [FolderNameEnum['Drafts']]: await this.createFolder(FolderNameEnum[FolderNameEnum['Drafts']]),
+            [FolderNameEnum['In Review']]: await this.createFolder(FolderNameEnum[FolderNameEnum['In Review']]),
+            [FolderNameEnum['Released']]: await this.createFolder(FolderNameEnum[FolderNameEnum['Released']]),
+        };
     };
 
     async createFolder(folderName: String): Promise<string> {

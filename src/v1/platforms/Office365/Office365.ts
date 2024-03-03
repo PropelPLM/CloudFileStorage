@@ -504,8 +504,6 @@ export class Office365 implements StoragePlatform {
         return await fileDetails.file;
     }
 
-    async createSetupFolders(): Promise<Record<FolderNameEnum, string>> { return {} };
-
     // helper SDK calls
     // returns driveItem object by calling sdk with driveItem Id
     async getDriveItem(

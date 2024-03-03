@@ -19,4 +19,3 @@ type OAuth2Client = {
 }
 
 type CloudStorageProviderClient = MicrosoftClient | OAuth2Client | S3;
-enum FolderNameEnum { 'Drafts', 'In Review', 'Released' };
