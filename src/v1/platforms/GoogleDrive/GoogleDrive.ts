@@ -26,6 +26,25 @@ export class GoogleDrive implements StoragePlatform {
 
     public constructor() {}
     private oAuth2Client: CloudStorageProviderClient;
+    public async login(credentials: Record<string, string>) {
+        let clientId: string, clientSecret: string, accessToken: string, refreshToken: string, expiryDate: string;
+        ({ clientId, clientSecret, accessToken, refreshToken, expiryDate } = credentials);
+        const oAuth2Client: OAuth2Client = new google.auth.OAuth2(
+            clientId,
+            clientSecret,
+            GoogleDrive.redirect_uris[0]
+        );
+        const tokens: Record<string, string> = {
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            scope: GoogleDrive.actions.driveFiles,
+            token_type: 'Bearer',
+            expiry_date: expiryDate
+        };
+        oAuth2Client.setCredentials(tokens);
+        this.oAuth2Client = oAuth2Client;
+    }
+
     private driveInstance?: any;
     getDriveInstance() {
         if (!this.driveInstance) {
@@ -94,20 +113,7 @@ export class GoogleDrive implements StoragePlatform {
                     MapKey.refreshToken,
                     MapKey.expiryDate
                 ]));
-            const oAuth2Client: OAuth2Client = new google.auth.OAuth2(
-                clientId,
-                clientSecret,
-                GoogleDrive.redirect_uris[0]
-            );
-            const tokens: Record<string, string> = {
-                access_token: accessToken,
-                refresh_token: refreshToken,
-                scope: GoogleDrive.actions.driveFiles,
-                token_type: 'Bearer',
-                expiry_date: expiryDate
-            };
-            oAuth2Client.setCredentials(tokens);
-            this.oAuth2Client = oAuth2Client;
+            this.login({clientId, clientSecret, accessToken, refreshToken, expiryDate});
             logSuccessResponse(instanceKey, '[GOOGLE_DRIVE.AUTHORIZE]');
             return this;
         } catch (err) {

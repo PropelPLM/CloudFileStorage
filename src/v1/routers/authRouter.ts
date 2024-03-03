@@ -50,8 +50,14 @@ router.get('/callback/google', async (req: any, res: any) => {
     const token: Record<string, any> = await platformInstance.getTokens!(code, instanceKey, req.hostname);
     let clientId: string, clientSecret: string;
     ({ clientId, clientSecret } = await InstanceManager.get(instanceKey, [MapKey.clientId, MapKey.clientSecret]));
-
     if (token.tokens) {
+      await platformInstance.login({ 
+        clientId,
+        clientSecret, 
+        accessToken: token.tokens?.access_token,
+        refreshToken: token.tokens?.refresh_token,
+        expiryDate: token.tokens?.expiry_date
+      });
       const setupFolders: Record<FolderNameEnum, string> = await platformInstance.createSetupFolders();
       await JsForce.sendCloudConfig({ ...token.tokens, clientId, clientSecret, ...setupFolders }, instanceKey);
     } else {
