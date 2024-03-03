@@ -61,9 +61,9 @@ export default {
             Expiry_Date__c: tokens.expiry_date + '',
             Client_Id__c: tokens.clientId,
             Client_Secret__c: tokens.clientSecret,
-            Drafts__c: tokens[FolderNameEnum['Drafts']],
-            In_Review__c: tokens[FolderNameEnum['In Review']],
-            Released__c: tokens[FolderNameEnum['Released']],
+            Drafts_Folder_Id__c: tokens[FolderNameEnum['Drafts']],
+            In_Review_Folder_Id__c: tokens[FolderNameEnum['In Review']],
+            Released_Folder_Id__c: tokens[FolderNameEnum['Released']],
         };
 
         try {
