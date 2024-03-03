@@ -26,7 +26,7 @@ export const getPlatform = async (platform: string, instanceKey: string): Promis
   let returnPlatform: StoragePlatform;
   switch (platform.toLowerCase()) {
     case 'googledrive':
-      returnPlatform = await GoogleDrive.authorize(instanceKey);
+      returnPlatform = await new GoogleDrive().authorize(instanceKey);
       break;
     case 'office365':
       returnPlatform = await Office365.authorize(instanceKey);
