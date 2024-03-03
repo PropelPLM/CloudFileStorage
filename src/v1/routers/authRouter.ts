@@ -46,13 +46,14 @@ router.get('/callback/google', async (req: any, res: any) => {
   let instanceKey: string;
   try {
     instanceKey = Buffer.from(req.query.state, 'base64').toString();
-    const code = req.query.code;
-    const token: Record<string, any> = await GoogleDrive.getTokens!(code, instanceKey, req.hostname);
+    const code = req.query.code, platformInstance = new GoogleDrive();
+    const token: Record<string, any> = await platformInstance.getTokens!(code, instanceKey, req.hostname);
     let clientId: string, clientSecret: string;
     ({ clientId, clientSecret } = await InstanceManager.get(instanceKey, [MapKey.clientId, MapKey.clientSecret]));
 
     if (token.tokens) {
-      await JsForce.sendTokens({ ...token.tokens, clientId, clientSecret }, instanceKey);
+      const setupFolders: Record<FolderNameEnum, string> = await platformInstance.createSetupFolders();
+      await JsForce.sendCloudConfig({ ...token.tokens, clientId, clientSecret, ...setupFolders }, instanceKey);
     } else {
       throw new Error('No tokens found in Google Drive callback.')
     }
