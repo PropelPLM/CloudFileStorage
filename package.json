@@ -34,7 +34,7 @@
         "busboy": "^0.3.1",
         "cors": "^2.8.5",
         "dotenv": "^16.0.3",
-        "express": "^4.17.1",
+        "express": "^4.19.2",
         "fluent-ffmpeg": "^2.1.2",
         "formidable": "^1.2.2",
         "googleapis": "^94.0.0",
