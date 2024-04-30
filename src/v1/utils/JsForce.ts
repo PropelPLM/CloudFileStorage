@@ -142,10 +142,7 @@ export default {
             } = file);
 
             if (isPLM) {
-                sObjectWithNamespace =
-                    orgNamespace === null
-                        ? 'Document__c'
-                        : `${orgNamespace}Document__c`;
+                sObjectWithNamespace = `${orgNamespace}Document__c`;
                 newAttachment = {
                     External_Attachment_URL__c: webViewLink,
                     File_Extension__c: fileExtension,
@@ -158,10 +155,7 @@ export default {
                     newAttachment['Item_Revision__c'] = revisionId;
                 }
             } else {
-                sObjectWithNamespace =
-                    orgNamespace === null
-                        ? 'Digital_Asset__c'
-                        : `${orgNamespace}Digital_Asset__c`;
+                sObjectWithNamespace = `${orgNamespace}Digital_Asset__c`;
                 newAttachment = {
                     Content_Location__c: platform,
                     External_File_Id__c: id,
@@ -344,8 +338,11 @@ export default {
             const jsForceRecords = await connection.query(
                 "SELECT NamespacePrefix FROM ApexClass WHERE Name = 'SoslBuilder' LIMIT 1"
             );
-            const orgNamespace: string =
-                jsForceRecords.records[0].NamespacePrefix + '__';
+            const { NamespacePrefix } =
+                (jsForceRecords?.records || [])[0] || {};
+            const orgNamespace: string = NamespacePrefix
+                ? `${NamespacePrefix}__`
+                : '';
             logSuccessResponse({ orgNamespace }, '[JSFORCE.SETUP_NAMESPACE]');
             return orgNamespace;
         } catch (err) {
@@ -383,10 +380,10 @@ export default {
                 salesforceUrl.slice(0, regexIndex) + '.my.salesforce.com';
         }
         if (orgNamespace.endsWith('__')) {
-            orgNamespace = orgNamespace.slice(0, -2);
+            orgNamespace = `${orgNamespace.slice(0, -2)}/`;
         }
         try {
-            const url = `${salesforceUrl}/services/apexrest/${orgNamespace}/configuration/`,
+            const url = `${salesforceUrl}/services/apexrest/${orgNamespace}configuration/`,
                 reqBody = {
                     settingName: NEW_CUSTOM_SETTING,
                     payload: tokens
@@ -418,12 +415,10 @@ class Metadata {
         metadataName: string,
         metadataValue: string
     ) {
-        (this.fullName = `${
-            namespace + '__'
-        }Configuration__mdt.${metadataName}`),
+        (this.fullName = `${namespace}Configuration__mdt.${metadataName}`),
             (this.label = metadataName),
             (this.values = {
-                field: `${namespace + '__'}Value__c`,
+                field: `${namespace}Value__c`,
                 value: metadataValue
             });
     }

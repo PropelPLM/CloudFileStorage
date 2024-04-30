@@ -74,6 +74,7 @@ router.post(
         try {
             res.setTimeout(2147483647);
             const instanceKey = req.params.instanceKey;
+            logSuccessResponse(`received instance key: ${instanceKey}`, '[INSTANCE_KEY]');
 
             const form = new Busboy({ headers: req.headers });
             let salesforceUrl: string, isNew: string, platform: string;
