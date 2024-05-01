@@ -50,6 +50,17 @@ $(() => {
   const trackProgress = async () => {
     await socket.on('progress', (percent) => {
       const displayPercent = Math.min(100, percent);
+      let targetWindow = form.data(`target-window`);
+      window.parent.postMessage({ displayPercent }, targetWindow);
+      targetWindow =
+        targetWindow.substring(0, targetWindow.indexOf('.') + 1) +
+        'lightning.force.com';
+      window.parent.postMessage({ displayPercent }, targetWindow);
+      targetWindow =
+        targetWindow.substring(0, targetWindow.indexOf('.') + 1) +
+        'develop.lightning.force.com';
+      window.parent.postMessage({ displayPercent }, targetWindow);
+
       progressBar.css('width', `${displayPercent}%`);
       progressBarText.text(`${displayPercent}%`);
       if (displayPercent === 100) {
