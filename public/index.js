@@ -91,6 +91,7 @@ $(() => {
   const setFilesUploaded = (uploadResult) => {
     spinner.css('visibility', 'hidden');
     check.css('visibility', 'visible');
+    let targetWindow = form.data(`target-window`);
     const type = uploadResult.data.isNew ? 'uploadNew' : 'uploadExisting';
     window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
     targetWindow =
@@ -117,7 +118,6 @@ $(() => {
       data.append('file', file);
     }
     // await trackProgress();
-    let targetWindow = form.data(`target-window`);
     let uploadResult;
     try {
       uploadResult = await axios.post(`/upload/files/${instanceKey}`, data, {
