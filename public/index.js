@@ -48,23 +48,35 @@ $(() => {
   });
 
   // const trackProgress = async () => {
-    socket.on('progress', (percent) => {
-      const displayPercent = Math.min(100, percent);
+    socket.on('progress', ({ fileName, mimeType, percentCompletion }) => {
+      const displayPercent = Math.min(100, percentCompletion);
+      const messageObj = {
+        displayPercent,
+        fileName,
+        mimeType
+      };
       let targetWindow = form.data(`target-window`);
-      window.parent.postMessage({ displayPercent }, targetWindow);
+      window.parent.postMessage(messageObj, targetWindow);
       targetWindow =
         targetWindow.substring(0, targetWindow.indexOf('.') + 1) +
         'lightning.force.com';
-      window.parent.postMessage({ displayPercent }, targetWindow);
+      window.parent.postMessage(messageObj, targetWindow);
       targetWindow =
         targetWindow.substring(0, targetWindow.indexOf('.') + 1) +
         'develop.lightning.force.com';
-      window.parent.postMessage({ displayPercent }, targetWindow);
+      window.parent.postMessage(messageObj, targetWindow);
 
       progressBar.css('width', `${displayPercent}%`);
       progressBarText.text(`${displayPercent}%`);
       if (displayPercent === 100) {
         spinner.css('visibility', 'visible');
+        setFilesUploaded({
+          data: {
+            isNew: false,
+            fileName,
+            mimeType
+          }
+        });
       }
     });
   // };
@@ -76,7 +88,20 @@ $(() => {
   //   }
   // });
 
-  const setFilesUploaded = () => {
+  const setFilesUploaded = (uploadResult) => {
+    spinner.css('visibility', 'hidden');
+    check.css('visibility', 'visible');
+    const type = uploadResult.data.isNew ? 'uploadNew' : 'uploadExisting';
+    window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
+    targetWindow =
+      targetWindow.substring(0, targetWindow.indexOf('.') + 1) +
+      'lightning.force.com';
+    window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
+    targetWindow =
+      targetWindow.substring(0, targetWindow.indexOf('.') + 1) +
+      'develop.lightning.force.com';
+    window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
+
     overallFileProgress.text(`${numFiles} uploaded!`);
     progressBar.css('width', `100%`);
     progressBarText.text(`100%`);
@@ -99,18 +124,6 @@ $(() => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       });
       socket.off('progress');
-      spinner.css('visibility', 'hidden');
-      check.css('visibility', 'visible');
-      const type = uploadResult.data.isNew ? 'uploadNew' : 'uploadExisting';
-      window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
-      targetWindow =
-        targetWindow.substring(0, targetWindow.indexOf('.') + 1) +
-        'lightning.force.com';
-      window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
-      targetWindow =
-        targetWindow.substring(0, targetWindow.indexOf('.') + 1) +
-        'develop.lightning.force.com';
-      window.parent.postMessage({ type, ...uploadResult.data }, targetWindow);
       setFilesUploaded();
     } catch (err) {
       spinner.css('visibility', 'hidden');

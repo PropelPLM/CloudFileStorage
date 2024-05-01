@@ -78,6 +78,7 @@ export default {
         src: string
     ) => {
         let fileName: string,
+            mimeType: string | undefined,
             totalFileSize: number,
             totalFrontendBytes: number,
             totalExternalBytes: number;
@@ -87,7 +88,7 @@ export default {
             totalFrontendBytes += fileDetailsMap[detail].frontendBytes;
             totalExternalBytes += fileDetailsMap[detail].externalBytes;
         }
-        ({ fileName } = fileDetailsMap[fileDetailKey]);
+        ({ fileName, mimeType } = fileDetailsMap[fileDetailKey]);
         const srcProgress: number =
             src == 'FRONTEND'
                 ? totalFrontendBytes / totalFileSize
@@ -97,7 +98,11 @@ export default {
             ((totalFrontendBytes + totalExternalBytes) / (totalFileSize * 2)) *
                 100
         );
-        io.to(instanceKey).emit('progress', percentCompletion);
+        io.to(instanceKey).emit('progress', {
+            fileName,
+            mimeType,
+            percentCompletion,
+        });
     },
     setAttribute,
     tearDown: async (test: string) => {
