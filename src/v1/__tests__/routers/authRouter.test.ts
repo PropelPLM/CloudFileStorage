@@ -119,8 +119,8 @@ describe("authRouter test suite", () => {
         expect(InstanceManager.get).toBeCalledTimes(1);
         expect(InstanceManager.get.mock.calls[0][0]).toBe(instanceKey1);
 
-        expect(JsForce.sendTokens).toBeCalledTimes(1);
-        expect(JsForce.sendTokens).toBeCalledWith({
+        expect(JsForce.sendCloudConfig).toBeCalledTimes(1);
+        expect(JsForce.sendCloudConfig).toBeCalledWith({
           clientId: instanceMap[instanceKey1].clientId,
           clientSecret: instanceMap[instanceKey1].clientSecret
         }, instanceKey1);
@@ -147,7 +147,7 @@ describe("authRouter test suite", () => {
         expect(InstanceManager.get).toBeCalledTimes(1);
         expect(InstanceManager.get.mock.calls[0][0]).toBe(instanceKey1);
 
-        expect(JsForce.sendTokens).not.toHaveBeenCalled();
+        expect(JsForce.sendCloudConfig).not.toHaveBeenCalled();
         expect(MessageEmitter.postTrigger).not.toHaveBeenCalled();
         expect(logSuccessResponse).not.toHaveBeenCalled();
 

@@ -27,6 +27,7 @@ export interface StoragePlatform {
         instanceKey: string,
         hostName: string
     ): Record<string, any>;
+    createSetupFolders?(): Promise<Record<FolderNameEnum, string>>;
 
     // Upload flow
     initUpload(
@@ -124,3 +125,5 @@ export class CreatedFileDetails {
     public webContentLink?: string;
     public fileSize?: number;
 }
+
+export enum FolderNameEnum { 'Drafts', 'In Review', 'Released' };
