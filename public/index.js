@@ -48,11 +48,12 @@ $(() => {
   });
 
   // const trackProgress = async () => {
-    socket.on('progress', ({ fileName, mimeType, percentCompletion }) => {
+    socket.on('progress', ({ fileName, fileSize, mimeType, percentCompletion }) => {
       const displayPercent = Math.min(100, percentCompletion);
       const messageObj = {
         displayPercent,
         fileName,
+        fileSize,
         mimeType
       };
       let targetWindow = form.data(`target-window`);
@@ -124,7 +125,7 @@ $(() => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       });
       socket.off('progress');
-      setFilesUploaded();
+      setFilesUploaded(uploadResult);
     } catch (err) {
       spinner.css('visibility', 'hidden');
       errorContainer.css('visibility', 'visible');
