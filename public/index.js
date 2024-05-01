@@ -47,8 +47,8 @@ $(() => {
     );
   });
 
-  const trackProgress = async () => {
-    await socket.on('progress', (percent) => {
+  // const trackProgress = async () => {
+    socket.on('progress', (percent) => {
       const displayPercent = Math.min(100, percent);
       let targetWindow = form.data(`target-window`);
       window.parent.postMessage({ displayPercent }, targetWindow);
@@ -67,7 +67,7 @@ $(() => {
         spinner.css('visibility', 'visible');
       }
     });
-  };
+  // };
 
   //DOM MANIPULATION JQUERY
   // fileSelect.on('click', function (e) {
@@ -91,7 +91,7 @@ $(() => {
       data.append('fileSize', `${file.name}__${instanceKey}__${file.size}`);
       data.append('file', file);
     }
-    await trackProgress();
+    // await trackProgress();
     let targetWindow = form.data(`target-window`);
     let uploadResult;
     try {
