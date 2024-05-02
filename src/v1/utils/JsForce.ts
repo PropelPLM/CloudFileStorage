@@ -150,6 +150,7 @@ export default {
             if (isPLM) {
                 sObjectWithNamespace = `${orgNamespace}Document__c`;
                 newAttachment = {
+                    Document_Size__c: fileSize,
                     External_Attachment_URL__c: webViewLink,
                     File_Extension__c: fileExtension,
                     Google_File_Id__c: id,
