@@ -48,10 +48,11 @@ $(() => {
   });
 
   // const trackProgress = async () => {
-    socket.on('progress', ({ allFiles, totalPercentCompletion }) => {
+    socket.on('progress', ({ allFiles, instanceKey, totalPercentCompletion }) => {
       const displayPercent = Math.min(100, totalPercentCompletion);
       const messageObj = {
         allFiles,
+        instanceKey,
         displayPercent
       };
       let targetWindow = form.data(`target-window`);

@@ -113,6 +113,7 @@ export default {
         );
         io.to(instanceKey).emit('progress', {
             allFiles,
+            instanceKey,
             totalPercentCompletion
         });
     },
