@@ -2,14 +2,18 @@ type IMap = {
     [key in MapKey]: any;
   };
 
-type FileDetail = {
+type FileDetailMin = {
   fileName: string;
-  externalBytes: number;
   fileSize: number;
+  mimeType?: string;
+  percentCompletion?: number;
+}
+
+type FileDetail = FileDetailMin & {
+  externalBytes: number;
   frontendBytes: number;
   file?: any;
   uploadStream?: any;
-  mimeType?: string;
 };
 
 const enum MapKey {

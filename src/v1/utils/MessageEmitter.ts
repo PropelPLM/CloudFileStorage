@@ -78,32 +78,42 @@ export default {
         src: string
     ) => {
         let fileName: string,
-            fileSize: number,
-            mimeType: string | undefined,
             totalFileSize: number,
             totalFrontendBytes: number,
             totalExternalBytes: number;
+        const allFiles: FileDetailMin[] = [];
         totalFileSize = totalFrontendBytes = totalExternalBytes = 0;
         for (const detail in fileDetailsMap) {
-            totalFileSize += fileDetailsMap[detail].fileSize;
-            totalFrontendBytes += fileDetailsMap[detail].frontendBytes;
-            totalExternalBytes += fileDetailsMap[detail].externalBytes;
+            const {fileName, fileSize, externalBytes, frontendBytes, mimeType} = fileDetailsMap[detail];
+            totalFileSize += fileSize;
+            totalFrontendBytes += frontendBytes;
+            totalExternalBytes += externalBytes;
+            const percentCompletion: number = Math.min(
+                100,
+                Math.floor(
+                    ((frontendBytes + externalBytes) / (fileSize * 2)) * 100
+                )
+            );
+            allFiles.push({
+                fileName,
+                fileSize,
+                mimeType,
+                percentCompletion
+            });
         }
-        ({ fileName, fileSize, mimeType } = fileDetailsMap[fileDetailKey]);
+        ({ fileName } = fileDetailsMap[fileDetailKey]);
         const srcProgress: number =
             src == 'FRONTEND'
                 ? totalFrontendBytes / totalFileSize
                 : totalExternalBytes / totalFileSize;
         logProgressResponse(fileName, src, srcProgress);
-        const percentCompletion: number = Math.floor(
+        const totalPercentCompletion: number = Math.floor(
             ((totalFrontendBytes + totalExternalBytes) / (totalFileSize * 2)) *
                 100
         );
         io.to(instanceKey).emit('progress', {
-            fileName,
-            fileSize,
-            mimeType,
-            percentCompletion,
+            allFiles,
+            totalPercentCompletion
         });
     },
     setAttribute,

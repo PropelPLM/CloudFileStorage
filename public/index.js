@@ -48,13 +48,11 @@ $(() => {
   });
 
   // const trackProgress = async () => {
-    socket.on('progress', ({ fileName, fileSize, mimeType, percentCompletion }) => {
-      const displayPercent = Math.min(100, percentCompletion);
+    socket.on('progress', ({ allFiles, totalPercentCompletion }) => {
+      const displayPercent = Math.min(100, totalPercentCompletion);
       const messageObj = {
-        displayPercent,
-        fileName,
-        fileSize,
-        mimeType
+        allFiles,
+        displayPercent
       };
       let targetWindow = form.data(`target-window`);
       window.parent.postMessage(messageObj, targetWindow);
