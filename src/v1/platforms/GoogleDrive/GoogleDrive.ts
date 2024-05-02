@@ -201,6 +201,7 @@ export class GoogleDrive implements StoragePlatform {
             GoogleDrive.className
         );
         createdFileDetails.webContentLink = webContentLink;
+        createdFileDetails.fileSize = fileDetails.fileSize;
         return createdFileDetails;
     }
 
