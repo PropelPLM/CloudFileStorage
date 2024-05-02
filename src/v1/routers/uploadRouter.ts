@@ -25,11 +25,12 @@ import {
 } from '../platforms/StoragePlatform';
 
 router.post('/token', async (req: any, res: any, next: NextFunction) => {
-    const instanceKey = uuidv4();
     try {
         const instanceDetails = { ...req.body };
         instanceDetails.sessionId =
             instanceDetails.sessionId ?? (await getSessionId(instanceDetails));
+        const { orgId, recordId, userId } = instanceDetails;
+        const instanceKey = `${orgId}:${userId}:${recordId}`;
         await InstanceManager.upsert(instanceKey, instanceDetails);
         logSuccessResponse({ instanceDetails }, '[END_POINT.TOKEN]');
         res.locals.result = { instanceKey };
