@@ -1,6 +1,6 @@
 'use strict';
 
-const { google } = require('googleapis');
+import { google } from 'googleapis';
 import { PassThrough } from 'stream';
 
 import { logSuccessResponse, logErrorResponse } from '../../utils/Logger';
@@ -9,9 +9,11 @@ import InstanceManager from '../../utils/InstanceManager';
 import {
     CreatedFileDetails,
     PlatformIdentifier,
-    StoragePlatform
+    StoragePlatform,
+    FolderNameEnum
 } from '../StoragePlatform';
 
+const GOOGLE_FOLDER_MIMETYPE = 'application/vnd.google-apps.folder';
 export class GoogleDrive implements StoragePlatform {
     public static redirect_uris: string[] = [
         'urn:ietf:wg:oauth:2.0:oob',
@@ -24,6 +26,32 @@ export class GoogleDrive implements StoragePlatform {
 
     public constructor() {}
     private oAuth2Client: CloudStorageProviderClient;
+    public async login(credentials: Record<string, string>) {
+        let clientId: string, clientSecret: string, accessToken: string, refreshToken: string, expiryDate: string;
+        ({ clientId, clientSecret, accessToken, refreshToken, expiryDate } = credentials);
+        const oAuth2Client: OAuth2Client = new google.auth.OAuth2(
+            clientId,
+            clientSecret,
+            GoogleDrive.redirect_uris[0]
+        );
+        const tokens: Record<string, string> = {
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            scope: GoogleDrive.actions.driveFiles,
+            token_type: 'Bearer',
+            expiry_date: expiryDate
+        };
+        oAuth2Client.setCredentials(tokens);
+        this.oAuth2Client = oAuth2Client;
+    }
+
+    private driveInstance?: any;
+    getDriveInstance() {
+        if (!this.driveInstance) {
+            this.driveInstance = google.drive({ version: 'v3', auth: this.oAuth2Client });
+        }
+        return this.driveInstance;
+    }
 
     //TOKEN FLOW - INSTANCE MANAGER VARIABLES HERE DO NOT PERSIST TO UPLOAD FLOW
     public static createAuthUrl(
@@ -46,7 +74,7 @@ export class GoogleDrive implements StoragePlatform {
         });
     }
 
-    public static async getTokens(
+    public async getTokens(
         code: string,
         instanceKey: string,
         hostName: string
@@ -72,11 +100,10 @@ export class GoogleDrive implements StoragePlatform {
     }
 
     //UPLOAD FLOW- INSTANCE MANAGER VARIABLES HERE DFO NOT PERSIST FROM TOKEN FLOW
-    static async authorize(
+    async authorize(
         instanceKey: string
     ): Promise<CloudStorageProviderClient> {
         try {
-            const driveInstance = new GoogleDrive();
             let clientId, clientSecret, accessToken, refreshToken, expiryDate;
             ({ clientId, clientSecret, accessToken, refreshToken, expiryDate } =
                 await InstanceManager.get(instanceKey, [
@@ -86,22 +113,9 @@ export class GoogleDrive implements StoragePlatform {
                     MapKey.refreshToken,
                     MapKey.expiryDate
                 ]));
-            const oAuth2Client: OAuth2Client = new google.auth.OAuth2(
-                clientId,
-                clientSecret,
-                GoogleDrive.redirect_uris[0]
-            );
-            const tokens: Record<string, string> = {
-                access_token: accessToken,
-                refresh_token: refreshToken,
-                scope: GoogleDrive.actions.driveFiles,
-                token_type: 'Bearer',
-                expiry_date: expiryDate
-            };
-            oAuth2Client.setCredentials(tokens);
-            driveInstance.oAuth2Client = oAuth2Client;
+            this.login({clientId, clientSecret, accessToken, refreshToken, expiryDate});
             logSuccessResponse(instanceKey, '[GOOGLE_DRIVE.AUTHORIZE]');
-            return driveInstance;
+            return this;
         } catch (err) {
             logErrorResponse(err, '[GOOGLE_DRIVE.AUTHORIZE]');
             throw err;
@@ -119,7 +133,6 @@ export class GoogleDrive implements StoragePlatform {
             MapKey.destinationFolderId
         ]));
         ({ fileName, mimeType } = fileDetailsMap[fileDetailKey]);
-        const drive = google.drive({ version: 'v3', auth: this.oAuth2Client });
         const fileMetadata = {
             name: fileName,
             driveId: destinationFolderId,
@@ -129,7 +142,7 @@ export class GoogleDrive implements StoragePlatform {
             mimeType: mimeType,
             body: uploadStream
         };
-        return drive.files.create(
+        return this.getDriveInstance().files.create(
             {
                 resource: fileMetadata,
                 media,
@@ -190,6 +203,33 @@ export class GoogleDrive implements StoragePlatform {
         createdFileDetails.webContentLink = webContentLink;
         return createdFileDetails;
     }
+
+    async createSetupFolders(): Promise<Record<FolderNameEnum, string>> {
+        return {
+            [FolderNameEnum['Drafts']]: await this.createFolder(FolderNameEnum[FolderNameEnum['Drafts']]),
+            [FolderNameEnum['In Review']]: await this.createFolder(FolderNameEnum[FolderNameEnum['In Review']]),
+            [FolderNameEnum['Released']]: await this.createFolder(FolderNameEnum[FolderNameEnum['Released']]),
+        };
+    };
+
+    async createFolder(folderName: String): Promise<string> {
+        try {
+            if (!folderName) throw new Error('Folder name cannot be empty.');
+            const fileMetadata = {
+                name: folderName,
+                mimeType: GOOGLE_FOLDER_MIMETYPE,
+              };
+            const file = await this.getDriveInstance().files.create({
+              resource: fileMetadata,
+              fields: 'id',
+            });
+            return file.data.id;
+          } catch (err) {
+            logErrorResponse(err, '[GOOGLE_DRIVE.CREATE_FOLDER]');
+            return '';
+          }
+    };
+
 }
 
 export default GoogleDrive;
