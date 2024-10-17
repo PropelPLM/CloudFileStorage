@@ -521,9 +521,9 @@ export class Office365 implements StoragePlatform {
         const group = getGroups.value.filter(
             (group: Record<string, any>) => group.displayName === 'PropelPLM'
         );
-        if (group.length > 1) {
+        if (group.length != 1) {
             throw new Error(
-                '[Office365.getGroupId] Please ensure that there are no duplicate group names.'
+                '[Office365.getGroupId] Please ensure that there is only 1 group named \'PropelPLM\'.'
             );
         }
         const groupId = group[0].id;
