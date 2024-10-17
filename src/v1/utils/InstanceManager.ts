@@ -21,7 +21,11 @@ const NESTED_FILE_DETAILS_FIELD = 'fileDetails';
 export default {
     connectToRedisServer: async () => {
         const client: RedisClientType = createClient({
-            url: process.env.REDIS_URL
+            url: process.env.REDIS_URL,
+            socket: {
+                tls: true,
+                rejectUnauthorized: false
+            }
         });
         client.on('error', (err) => console.error('Redis client error:', err));
         redisClient = client;
