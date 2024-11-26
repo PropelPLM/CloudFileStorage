@@ -211,8 +211,8 @@ router.post(
                         res.locals.result = response;
                         next();
                     } catch (err: any) {
-                        err = parseUserFriendlyErrorMsg(err);
                         console.log('err: ', err);
+                        err.message = parseUserFriendlyErrorMsg(err.message);
                         res.locals.err = new ResponseError(
                             500,
                             `Upload failed: ${err}.`
