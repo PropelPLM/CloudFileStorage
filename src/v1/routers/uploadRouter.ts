@@ -212,6 +212,7 @@ router.post(
                         next();
                     } catch (err: any) {
                         err = parseUserFriendlyErrorMsg(err);
+                        console.log('err: ', err);
                         res.locals.err = new ResponseError(
                             500,
                             `Upload failed: ${err}.`
