@@ -211,7 +211,6 @@ router.post(
                         res.locals.result = response;
                         next();
                     } catch (err: any) {
-                        console.log('err: ', err);
                         err.message = parseUserFriendlyErrorMsg(err.message);
                         res.locals.err = new ResponseError(
                             500,
