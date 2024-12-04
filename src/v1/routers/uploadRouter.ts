@@ -211,6 +211,7 @@ router.post(
                         res.locals.result = response;
                         next();
                     } catch (err: any) {
+                        err.message = parseUserFriendlyErrorMsg(err.message);
                         res.locals.err = new ResponseError(
                             500,
                             `Upload failed: ${err}.`
@@ -241,6 +242,15 @@ router.post(
 function createFileDetailKey(fileName: string): string {
     let fileDetailKey: string = Math.random().toString(); //use uuid nextt time
     return `${fileName}_${fileDetailKey.substring(2)}`;
+}
+
+function parseUserFriendlyErrorMsg(msg: string): string {
+    if (msg.includes('(((') && msg.includes(')))')) {
+        const startIndex = msg.indexOf('(((') + 3;
+        const endIndex = msg.indexOf(')))');
+        return msg.substring(startIndex, endIndex);
+    }
+    return msg;
 }
 
 router.use(responseGenerator);
