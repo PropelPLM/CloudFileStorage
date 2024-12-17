@@ -73,6 +73,7 @@ router.post(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             res.setTimeout(2147483647);
+            console.log('req: ' + req);
             const instanceKey = req.params.instanceKey;
 
             const form = new Busboy({ headers: req.headers });
