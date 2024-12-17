@@ -73,10 +73,11 @@ router.post(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             res.setTimeout(2147483647);
-            console.log('req: ' + req);
+            console.log('req.headers: ' + req.headers);
             const instanceKey = req.params.instanceKey;
 
             const form = new Busboy({ headers: req.headers });
+            console.log('form: ' + form);
             let salesforceUrl: string, isNew: string, platform: string;
             const fileDetailsMap = {} as Record<string, FileDetail>;
             let fileDetails: FileDetail;
