@@ -147,6 +147,7 @@ export default {
                         ? 'Document__c'
                         : `${orgNamespace}Document__c`;
                 newAttachment = {
+                    Document_Title__c: name,
                     External_Attachment_URL__c: webViewLink,
                     File_Extension__c: fileExtension,
                     Google_File_Id__c: id,
@@ -163,6 +164,7 @@ export default {
                         ? 'Digital_Asset__c'
                         : `${orgNamespace}Digital_Asset__c`;
                 newAttachment = {
+                    Document_Title__c: name,
                     Content_Location__c: platform,
                     External_File_Id__c: id,
                     Mime_Type__c: fileExtension,
@@ -178,12 +180,12 @@ export default {
             const sObject =
                 newAttachment.Id == null
                     ? await baseSObject.create({
-                          Name: name,
+                          Name: this.truncateFileNameToMaxCharacters(name),
                           ...this.addNamespace(newAttachment, orgNamespace)
                       })
                     : await baseSObject.upsert(
                           {
-                              Name: name,
+                              Name: this.truncateFileNameToMaxCharacters(name),
                               ...this.addNamespace(newAttachment, orgNamespace)
                           },
                           'Id'
@@ -256,6 +258,16 @@ export default {
         }
         logSuccessResponse(customObject, '[JSFORCE.ADD_NAMESPACE');
         return customObject;
+    },
+
+    truncateFileNameToMaxCharacters(
+        fileName: string
+    ) {
+        if (fileName.length > 75) {
+            return fileName.substring(0, 75).trim() + fileName.substring(fileName.lastIndexOf('.'));
+        } else {
+            return fileName;
+        }
     },
 
     async postToChatter(fileName: string, sessionId: string, hostName: string) {
