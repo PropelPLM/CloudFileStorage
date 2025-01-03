@@ -164,7 +164,6 @@ export default {
                         ? 'Digital_Asset__c'
                         : `${orgNamespace}Digital_Asset__c`;
                 newAttachment = {
-                    Document_Title__c: name,
                     Content_Location__c: platform,
                     External_File_Id__c: id,
                     Mime_Type__c: fileExtension,
@@ -260,11 +259,12 @@ export default {
         return customObject;
     },
 
-    truncateFileNameToMaxCharacters(
-        fileName: string
-    ) {
+    truncateFileNameToMaxCharacters(fileName: string) {
         if (fileName.length > 75) {
-            return fileName.substring(0, 75).trim() + fileName.substring(fileName.lastIndexOf('.'));
+            return (
+                fileName.substring(0, 75).trim() +
+                fileName.substring(fileName.lastIndexOf('.'))
+            );
         } else {
             return fileName;
         }
