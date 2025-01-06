@@ -32,6 +32,7 @@ const enum MapKey {
     fileDetails = 'fileDetails',
     isNew = 'isNew',
     isPLM = 'isPLM',
+    uploadLimit = 'uploadLimit',
 
     // office specific information
     groupId = 'groupId',

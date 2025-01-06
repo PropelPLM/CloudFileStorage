@@ -78,16 +78,23 @@ router.post(
 
             const form = new Busboy({ headers: req.headers });
             console.log('form: ' + form);
-            let salesforceUrl: string, isNew: string, platform: string;
+            let salesforceUrl: string,
+                isNew: string,
+                platform: string,
+                uploadLimit: number;
             const fileDetailsMap = {} as Record<string, FileDetail>;
             let fileDetails: FileDetail;
-            ({ salesforceUrl, isNew, platform } = await InstanceManager.get(
-                instanceKey,
-                [MapKey.salesforceUrl, MapKey.isNew, MapKey.platform]
-            ));
+            ({ salesforceUrl, isNew, platform, uploadLimit } =
+                await InstanceManager.get(instanceKey, [
+                    MapKey.salesforceUrl,
+                    MapKey.isNew,
+                    MapKey.platform,
+                    MapKey.uploadLimit
+                ]));
             console.log('salesforceUrl: ', salesforceUrl);
             console.log('isNew: ', isNew);
             console.log('platform: ', platform);
+            console.log('uploadLimit: ', uploadLimit);
             const configuredPlatform: StoragePlatform = await getPlatform(
                 platform,
                 instanceKey
