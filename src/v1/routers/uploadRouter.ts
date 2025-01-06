@@ -85,6 +85,9 @@ router.post(
                 instanceKey,
                 [MapKey.salesforceUrl, MapKey.isNew, MapKey.platform]
             ));
+            console.log('salesforceUrl: ', salesforceUrl);
+            console.log('isNew: ', isNew);
+            console.log('platform: ', platform);
             const configuredPlatform: StoragePlatform = await getPlatform(
                 platform,
                 instanceKey
