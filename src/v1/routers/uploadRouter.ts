@@ -91,10 +91,9 @@ router.post(
                     MapKey.platform,
                     MapKey.uploadLimit
                 ]));
-            console.log('salesforceUrl: ', salesforceUrl);
-            console.log('isNew: ', isNew);
-            console.log('platform: ', platform);
-            console.log('uploadLimit: ', uploadLimit);
+            if (uploadLimit < 1) {
+                return;
+            }
             const configuredPlatform: StoragePlatform = await getPlatform(
                 platform,
                 instanceKey
