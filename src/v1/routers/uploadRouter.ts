@@ -142,11 +142,6 @@ router.post(
                                     .on(
                                         'data',
                                         async (data: Record<string, any>) => {
-                                            if (uploadLimit < 1) {
-                                                throw new Error(
-                                                    'Your upload limit has been reached.'
-                                                );
-                                            }
                                             progress = progress + data.length;
                                             fileDetails.frontendBytes =
                                                 progress;
@@ -164,7 +159,6 @@ router.post(
                                         }
                                     )
                                     .on('error', (err) => {
-                                        console.log('error pipe reached');
                                         logErrorResponse(
                                             err,
                                             '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]'
@@ -173,6 +167,11 @@ router.post(
                                     })
                                     .on('end', async () => {
                                         try {
+                                            if (uploadLimit < 1) {
+                                                throw new Error(
+                                                    'Your upload limit has been reached.'
+                                                );
+                                            }
                                             const file: CreatedFileDetails =
                                                 await configuredPlatform.endUpload(
                                                     fileDetailsMap,
@@ -199,6 +198,7 @@ router.post(
                                             );
                                             resolve(file);
                                         } catch (err) {
+                                            console.log('err block reached');
                                             logSuccessResponse(
                                                 err,
                                                 '[END_UPLOAD]'
