@@ -169,7 +169,7 @@ router.post(
                                         try {
                                             if (uploadLimit < 1) {
                                                 throw new Error(
-                                                    'Your upload limit has been reached.'
+                                                    'Your upload limit has been reached'
                                                 );
                                             }
                                             const file: CreatedFileDetails =
@@ -197,8 +197,8 @@ router.post(
                                                 '[END_UPLOAD]'
                                             );
                                             resolve(file);
+                                            uploadLimit--;
                                         } catch (err) {
-                                            console.log('err block reached');
                                             logSuccessResponse(
                                                 err,
                                                 '[END_UPLOAD]'
