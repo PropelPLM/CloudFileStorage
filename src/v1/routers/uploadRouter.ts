@@ -91,9 +91,6 @@ router.post(
                     MapKey.platform,
                     MapKey.uploadLimit
                 ]));
-            if (uploadLimit < 1) {
-                return;
-            }
             const configuredPlatform: StoragePlatform = await getPlatform(
                 platform,
                 instanceKey
@@ -145,6 +142,11 @@ router.post(
                                     .on(
                                         'data',
                                         async (data: Record<string, any>) => {
+                                            if (uploadLimit < 1) {
+                                                throw new Error(
+                                                    'Your upload limit has been reached.'
+                                                );
+                                            }
                                             progress = progress + data.length;
                                             fileDetails.frontendBytes =
                                                 progress;
@@ -162,6 +164,7 @@ router.post(
                                         }
                                     )
                                     .on('error', (err) => {
+                                        console.log('error pipe reached');
                                         logErrorResponse(
                                             err,
                                             '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]'
