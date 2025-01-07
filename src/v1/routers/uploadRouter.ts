@@ -167,6 +167,10 @@ router.post(
                                     })
                                     .on('end', async () => {
                                         try {
+                                            console.log(
+                                                'uploadLimit 1: ',
+                                                uploadLimit
+                                            );
                                             if (uploadLimit < 1) {
                                                 throw new Error(
                                                     'Your upload limit has been reached'
@@ -197,7 +201,15 @@ router.post(
                                                 '[END_UPLOAD]'
                                             );
                                             resolve(file);
+                                            console.log(
+                                                'uploadLimit 2: ',
+                                                uploadLimit
+                                            );
                                             uploadLimit--;
+                                            console.log(
+                                                'uploadLimit 3: ',
+                                                uploadLimit
+                                            );
                                         } catch (err) {
                                             logSuccessResponse(
                                                 err,
