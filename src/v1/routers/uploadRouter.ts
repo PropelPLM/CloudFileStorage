@@ -173,35 +173,7 @@ router.post(
                                     .on('end', async () => {
                                         console.log('========= ON END');
                                         try {
-                                            console.log(
-                                                'fileCount end: ',
-                                                fileCount
-                                            );
-                                            const file: CreatedFileDetails =
-                                                await configuredPlatform.endUpload(
-                                                    fileDetailsMap,
-                                                    fileDetailKey
-                                                );
-                                            const sfObject =
-                                                await JsForce.create(
-                                                    file,
-                                                    instanceKey
-                                                );
-                                            const response = {
-                                                status: file.status,
-                                                data: {
-                                                    ...file,
-                                                    sfId: sfObject.id,
-                                                    revisionId:
-                                                        sfObject.revisionId
-                                                }
-                                            };
-                                            responses.push(response);
-                                            logSuccessResponse(
-                                                response,
-                                                '[END_UPLOAD]'
-                                            );
-                                            resolve(file);
+                                            resolve('');
                                         } catch (err) {
                                             logSuccessResponse(
                                                 err,
@@ -223,7 +195,57 @@ router.post(
                                 'Limit reached. Contact Propel sales to add more digital assets'
                             );
                         }
-                        //await Promise.all(promises.map((cb) => cb()));
+
+                        await Promise.all(promises);
+                        for (let key of Object.keys(fileDetailsMap)) {
+                            const file: CreatedFileDetails =
+                                await configuredPlatform.endUpload(
+                                    fileDetailsMap,
+                                    key
+                                );
+                            const sfObject = await JsForce.create(
+                                file,
+                                instanceKey
+                            );
+                            const response = {
+                                status: file.status,
+                                data: {
+                                    ...file,
+                                    sfId: sfObject.id,
+                                    revisionId: sfObject.revisionId
+                                }
+                            };
+                            responses.push(response);
+                            logSuccessResponse(response, '[END_UPLOAD]');
+                        }
+
+                        /** OLD LOGIC IN END HANDLER*/
+                        // const file: CreatedFileDetails =
+                        //     await configuredPlatform.endUpload(
+                        //         fileDetailsMap,
+                        //         fileDetailKey
+                        //     );
+                        // const sfObject =
+                        //     await JsForce.create(
+                        //         file,
+                        //         instanceKey
+                        //     );
+                        // const response = {
+                        //     status: file.status,
+                        //     data: {
+                        //         ...file,
+                        //         sfId: sfObject.id,
+                        //         revisionId:
+                        //             sfObject.revisionId
+                        //     }
+                        // };
+                        // responses.push(response);
+                        // logSuccessResponse(
+                        //     response,
+                        //     '[END_UPLOAD]'
+                        // );
+                        // resolve(file);
+                        /** OLD LOGIC END */
                         await Promise.all(promises);
                         const response = {
                             salesforceUrl,
