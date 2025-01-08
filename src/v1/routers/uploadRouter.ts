@@ -73,11 +73,9 @@ router.post(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             res.setTimeout(2147483647);
-            console.log('req.headers: ' + req.headers);
             const instanceKey = req.params.instanceKey;
 
             const form = new Busboy({ headers: req.headers });
-            console.log('form: ' + form);
             let salesforceUrl: string,
                 isNew: string,
                 platform: string,
@@ -118,7 +116,6 @@ router.post(
                     ) {
                         const fileSize: number = fileSizes[fileName];
                         fileCount++;
-                        console.log('============A');
                         promises.push(
                             new Promise(async (resolve, reject) => {
                                 const uploadStream = new PassThrough();
@@ -145,7 +142,6 @@ router.post(
                                     .on(
                                         'data',
                                         async (data: Record<string, any>) => {
-                                            console.log('========= ON DATA');
                                             progress = progress + data.length;
                                             fileDetails.frontendBytes =
                                                 progress;
@@ -163,7 +159,6 @@ router.post(
                                         }
                                     )
                                     .on('error', (err) => {
-                                        console.log('========= ON ERROR');
                                         logErrorResponse(
                                             err,
                                             '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]'
@@ -171,7 +166,6 @@ router.post(
                                         reject(err);
                                     })
                                     .on('end', async () => {
-                                        console.log('========= ON END');
                                         try {
                                             resolve('');
                                         } catch (err) {
@@ -184,13 +178,14 @@ router.post(
                                     });
                             })
                         );
-                        console.log('============B');
                     }
                 )
                 .on('finish', async () => {
                     try {
-                        console.log('============C');
-                        if (fileCount > uploadLimit || uploadLimit < 1) {
+                        if (
+                            uploadLimit !== null &&
+                            (fileCount > uploadLimit || uploadLimit < 1)
+                        ) {
                             throw new Error(
                                 'Limit reached. Contact Propel sales to add more digital assets'
                             );
@@ -218,34 +213,6 @@ router.post(
                             responses.push(response);
                             logSuccessResponse(response, '[END_UPLOAD]');
                         }
-
-                        /** OLD LOGIC IN END HANDLER*/
-                        // const file: CreatedFileDetails =
-                        //     await configuredPlatform.endUpload(
-                        //         fileDetailsMap,
-                        //         fileDetailKey
-                        //     );
-                        // const sfObject =
-                        //     await JsForce.create(
-                        //         file,
-                        //         instanceKey
-                        //     );
-                        // const response = {
-                        //     status: file.status,
-                        //     data: {
-                        //         ...file,
-                        //         sfId: sfObject.id,
-                        //         revisionId:
-                        //             sfObject.revisionId
-                        //     }
-                        // };
-                        // responses.push(response);
-                        // logSuccessResponse(
-                        //     response,
-                        //     '[END_UPLOAD]'
-                        // );
-                        // resolve(file);
-                        /** OLD LOGIC END */
                         await Promise.all(promises);
                         const response = {
                             salesforceUrl,
@@ -273,7 +240,6 @@ router.post(
                 });
             req.pipe(form);
         } catch (err) {
-            console.log(err);
             res.locals.err = new ResponseError(
                 500,
                 `Failed to pipe upload form: ${err}.`
