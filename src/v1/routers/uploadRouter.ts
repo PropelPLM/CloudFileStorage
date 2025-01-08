@@ -98,6 +98,7 @@ router.post(
             const responses: Record<string, any>[] = [];
             const promises: any[] = [];
             let fileSizes: Record<string, number> = {};
+            let fileCount: number = 0;
 
             form.on('field', (fieldName: string, value: string) => {
                 if (fieldName == 'fileSize') {
@@ -116,6 +117,8 @@ router.post(
                         mimeType: string
                     ) {
                         const fileSize: number = fileSizes[fileName];
+                        fileCount++;
+                        console.log('============A');
                         promises.push(
                             new Promise(async (resolve, reject) => {
                                 const uploadStream = new PassThrough();
@@ -142,6 +145,7 @@ router.post(
                                     .on(
                                         'data',
                                         async (data: Record<string, any>) => {
+                                            console.log('========= ON DATA');
                                             progress = progress + data.length;
                                             fileDetails.frontendBytes =
                                                 progress;
@@ -159,6 +163,7 @@ router.post(
                                         }
                                     )
                                     .on('error', (err) => {
+                                        console.log('========= ON ERROR');
                                         logErrorResponse(
                                             err,
                                             '[END_POINT.UPLOAD_INSTANCE_KEY > BUSBOY]'
@@ -166,16 +171,12 @@ router.post(
                                         reject(err);
                                     })
                                     .on('end', async () => {
+                                        console.log('========= ON END');
                                         try {
                                             console.log(
-                                                'uploadLimit 1: ',
-                                                uploadLimit
+                                                'fileCount end: ',
+                                                fileCount
                                             );
-                                            if (uploadLimit < 1) {
-                                                throw new Error(
-                                                    'Your upload limit has been reached'
-                                                );
-                                            }
                                             const file: CreatedFileDetails =
                                                 await configuredPlatform.endUpload(
                                                     fileDetailsMap,
@@ -201,15 +202,6 @@ router.post(
                                                 '[END_UPLOAD]'
                                             );
                                             resolve(file);
-                                            console.log(
-                                                'uploadLimit 2: ',
-                                                uploadLimit
-                                            );
-                                            uploadLimit--;
-                                            console.log(
-                                                'uploadLimit 3: ',
-                                                uploadLimit
-                                            );
                                         } catch (err) {
                                             logSuccessResponse(
                                                 err,
@@ -220,10 +212,18 @@ router.post(
                                     });
                             })
                         );
+                        console.log('============B');
                     }
                 )
                 .on('finish', async () => {
                     try {
+                        console.log('============C');
+                        if (fileCount > uploadLimit || uploadLimit < 1) {
+                            throw new Error(
+                                'Limit reached. Contact Propel sales to add more digital assets'
+                            );
+                        }
+                        //await Promise.all(promises.map((cb) => cb()));
                         await Promise.all(promises);
                         const response = {
                             salesforceUrl,
