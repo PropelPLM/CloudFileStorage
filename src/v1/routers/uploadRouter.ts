@@ -182,6 +182,7 @@ router.post(
                 )
                 .on('finish', async () => {
                     try {
+                        // throws error if uploading more files than the upload limit
                         if (
                             uploadLimit !== null &&
                             (fileCount > uploadLimit || uploadLimit < 1)
@@ -191,6 +192,7 @@ router.post(
                             );
                         }
 
+                        // defers the uploading and creation of SObjects until after upload limit check
                         await Promise.all(promises);
                         for (let key of Object.keys(fileDetailsMap)) {
                             const file: CreatedFileDetails =
