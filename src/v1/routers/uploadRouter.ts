@@ -76,13 +76,19 @@ router.post(
             const instanceKey = req.params.instanceKey;
 
             const form = new Busboy({ headers: req.headers });
-            let salesforceUrl: string, isNew: string, platform: string;
+            let salesforceUrl: string,
+                isNew: string,
+                platform: string,
+                uploadLimit: number;
             const fileDetailsMap = {} as Record<string, FileDetail>;
             let fileDetails: FileDetail;
-            ({ salesforceUrl, isNew, platform } = await InstanceManager.get(
-                instanceKey,
-                [MapKey.salesforceUrl, MapKey.isNew, MapKey.platform]
-            ));
+            ({ salesforceUrl, isNew, platform, uploadLimit } =
+                await InstanceManager.get(instanceKey, [
+                    MapKey.salesforceUrl,
+                    MapKey.isNew,
+                    MapKey.platform,
+                    MapKey.uploadLimit
+                ]));
             const configuredPlatform: StoragePlatform = await getPlatform(
                 platform,
                 instanceKey
@@ -90,6 +96,7 @@ router.post(
             const responses: Record<string, any>[] = [];
             const promises: any[] = [];
             let fileSizes: Record<string, number> = {};
+            let fileCount: number = 0;
 
             form.on('field', (fieldName: string, value: string) => {
                 if (fieldName == 'fileSize') {
@@ -108,8 +115,9 @@ router.post(
                         mimeType: string
                     ) {
                         const fileSize: number = fileSizes[fileName];
+                        fileCount++;
                         promises.push(
-                            new Promise(async (resolve, reject) => {
+                            new Promise<void>(async (resolve, reject) => {
                                 const uploadStream = new PassThrough();
                                 fileDetails = {
                                     fileName,
@@ -159,31 +167,7 @@ router.post(
                                     })
                                     .on('end', async () => {
                                         try {
-                                            const file: CreatedFileDetails =
-                                                await configuredPlatform.endUpload(
-                                                    fileDetailsMap,
-                                                    fileDetailKey
-                                                );
-                                            const sfObject =
-                                                await JsForce.create(
-                                                    file,
-                                                    instanceKey
-                                                );
-                                            const response = {
-                                                status: file.status,
-                                                data: {
-                                                    ...file,
-                                                    sfId: sfObject.id,
-                                                    revisionId:
-                                                        sfObject.revisionId
-                                                }
-                                            };
-                                            responses.push(response);
-                                            logSuccessResponse(
-                                                response,
-                                                '[END_UPLOAD]'
-                                            );
-                                            resolve(file);
+                                            resolve();
                                         } catch (err) {
                                             logSuccessResponse(
                                                 err,
@@ -198,6 +182,39 @@ router.post(
                 )
                 .on('finish', async () => {
                     try {
+                        // throws error if uploading more files than the upload limit
+                        if (
+                            uploadLimit !== null &&
+                            (fileCount > uploadLimit || uploadLimit < 1)
+                        ) {
+                            throw new Error(
+                                'Limit reached. Contact Propel sales to add more digital assets'
+                            );
+                        }
+
+                        // defers the uploading and creation of SObjects until after upload limit check
+                        await Promise.all(promises);
+                        for (let key of Object.keys(fileDetailsMap)) {
+                            const file: CreatedFileDetails =
+                                await configuredPlatform.endUpload(
+                                    fileDetailsMap,
+                                    key
+                                );
+                            const sfObject = await JsForce.create(
+                                file,
+                                instanceKey
+                            );
+                            const response = {
+                                status: file.status,
+                                data: {
+                                    ...file,
+                                    sfId: sfObject.id,
+                                    revisionId: sfObject.revisionId
+                                }
+                            };
+                            responses.push(response);
+                            logSuccessResponse(response, '[END_UPLOAD]');
+                        }
                         await Promise.all(promises);
                         const response = {
                             salesforceUrl,
@@ -225,7 +242,6 @@ router.post(
                 });
             req.pipe(form);
         } catch (err) {
-            console.log(err);
             res.locals.err = new ResponseError(
                 500,
                 `Failed to pipe upload form: ${err}.`
