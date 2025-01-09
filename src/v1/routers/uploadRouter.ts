@@ -117,7 +117,7 @@ router.post(
                         const fileSize: number = fileSizes[fileName];
                         fileCount++;
                         promises.push(
-                            new Promise(async (resolve, reject) => {
+                            new Promise<void>(async (resolve, reject) => {
                                 const uploadStream = new PassThrough();
                                 fileDetails = {
                                     fileName,
@@ -167,7 +167,7 @@ router.post(
                                     })
                                     .on('end', async () => {
                                         try {
-                                            resolve('');
+                                            resolve();
                                         } catch (err) {
                                             logSuccessResponse(
                                                 err,
