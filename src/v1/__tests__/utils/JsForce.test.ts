@@ -73,7 +73,7 @@ xdescribe ('JsForce test suite', () => {
     });
   });
 
-  it('sendTokens writes correct tokens to SF Apex', async () => {
+  it('sendCloudConfig writes correct tokens to SF Apex', async () => {
     const settings = {
       access_token: data.accessToken,
       refresh_token: data.refreshToken,
@@ -81,7 +81,7 @@ xdescribe ('JsForce test suite', () => {
       clientId: instanceMap[instanceKey1].clientId,
       clientSecret : instanceMap[instanceKey1].clientSecret
     }
-    await JsForce.sendTokens(settings, instanceKey1);
+    await JsForce.sendCloudConfig(settings, instanceKey1);
     expect(InstanceManager.get).toHaveBeenCalledTimes(2); //addnamespace does call
     expect(logSuccessResponse).toBeCalledTimes(1);
     expect(InstanceManager.get.mock.results[0].value.connection.sobject).toBeCalledTimes(1);

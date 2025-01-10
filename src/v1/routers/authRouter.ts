@@ -3,7 +3,7 @@
 import express from 'express';
 const router = express.Router();
 import path from 'path';
-
+import { FolderNameEnum } from '../platforms/StoragePlatform';
 import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
 import MessageEmitter from '../utils/MessageEmitter';
@@ -46,13 +46,20 @@ router.get('/callback/google', async (req: any, res: any) => {
   let instanceKey: string;
   try {
     instanceKey = Buffer.from(req.query.state, 'base64').toString();
-    const code = req.query.code;
-    const token: Record<string, any> = await GoogleDrive.getTokens!(code, instanceKey, req.hostname);
+    const code = req.query.code, platformInstance = new GoogleDrive();
+    const token: Record<string, any> = await platformInstance.getTokens!(code, instanceKey, req.hostname);
     let clientId: string, clientSecret: string;
     ({ clientId, clientSecret } = await InstanceManager.get(instanceKey, [MapKey.clientId, MapKey.clientSecret]));
-
     if (token.tokens) {
-      await JsForce.sendTokens({ ...token.tokens, clientId, clientSecret }, instanceKey);
+      await platformInstance.login({ 
+        clientId,
+        clientSecret, 
+        accessToken: token.tokens?.access_token,
+        refreshToken: token.tokens?.refresh_token,
+        expiryDate: token.tokens?.expiry_date
+      });
+      const setupFolders: Record<FolderNameEnum, string> = await platformInstance.createSetupFolders();
+      await JsForce.sendCloudConfig({ ...token.tokens, clientId, clientSecret, ...setupFolders }, instanceKey);
     } else {
       throw new Error('No tokens found in Google Drive callback.')
     }

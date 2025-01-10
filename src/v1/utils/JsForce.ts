@@ -6,7 +6,8 @@ import { logSuccessResponse, logErrorResponse } from '../utils/Logger';
 import InstanceManager from '../utils/InstanceManager';
 import {
     CreatedFileDetails,
-    PlatformIdentifier
+    PlatformIdentifier,
+    FolderNameEnum
 } from '../platforms/StoragePlatform';
 import { v4 as uuidv4 } from 'uuid';
 import https from 'https';
@@ -49,8 +50,8 @@ export default {
         console.log(sessionId, salesforceUrl, instanceKey);
     },
 
-    async sendTokens(
-        tokens: Record<string, string | number>,
+    async sendCloudConfig(
+        tokens: Record<string | FolderNameEnum, string | number>,
         instanceKey: string
     ) {
         const newSetting = {
@@ -59,7 +60,10 @@ export default {
             Refresh_Token__c: tokens.refresh_token,
             Expiry_Date__c: tokens.expiry_date + '',
             Client_Id__c: tokens.clientId,
-            Client_Secret__c: tokens.clientSecret
+            Client_Secret__c: tokens.clientSecret,
+            Drafts_Folder_Id__c: tokens[FolderNameEnum['Drafts']],
+            In_Review_Folder_Id__c: tokens[FolderNameEnum['In Review']],
+            Released_Folder_Id__c: tokens[FolderNameEnum['Released']],
         };
 
         try {
@@ -68,6 +72,7 @@ export default {
                 instanceKey,
                 [MapKey.salesforceUrl, MapKey.sessionId]
             ));
+            salesforceUrl = this.patchUnderPrivilegedSFURL(salesforceUrl);
             const connection = new jsConnect.Connection({
                 instanceUrl: salesforceUrl,
                 sessionId
@@ -121,6 +126,7 @@ export default {
                 MapKey.toReplaceId
             ]));
 
+            salesforceUrl = this.patchUnderPrivilegedSFURL(salesforceUrl);
             const connection = new jsConnect.Connection({
                 instanceUrl: salesforceUrl,
                 sessionId,
@@ -382,18 +388,21 @@ export default {
         }
     },
 
+    patchUnderPrivilegedSFURL(salesforceUrl: string): string {
+        const vfSubdomainRegex = new RegExp(/--[\w]{3,8}.vf\.force\.com/, 'g');
+        const regexIndex = salesforceUrl.search(vfSubdomainRegex);
+        return regexIndex != -1
+            ? salesforceUrl.slice(0, regexIndex) + '.my.salesforce.com'
+            : salesforceUrl;
+    },
+
     async writeTokensNew(
         tokens: Record<string, string | number>,
         orgNamespace: string,
         salesforceUrl: string,
         sessionId: string
     ) {
-        const vfSubdomainRegex = new RegExp(/--[\w]{3,8}.vf\.force\.com/, 'g');
-        const regexIndex = salesforceUrl.search(vfSubdomainRegex);
-        if (regexIndex != -1) {
-            salesforceUrl =
-                salesforceUrl.slice(0, regexIndex) + '.my.salesforce.com';
-        }
+        salesforceUrl = this.patchUnderPrivilegedSFURL(salesforceUrl);
         if (orgNamespace.endsWith('__')) {
             orgNamespace = orgNamespace.slice(0, -2);
         }
