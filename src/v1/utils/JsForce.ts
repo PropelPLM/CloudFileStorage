@@ -147,7 +147,7 @@ export default {
                         ? 'Document__c'
                         : `${orgNamespace}Document__c`;
                 newAttachment = {
-                    Full_Name__c: name,
+                    Document_Title__c: name,
                     External_Attachment_URL__c: webViewLink,
                     File_Extension__c: fileExtension,
                     Google_File_Id__c: id,
