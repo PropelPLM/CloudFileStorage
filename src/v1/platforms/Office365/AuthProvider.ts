@@ -13,7 +13,7 @@ class AuthProvider implements AuthenticationProvider {
   public async getAccessToken(): Promise<string> {
     try {
       const token = await this.clientCredential.getToken(this.scope);
-      return token ? token.token : null;
+      return token ? token.token : '';
     } catch (err: any) {
       console.log(`Failed to get AccessToken: ${err.message!}`)
       throw err
